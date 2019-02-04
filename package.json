@@ -3,6 +3,9 @@
     "main": "",
     "version": "1.0.0",
     "dependencies": {
+      "@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload",
+      "@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner",
+      "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool"      
     },
     "devDependencies": {
     }
