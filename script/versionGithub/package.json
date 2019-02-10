@@ -1,0 +1,10 @@
+{
+    "name": "@",
+    "main": "./script.js",
+    "version": "0.0.0",
+    "dependencies": {
+    },
+    "devDependencies": {
+    }
+  }
+  
