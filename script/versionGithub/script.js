@@ -3,12 +3,8 @@ import util from 'util'
 import modifyJson from 'jsonfile'
 import gitUrlParser from 'git-url-parse'
 import { pickBy } from 'lodash'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { HttpLink } from 'apollo-link-http'
-import { ApolloClient } from 'apollo-client'
-import nodeFetch from 'node-fetch'
-import { getReleases } from './githubGraphqlQuery.js'
-import { release } from 'os';
+import { getReleases, githubGraphqlEndpoint } from './graphqlQuery/github.graphql.js'
+import { createGraphqlClient } from './utility/createGraphqlClient.js'
 
 // adapter to the scriptManager api.
 export function checkVersion(...args) {
@@ -29,17 +25,7 @@ async function checkLatestVersionOnGithub({ targetProject, token }) {
     const   targetRootPath = targetProject.configuration.rootPath,
             targetPackagePath = path.join(targetRootPath, 'package.json')
 
-    const graphqlClient = new ApolloClient({
-        link: new HttpLink({ 
-            fetch: nodeFetch, 
-            uri: `https://api.github.com/graphql`,
-            headers: {
-                Authorization: `bearer ${token}`
-            }
-        }),
-        cache: new InMemoryCache()
-    })
-
+    const graphqlClient = createGraphqlClient({ token, endpoint: githubGraphqlEndpoint })
 
     // read package.json file 
     let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
@@ -50,7 +36,11 @@ async function checkLatestVersionOnGithub({ targetProject, token }) {
         if(!packageConfig[keyName]) return;
         let dependencyObject = packageConfig[keyName]
         
-        let githubDependency = filterGithubDependency({ dependencyObject }) // filter githubDependencies
+        // filter dependencies that are from github only
+        let githubDependency = pickBy(dependencyObject, (value, index) => {
+            let parsedUrl = gitUrlParser(value)
+            return parsedUrl.resource == 'github.com'
+        })
 
         for(let [index, repositoryUrl] of Object.entries(githubDependency)) {
             let parsedUrl = gitUrlParser(repositoryUrl),
@@ -78,13 +68,4 @@ async function checkLatestVersionOnGithub({ targetProject, token }) {
     })
 
 }
-
-// filter dependencies that are from github only
-function filterGithubDependency({ dependencyObject }) {
-    return pickBy(dependencyObject, (value, index) => {
-        let parsedUrl = gitUrlParser(value)
-        return parsedUrl.resource == 'github.com'
-    })
-}
-
 

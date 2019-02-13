@@ -1,5 +1,7 @@
 import gql from 'graphql-tag'
 
+const githubGraphqlEndpoint = 'https://api.github.com/graphql'
+
 const getReleases = gql`
     query getReleases($number:Int = 10, $repoURL: URI!) {
         resource(url: $repoURL) {
@@ -22,4 +24,4 @@ const getReleases = gql`
 
 `;
 
-export { getReleases }
+export { getReleases, githubGraphqlEndpoint }
