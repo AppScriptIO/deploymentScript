@@ -1,5 +1,5 @@
 {
-  "name": "@script/production",
+  "name": "@dependency/production",
   "main": "entrypoint.js",
   "version": "1.0.0",
   "dependencies": {
