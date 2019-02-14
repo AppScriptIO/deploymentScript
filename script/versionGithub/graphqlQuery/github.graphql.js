@@ -2,6 +2,7 @@ import gql from 'graphql-tag'
 
 const githubGraphqlEndpoint = 'https://api.github.com/graphql'
 
+// https://developer.github.com/v4/explorer
 const getReleases = gql`
     query getReleases($number:Int = 10, $repoURL: URI!) {
         resource(url: $repoURL) {
@@ -17,7 +18,10 @@ const getReleases = gql`
     fragment releaseFields on ReleaseConnection {
         edges {
             node {
-                id
+                name
+              	tag {
+                    name
+                }
             }
         }
     }
