@@ -21,9 +21,9 @@ const getReleases = gql`
                 name
               	tag {
                     name
-                    isPrerelease
-                    isDraft
                 }
+                isPrerelease
+                isDraft
             }
         }
     }
