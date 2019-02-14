@@ -26,7 +26,13 @@ function adapter(...args) {
  * • Hit github API to check for newer tags or newer releases. 
  * • Bump version - update package.json in case a newer version is found.
  */
-async function checkLatestVersionOnGithub({ targetProject, token }) {
+async function updateGithubPackage({ 
+    targetProject, // target project's configuration instance.
+    token // github token for Graphql API
+} = {}) {
+    if(!token) token = process.env.GITHUB_TOKEN || lookupGithubToken()
+    assert(token, `❌ Github access token must be supplied.`)
+
     const   targetRootPath = targetProject.configuration.rootPath,
             targetPackagePath = path.join(targetRootPath, 'package.json')
 
@@ -57,6 +63,15 @@ async function checkLatestVersionOnGithub({ targetProject, token }) {
 
     })
 
+}
+
+// Read github token from OS user's folder.
+function lookupGithubToken({ 
+    sshPath = path.join(os.homedir(), '.ssh'),
+    tokenFileName = 'github_token'
+ } ={}) {
+    const tokenFile = path.join(sshPath, tokenFileName)
+    return filesystem.readFileSync(tokenFile).toString()
 }
 
 // pick only github uri dependencies
