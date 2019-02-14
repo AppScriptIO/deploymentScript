@@ -5,6 +5,7 @@ import os from 'os'
 import filesystem from 'fs'
 import modifyJson from 'jsonfile'
 import gitUrlParser from 'git-url-parse'
+import semanticVersioner from 'semver'
 import { pickBy } from 'lodash'
 import { getReleases, githubGraphqlEndpoint } from './graphqlQuery/github.graphql.js'
 import { createGraphqlClient } from './utility/createGraphqlClient.js'
@@ -51,16 +52,24 @@ async function updateGithubPackage({
         for(let [index, repositoryUrl] of Object.entries(githubDependency)) {
             let releaseList = await getReleaseUsingUrl({ graphqlClient, repositoryUrl })
             if(!releaseList.length) continue; // skip
-            
-            // compare semver versions
+            // filter drafts and pre-releases
+            releaseList.filter((value, index) => !Boolean(value.isPrerelease || value.isDraft))
+
+            console.log(releaseList)
             let latestRelease = releaseList[0].tag.name
             let parsedUrl = gitUrlParser(repositoryUrl),
                 parsedVersion = parsedUrl.hash
-            console.log(`${parsedVersion} ?-> ${latestRelease}`)
             
+            // compare semver versions
+            console.log(`Comparing package.json version %s with latest release %s:`, parsedVersion, latestRelease)
+            let shouldUpdateVerion = semanticVersioner.gt(latestRelease, parsedVersion)
+            console.log(shouldUpdateVerion)
+
+            // create dependency list with new versions 
+            if(shouldUpdateVerion) {
+
+            }
         }
-
-
     })
 
 }
