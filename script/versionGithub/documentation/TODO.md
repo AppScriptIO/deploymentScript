@@ -1,0 +1,4 @@
+- Secure locally stored tokens:
+    - Create a script that loads local tokens to the environment variable, which will be used by deployment scripts. 
+    - Encrypt locally stored tokens in the OS user folder, when being read should provide a decrypting password.
+-
