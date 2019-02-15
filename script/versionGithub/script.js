@@ -6,10 +6,11 @@ import filesystem from 'fs'
 import modifyJson from 'jsonfile'
 import gitUrlParser from 'git-url-parse'
 import semanticVersioner from 'semver'
-import { pickBy } from 'lodash'
+import { pickBy, remove as removeMutateArray } from 'lodash'
 import { getReleases, githubGraphqlEndpoint } from './graphqlQuery/github.graphql.js'
 import { createGraphqlClient } from './utility/createGraphqlClient.js'
-import { skip } from 'rxjs/operators';
+import writeJsonFile from 'write-json-file'
+import nestedObjectAssign from 'nested-object-assign'
 const dependencyKeyword = ['dependencies', 'devDependencies', 'peerDependencies'] // package.json dependencies key values
 
 // adapter to the scriptManager api.
@@ -21,15 +22,11 @@ function adapter(...args) {
     updateGithubPackage(...args).catch(error => console.error(error))
 }
 
-/**
- * TODO: 
- * • Extract URL and any commit or tag value.
- * • Hit github API to check for newer tags or newer releases. 
- * • Bump version - update package.json in case a newer version is found.
- */
 async function updateGithubPackage({ 
     targetProject, // target project's configuration instance.
-    token // github token for Graphql API
+    token, // github token for Graphql API
+    prereleaseType = false, // example prereleaseType='distribution' matches all x.x.x-<...>distribution<...>
+    shouldUpdatePackage = false
 } = {}) {
     if(!token) token = process.env.GITHUB_TOKEN || lookupGithubToken()
     assert(token, `❌ Github access token must be supplied.`)
@@ -41,37 +38,70 @@ async function updateGithubPackage({
 
     // read package.json file 
     let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
-
+    
+    let didAnyRepoUpdate = false;
+    
     // loop dependencies
-    dependencyKeyword.forEach(async keyName => {
-        if(!packageConfig[keyName]) return;
+    let modifiedPackageObject = {}
+    for(let keyName of dependencyKeyword ) {
+        if(!packageConfig[keyName]) continue;
         let dependencyList = packageConfig[keyName]
         
         // filter dependencies that are from github only
         let githubDependency = filterGithubDependency({ dependencyList })
-        for(let [index, repositoryUrl] of Object.entries(githubDependency)) {
-            let releaseList = await getReleaseUsingUrl({ graphqlClient, repositoryUrl })
-            if(!releaseList.length) continue; // skip
-            // filter drafts and pre-releases
-            releaseList.filter((value, index) => !Boolean(value.isPrerelease || value.isDraft))
+        for (let [index, repositoryUrl] of Object.entries(githubDependency)) {
+            const parsedUrl = gitUrlParser(repositoryUrl),
+                currentUrlVersion = parsedUrl.hash && parsedUrl.hash.replace('semver:', ''); // Specific use case - remove "semver:" from hash. This is used to support github semver versions in npm.
+            if(!currentUrlVersion) continue; // skip urls without specific version
+            if(!semanticVersioner.valid(currentUrlVersion) && semanticVersioner.validRange(currentUrlVersion)) { console.log(`Skipping "${repositoryUrl}" with range semver ${currentUrlVersion} `); continue; } // skip ranges
 
-            console.log(releaseList)
-            let latestRelease = releaseList[0].tag.name
-            let parsedUrl = gitUrlParser(repositoryUrl),
-                parsedVersion = parsedUrl.hash
+            let releaseList = await queryReleaseUsingUrl({ graphqlClient, repositoryUrl })
+            if(!releaseList.length) continue; // skip
+            // filter comperable & semver versioned tags only
+            filterComparableRelease({ releaseList: { reference: releaseList } })
+            // filter tags with prerelease (include or exclude)
+            if(prereleaseType) { // keep only tags that include a specific prerelease type.
+                removeMutateArray(releaseList, value => {
+                    let prereleaseComponent = semanticVersioner.prerelease(value.tag.name) 
+                    return (prereleaseComponent && prereleaseComponent.includes(prereleaseType)) ? false : true;
+                })
+            } else { // filter versions that includes prerelease type (x.x.x-<prereleaseTyp>)
+                removeMutateArray(releaseList, value => Boolean(semanticVersioner.prerelease(value.tag.name)) )
+            }
+
+            let latestRelease = pickLatestRelease({ releaseList })
             
             // compare semver versions
-            console.log(`Comparing package.json version %s with latest release %s:`, parsedVersion, latestRelease)
-            let shouldUpdateVerion = semanticVersioner.gt(latestRelease, parsedVersion)
-            console.log(shouldUpdateVerion)
-
-            // create dependency list with new versions 
+            let shouldUpdateVerion = false;
+            if(currentUrlVersion && latestRelease) {
+                console.log(`Comparing package.json version %s with latest release %s:`, currentUrlVersion, latestRelease)
+                shouldUpdateVerion = semanticVersioner.gt(latestRelease, currentUrlVersion)
+            }
+            
             if(shouldUpdateVerion) {
-
+                didAnyRepoUpdate = true
+                githubDependency[index] = updateVersion({ parsedUrl, newVersion: latestRelease })
+            } else {
+                console.log(`• Git URI ${repositoryUrl} is up to date. Current "%s" - latest "%s":`, currentUrlVersion, latestRelease)
             }
         }
-    })
 
+        // create a new list with updated versions
+        modifiedPackageObject[keyName] = githubDependency
+       
+    }
+    
+    if(didAnyRepoUpdate) { // update pacakge.json
+        let mergedPackageObject = nestedObjectAssign(packageConfig, modifiedPackageObject)
+        if(shouldUpdatePackage) {
+            await writeJsonFile(targetPackagePath, mergedPackageObject)
+            console.log(`• Package.json file was updated with the latest Git packages.`)
+        } else {
+            console.log(`• Pacakge object with updated versions:`)
+            console.dir(mergedPackageObject)
+        }
+    } else 
+        console.log(`• No repository needs update.`);
 }
 
 // Read github token from OS user's folder.
@@ -92,13 +122,9 @@ function filterGithubDependency({ dependencyList }) {
 }
 
 // get the releases on github
-async function getReleaseUsingUrl({ graphqlClient, repositoryUrl }) {
+async function queryReleaseUsingUrl({ graphqlClient, repositoryUrl }) {
     let parsedUrl = gitUrlParser(repositoryUrl),
-    parsedVersion = parsedUrl.hash
-
-    if(parsedVersion) {
-        // console.log(parsedUrl)
-    }
+    currentUrlVersion = parsedUrl.hash
 
     let releaseArray = await graphqlClient.query({ 
             query: getReleases, 
@@ -112,6 +138,29 @@ async function getReleaseUsingUrl({ graphqlClient, repositoryUrl }) {
         }).catch(error => { throw error })
 
     return releaseArray
+}
+
+function pickLatestRelease({ releaseList }) {
+    releaseList.sort((current, next) => {
+        return (semanticVersioner.gt(current.tag.name, next.tag.name)) ? -1 /*Sort on lower index*/ : 1; 
+    })
+    return releaseList[0].tag.name // pick greater release
+}
+
+// filter array variable passed as reference. 
+function filterComparableRelease({ releaseList = { reference: [] } }) {
+    // filter drafts and pre-releases
+    removeMutateArray(releaseList.reference, value => Boolean(value.isPrerelease || value.isDraft) )
+    // filter non-semver versioned tags
+    removeMutateArray(releaseList.reference, value => !Boolean(semanticVersioner.valid(value.tag.name)) )
+    // filter releases without tags  - draft releases do not have tags, remove any release that doesn't have a tag for any other reason also.
+    removeMutateArray(releaseList.reference, value => !Boolean(value.tag) )
+}
+
+function updateVersion({ parsedUrl, newVersion: latestRelease }) {
+    let semverPrefix = parsedUrl.hash.includes('semver:') ? 'semver:' : ''; // check if `semver:` for git url was present
+    // parsedUrl.hash = latestRelease // Important: gitUrlParser.stringify doesn't take care of hashes for some reason.
+    return `${gitUrlParser.stringify(parsedUrl)}#${semverPrefix}${latestRelease}`
 }
 
 export { adapter as checkVersion }
