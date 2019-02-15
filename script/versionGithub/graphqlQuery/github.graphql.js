@@ -4,10 +4,11 @@ const githubGraphqlEndpoint = 'https://api.github.com/graphql'
 
 // https://developer.github.com/v4/explorer
 const getReleases = gql`
-    query getReleases($number:Int = 10, $repoURL: URI!) {
+    # @parameter numberOfReleaseNode - is the number of recent (by date) releases to retreive.
+    query getReleases($numberOfReleaseNode:Int = 20, $repoURL: URI!) {
         resource(url: $repoURL) {
             ... on Repository {
-                releases(first: $number, orderBy: { field: CREATED_AT, direction: ASC}) {
+                releases(first: $numberOfReleaseNode, orderBy: { field: CREATED_AT, direction: ASC}) {
                     totalCount
                     ...releaseFields
                 }
