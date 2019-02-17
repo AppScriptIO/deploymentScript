@@ -1,4 +1,4 @@
-import { default as git, Commit, Repository, Reference, Branch} from 'nodegit'
+import { default as git, Commit, Repository, Reference, Branch, Signature} from 'nodegit'
 
 /**
  * TODO: 
@@ -44,6 +44,7 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
             targetProjectGitUrl = 'https://github.com/AppScriptIO/scriptManager'
 
     const repository = await git.Repository.open(targetProjectRoot)
+    brachToPointTo = await git.Branch.lookup(repository, brachToPointTo, 1) // convert to branch reference
     // set commit reference
     commitToPointTo = Boolean(commitToPointTo) ? await git.Commit.lookup(repository, commitToPointTo) // get commit from supplied commit id parameter
                       : await repository.getReferenceCommit(brachToPointTo) // get latest commit from branch
@@ -62,16 +63,29 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
     }
     // checkout temporary
     await repository.checkoutBranch(await temporaryBranch.name())
-
-    
+    // rebase into master branch to follow the latest master commit. 
+    repository.rebaseBranches(
+        temporaryBranch.name(),
+        brachToPointTo.name(),
+        brachToPointTo.name(),
+        git.Signature.now('meow', 'test@example.com'),
+        rebase => {
+            console.log("One operation");
+            return Promise.resolve();
+        },
+        rebaseMetadata => {
+            console.log("Finished rebase");
+            return Promise.resolve();
+        }
+   )
 
     // delete temporary branch
-    try {
-        await repository.checkoutBranch(brachToPointTo) // make sure the branch is checkedout.
-        let error = git.Branch.delete(temporaryBranch)
-        if(error) throw new Error(`Cannot delete branch ${await temporaryBranch.name()}`)
-        console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
-    } catch (error) { throw error }
+    // try {
+    //     await repository.checkoutBranch(brachToPointTo) // make sure the branch is checkedout.
+    //     let error = git.Branch.delete(temporaryBranch)
+    //     if(error) throw new Error(`Cannot delete branch ${await temporaryBranch.name()}`)
+    //     console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
+    // } catch (error) { throw error }
     
 
     // publish({
