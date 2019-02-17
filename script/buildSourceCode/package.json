@@ -1,0 +1,13 @@
+{
+  "name": "@script/buildSourceCode",
+  "main": "./script.js",
+  "version": "0.0.0",
+  "dependencies": {
+    "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool",
+    "nodegit": "^0.24.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "preinstall": "echo 'Machine global peer dependency for nodegit\n' && sudo apt-get install -y libgit2-dev"
+  }
+}
