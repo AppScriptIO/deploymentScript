@@ -1,4 +1,4 @@
-import { default as git, Commit, Repository, Reference, Branch, Signature} from 'nodegit'
+import { default as git, Commit, Repository, Reference, Branch, Signature, Reset} from 'nodegit'
 
 /**
  * TODO: 
@@ -32,18 +32,22 @@ function  adapter(...args) {
  * 
  * Simple example equivalent shell script:
  * ```git checkout distribution && git rebase --onto master distribution && echo "Test Page" > new.js && git add -A && git commit -a -m 'build' && git tag v5; git checkout master```
+ * 
+ * `nodegit` documentation: https://www.nodegit.org/api 
  */
 async function createGithubBranchedRelease({ // 'branched release' in the sense of a tag that points to an additional build commit other than the master commit for example.
     api, 
     temporaryBranchName = 'distribution', // branch used to build source code and create a distribution tag from
     brachToPointTo = 'master', // default branch for latest commit.
-    commitToPointTo = null // unrelated commit to point to
+    commitToPointTo = null, // unrelated commit to point to
+    tagName
 }) {
     const   targetProject = api.project,
             targetProjectRoot = targetProject.configuration.rootPath,
             targetProjectGitUrl = 'https://github.com/AppScriptIO/scriptManager'
 
-    const repository = await git.Repository.open(targetProjectRoot)
+    const repository = await git.Repository.open(targetProjectRoot),
+          tagger = git.Signature.now('meow', 'test@example.com')
     brachToPointTo = await git.Branch.lookup(repository, brachToPointTo, 1) // convert to branch reference
     // set commit reference
     commitToPointTo = Boolean(commitToPointTo) ? await git.Commit.lookup(repository, commitToPointTo) // get commit from supplied commit id parameter
@@ -63,21 +67,23 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
     }
     // checkout temporary
     await repository.checkoutBranch(await temporaryBranch.name())
-    // rebase into master branch to follow the latest master commit. 
-    repository.rebaseBranches(
-        temporaryBranch.name(),
-        brachToPointTo.name(),
-        brachToPointTo.name(),
-        git.Signature.now('meow', 'test@example.com'),
-        rebase => {
-            console.log("One operation");
-            return Promise.resolve();
-        },
-        rebaseMetadata => {
-            console.log("Finished rebase");
-            return Promise.resolve();
-        }
-   )
+
+    /** reset temporary branch to the commit to point to (targetCommit)
+     * Another option is to use rebasing where current commits are saved // rebasingExample()
+     */
+    await git.Reset.reset(repository, commitToPointTo, git.Reset.TYPE.HARD)
+        .then(number => {
+            if(number) throw new Error(`• Could not reset repository ${repository} to commit ${commitToPointTo}`)
+        }).catch(error => console.error)
+
+    // run build
+    await buildExample({ targetProjectRoot })
+
+    // tag 
+    let latestTemporaryBranchCommit = await repository.getBranchCommit(temporaryBranch)
+    await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Distribution code for tag ${tagName}`, 0)
+
+    
 
     // delete temporary branch
     // try {
@@ -97,6 +103,29 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
     // }).then(() => {
     //     console.log('Done');
     // }).catch(error => console.error('build error !!!'))
+}
+
+async function buildExample({ targetProjectRoot }) {
+    console.log(targetProjectRoot)
+}
+
+// rebase into master branch to follow the latest master commit. TODO: this is an example - fix async operation.
+function rebasingExample({repository, branch, fromBranch, toBranch}) {
+    return repository.rebaseBranches(
+        branch.name(), // branch commits to move
+        fromBranch.name(), // till commits that are intersected with this branch (old branch)
+        toBranch.name(), // onto the new branch.
+        git.Signature.now('meow', 'test@example.com'),
+        rebase => {
+            console.log("One operation");
+            return Promise.resolve();
+        },
+        rebaseMetadata => {
+            console.log("Finished rebase");
+            return Promise.resolve();
+        }
+    )
+
 }
 
 export { adapter as build, createGithubBranchedRelease }
