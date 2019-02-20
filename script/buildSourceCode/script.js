@@ -1,3 +1,5 @@
+import filesystem from 'fs'
+import path from 'path'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset} from 'nodegit'
 
 /**
@@ -29,6 +31,8 @@ function  adapter(...args) {
  *  4. Create a release/tag.
  *  5. cleanup branches.
  *  6. git checkout master
+ * 
+ *  @sieEffect - creates a tag and deletes temporary branch.
  * 
  * Simple example equivalent shell script:
  * ```git checkout distribution && git rebase --onto master distribution && echo "Test Page" > new.js && git add -A && git commit -a -m 'build' && git tag v5; git checkout master```
@@ -74,39 +78,50 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
     await git.Reset.reset(repository, commitToPointTo, git.Reset.TYPE.HARD)
         .then(number => {
             if(number) throw new Error(`• Could not reset repository ${repository} to commit ${commitToPointTo}`)
-        }).catch(error => console.error)
+        }).catch(error => console.error)    
 
     // run build
     await buildExample({ targetProjectRoot })
 
-    // tag 
-    let latestTemporaryBranchCommit = await repository.getBranchCommit(temporaryBranch)
-    await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Distribution code for tag ${tagName}`, 0)
+    // Create commit of all files.
+    let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
+    let treeObject = await index.addAll(['**']).then(()=> index.write()).then(() => index.writeTree()) // add files and create a tree object.
+    let parentCommit = await repository.getHeadCommit() // get latest commit 
+    await repository.createCommit(
+            'HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */ , 
+            tagger, tagger, 
+            `🏗️ Build distribution code.`, 
+            treeObject, 
+            [parentCommit]
+        ).then((oid) => {
+            console.log(`• Commit created ${oid} for distribution code`)
+        })
 
-    
+    // tag and create a release.
+    // let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit 
+    // await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0)
+    //     .then((oid) => console.log(`• Tag created ${oid}`))
 
+
+    await repository.checkoutBranch(brachToPointTo) // make sure the branch is checkedout.
     // delete temporary branch
-    // try {
-    //     await repository.checkoutBranch(brachToPointTo) // make sure the branch is checkedout.
-    //     let error = git.Branch.delete(temporaryBranch)
-    //     if(error) throw new Error(`Cannot delete branch ${await temporaryBranch.name()}`)
-    //     console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
-    // } catch (error) { throw error }
+    if(git.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`)
+    try {
+        temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1) // referesh value of temporaryBranch - for some reason using the same reference prevents deletion of branch.
+        let error = git.Branch.delete(temporaryBranch)
+        if(error) throw new Error(error)
+        console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
+    } catch (error) { throw error }
     
-
-    // publish({
-    //     tag: '6.0.2', // you can also provide version: '1.0.0' instead of tag
-    //     push: { // set to false to not push
-    //       remote: targetProjectGitUrl, // set to URL or remote name
-    //       force: false, // set to true to force push
-    //     }
-    // }).then(() => {
-    //     console.log('Done');
-    // }).catch(error => console.error('build error !!!'))
 }
 
 async function buildExample({ targetProjectRoot }) {
     console.log(targetProjectRoot)
+    filesystem.writeFile(path.join(targetProjectRoot, 'build.js'), 'content', (err) => {
+        if (err) throw err;
+        console.log("Project built successfully !")
+    })
+    
 }
 
 // rebase into master branch to follow the latest master commit. TODO: this is an example - fix async operation.
