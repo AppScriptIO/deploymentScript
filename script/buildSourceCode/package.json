@@ -8,6 +8,6 @@
   },
   "devDependencies": {},
   "scripts": {
-    "preinstall": "echo 'Machine global peer dependency for nodegit\n' && sudo apt-get install -y libgit2-dev"
+    "preinstall": "echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n' && sudo apt-get install -y libgit2-dev"
   }
 }

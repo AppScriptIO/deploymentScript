@@ -1,6 +1,7 @@
 import filesystem from 'fs'
 import path from 'path'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset} from 'nodegit'
+import { build } from '@dependency/buildTool'
 
 /**
  * TODO: 
@@ -10,11 +11,8 @@ import { default as git, Commit, Repository, Reference, Branch, Signature, Reset
  *      ○ Push new version to github tags. 
  *      ○ Create a new release from the pushed tag.
  * 
- * One release for distribution and another for source code ? 
+ * Releases could be created for source code and for distribution code.
  */
-
-// const { build } = require('@dependency/buildTool') // build tool has errors
-
 function  adapter(...args) {
     const {
         api, /* supplied by scriptManager */ 
@@ -44,7 +42,8 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
     temporaryBranchName = 'distribution', // branch used to build source code and create a distribution tag from
     brachToPointTo = 'master', // default branch for latest commit.
     commitToPointTo = null, // unrelated commit to point to
-    tagName
+    tagName, 
+    buildCallback = build // build async function that will handle building source code and preparing the package for distribution.
 }) {
     const   targetProject = api.project,
             targetProjectRoot = targetProject.configuration.rootPath,
@@ -81,8 +80,8 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
         }).catch(error => console.error)    
 
     // run build
-    await buildExample({ targetProjectRoot })
-
+    await buildCallback({ targetProjectRoot }).then(() => console.log("Project built successfully !"))
+    
     // Create commit of all files.
     let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
     let treeObject = await index.addAll(['**']).then(()=> index.write()).then(() => index.writeTree()) // add files and create a tree object.
@@ -98,29 +97,20 @@ async function createGithubBranchedRelease({ // 'branched release' in the sense 
         })
 
     // tag and create a release.
-    // let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit 
-    // await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0)
-    //     .then((oid) => console.log(`• Tag created ${oid}`))
-
+    let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit 
+    await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0)
+        .then((oid) => console.log(`• Tag created ${oid}`))
 
     await repository.checkoutBranch(brachToPointTo) // make sure the branch is checkedout.
     // delete temporary branch
-    if(git.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`)
     try {
+        if(git.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`)
+        // By reassigning the variable and looking up the branch the garbage collector will kick in. The reference for the branch in libgit2 shouldn't be in memory as mentioned in https://github.com/libgit2/libgit2/blob/859d92292e008a4d04d68fb6dc20a1dfa68e4874/include/git2/refs.h#L385-L398
         temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1) // referesh value of temporaryBranch - for some reason using the same reference prevents deletion of branch.
         let error = git.Branch.delete(temporaryBranch)
-        if(error) throw new Error(error)
+        if(error) throw new Error(`Code thrown by 'libgit2' bindings = ${error}\n \tCheck https://www.nodegit.org/api/error/#CODE`)
         console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
     } catch (error) { throw error }
-    
-}
-
-async function buildExample({ targetProjectRoot }) {
-    console.log(targetProjectRoot)
-    filesystem.writeFile(path.join(targetProjectRoot, 'build.js'), 'content', (err) => {
-        if (err) throw err;
-        console.log("Project built successfully !")
-    })
     
 }
 
