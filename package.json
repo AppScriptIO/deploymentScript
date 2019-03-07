@@ -10,5 +10,8 @@
     "@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner",
     "@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.15.1",
+    "babel-eslint": "^10.0.1"
+  }
 }
