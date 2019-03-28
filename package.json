@@ -11,7 +11,7 @@
     "@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload"
   },
   "devDependencies": {
-    "eslint": "^5.15.1",
-    "babel-eslint": "^10.0.1"
+    "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis",
+    "typescript": "^3.3.3333"
   }
 }
