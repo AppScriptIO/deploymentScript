@@ -1,18 +1,15 @@
-# https://help.github.com/articles/splitting-a-subfolder-out-into-a-new-repository/
-# This will create a new branch with one commit that adds everything in HEAD. It doesn't alter anything else, so it's completely safe. 
-# Used to create a release from a repo where the release will contain a single commit.
-git branch distribution $(echo "Release 1.0.3" | git commit-tree HEAD^{tree}) && git checkout distribution \
-&& git filter-branch \
-    --tree-filter 'find . ! \( -path "./configuration*" -o \
-                               -path "./package.json" -o \
-                               -path "./README.md" -o \
-                               -path "./yarn.lock" -o \
-                               -path "./source" -o \
-                               -path "." \) \
-                        -exec rm -fr {} +' \
-    --prune-empty -f \
-    distribution && \
-git tag -a 1.0.3 -m "Realse tag 1.0.3" && \
-git push origin 1.0.3 && \
-git checkout master && \
-git branch -D distribution
+# TODO - remove dev dependencies from package.json.
+
+### Newer way that will keep branch connection to the commit tree 
+git branch distribution
+git checkout distribution && git rebase --onto master distribution
+# find . -name distribution -prune -o -print0 | xargs -0 rm -r
+rm ./.git/info/exclude && mv ./.gitignore ./.git/info/exclude # deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
+find . \
+    -path ./distribution -prune -o \
+    -path ./.git -prune -o \
+    -path ./node_modules -prune -o \
+    -exec rm -rf {} \; 2> /dev/null
+mv ./distribution/* . && rm -r distribution
+git add -A && git commit -a -m 'build' && git tag 1.0.3; 
+git checkout master
