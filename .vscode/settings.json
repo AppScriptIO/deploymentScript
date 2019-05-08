@@ -49,5 +49,10 @@
     "eslint.codeAction.showDocumentation": {
         "enable": true
     },
-    "typescript.check.npmIsInstalled": false
+    "typescript.check.npmIsInstalled": false,
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#342D18",
+        "titleBar.activeBackground": "#493F22",
+        "titleBar.activeForeground": "#FBFAF7"
+    }
 }

@@ -1,6 +1,6 @@
 rm -r ./distribution
 # entrypoint
-mkdir -p ./distribution/entrypoint/programmaticAPI/ && echo "module.exports = require('../../source/entrypoint.js')" \
+mkdir -p ./distribution/entrypoint/programmaticAPI/ && echo "module.exports = require('../../source/script.js')" \
 >> ./distribution/entrypoint/programmaticAPI/index.js && \
 
 # mkdir -p ./distribution/entrypoint/cli/ && echo "module.exports = require('../../source/scriptManager/clientInterface/commandLine.js')" \

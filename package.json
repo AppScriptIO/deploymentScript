@@ -7,11 +7,11 @@
   ],
   "private": true,
   "dependencies": {
-    "@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner",
-    "@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload"
+    "@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner#semver:^1.x.x",
+    "@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload#semver:^1.x.x"
   },
   "devDependencies": {
-    "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis",
+    "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
     "typescript": "^3.3.3333"
   }
 }
