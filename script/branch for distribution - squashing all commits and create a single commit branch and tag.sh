@@ -11,5 +11,5 @@ find . \
     -path ./node_modules -prune -o \
     -exec rm -rf {} \; 2> /dev/null
 mv ./distribution/* . && rm -r distribution
-git add -A && git commit -a -m 'build' && git tag 1.0.1; 
+git add -A && git commit -a -m 'build' && git tag 1.0.4; 
 git checkout master
