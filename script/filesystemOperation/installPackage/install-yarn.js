@@ -1,16 +1,32 @@
+"use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-import childProcess from 'child_process'
-import assert from 'assert'
-import { sync as binaryExist } from 'command-exists'
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.installYarn = installYarn;
 
-export function installYarn({ yarnPath }) {
-	assert(binaryExist('yarn'), '• "yarn" binary should be installed in the environment.')
-	try {
-		childProcess.execSync('yarn install -y', { cwd: yarnPath, shell: true, stdio:[0,1,2] })
-	} catch (error) {
-		console.log('• ERROR - childprocess error.')
-		console.log(error)
-		process.exit(1)
-	}
+var _child_process = _interopRequireDefault(require("child_process"));
+
+var _assert = _interopRequireDefault(require("assert"));
+
+var _commandExists = require("command-exists");
+
+function installYarn({
+  yarnPath
+}) {
+  (0, _assert.default)((0, _commandExists.sync)('yarn'), '• "yarn" binary should be installed in the environment.');
+
+  try {
+    _child_process.default.execSync('yarn install -y', {
+      cwd: yarnPath,
+      shell: true,
+      stdio: [0, 1, 2]
+    });
+  } catch (error) {
+    console.log('• ERROR - childprocess error.');
+    console.log(error);
+    process.exit(1);
+  }
 }

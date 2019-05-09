@@ -1,13 +1,28 @@
-import path from 'path'
-import util from 'util'
-import stream from 'stream'
-const pipeline = util.promisify(stream.pipeline);
-import mkdirp from 'mkdirp'
-import Rsync from 'rsync'
-import size from 'gulp-size'
-import plumber from 'gulp-plumber'
-import { src as readFileAsObjectStream, dest as writeFileFromObjectStream } from 'vinyl-fs' 
-import { reject } from 'any-promise';
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.recursivelySyncFile = recursivelySyncFile;
+exports.copyFileAndSymlink = copyFileAndSymlink;
+
+var _util = _interopRequireDefault(require("util"));
+
+var _stream = _interopRequireDefault(require("stream"));
+
+var _mkdirp = _interopRequireDefault(require("mkdirp"));
+
+var _rsync = _interopRequireDefault(require("rsync"));
+
+var _gulpSize = _interopRequireDefault(require("gulp-size"));
+
+var _vinylFs = require("vinyl-fs");
+
+var _anyPromise = require("any-promise");
+
+const pipeline = _util.default.promisify(_stream.default.pipeline);
 
 /*
 import rsyncObjectStream from 'gulp-rsync'
@@ -34,60 +49,63 @@ function gulpRsync(baseSource, source, destination) {
     }))
 }
 */
-
 // implementation using `rsync` module directly
-export function recursivelySyncFile({ 
-  source, // source folder
-  destination, 
-  copyContentOnly = false, // wether to copy the contents of the root source folder without the root folder  itself.
+function recursivelySyncFile({
+  source,
+  // source folder
+  destination,
+  copyContentOnly = false,
+  // wether to copy the contents of the root source folder without the root folder  itself.
   extraOption = {}
 } = {}) {
-
   // deal with trailing slash as it may change `rsync` behavior.
-  destination = destination.replace(/\/$/, '') // remove trailing slash from `destination` as it has no effect (both cases are the same)
-  if(copyContentOnly) source = (source.substr(-1) != '/') ? `${source}/` : source; // add trailing slash - as rsync will copy only contants when trailing slash is present.
-  else source.replace(/\/$/, '') // remove trailing slash.
+  destination = destination.replace(/\/$/, ''); // remove trailing slash from `destination` as it has no effect (both cases are the same)
+
+  if (copyContentOnly) source = source.substr(-1) != '/' ? `${source}/` : source; // add trailing slash - as rsync will copy only contants when trailing slash is present.
+  else source.replace(/\/$/, ''); // remove trailing slash.
 
   let options = Object.assign({
-    'a': true, // archive
+    'a': true,
+    // archive
     // 'v': true, // verbose
-    'z': true, // compress
-    'R': false, // relative - will create a nested path inside the destination using the full path of the source folder.
+    'z': true,
+    // compress
+    'R': false,
+    // relative - will create a nested path inside the destination using the full path of the source folder.
     'r': true // recursive
-  }, extraOption)
 
-  let rsync = new Rsync()
-    .flags(options)
-    // .exclude('+ */')
-    // .include('/tmp/source/**/*')
-    .source(source)
-    .destination(destination)
+  }, extraOption);
+  let rsync = new _rsync.default().flags(options) // .exclude('+ */')
+  // .include('/tmp/source/**/*')
+  .source(source).destination(destination); // Create directory.
 
-  // Create directory.
   return new Promise(resolve => {
-    mkdirp(destination, function(err) {     
+    (0, _mkdirp.default)(destination, function (err) {
       // Execute the command 
-      rsync.execute(function(error, code, cmd) {
-        if(error) reject(error)
-        console.log(`• RSync ${source} to ${destination}`)
-        resolve()
-      }, function(data) {
-        console.log(' ' + data)
-      })
-    })
-  })
-}
+      rsync.execute(function (error, code, cmd) {
+        if (error) (0, _anyPromise.reject)(error);
+        console.log(`• RSync ${source} to ${destination}`);
+        resolve();
+      }, function (data) {
+        console.log(' ' + data);
+      });
+    });
+  });
+} // implementation using streams.
 
-// implementation using streams.
-export async function copyFileAndSymlink({ 
-  source, // list of files or file matching patterns (globs)
-  destination 
+
+async function copyFileAndSymlink({
+  source,
+  // list of files or file matching patterns (globs)
+  destination
 }) {
-	// using `vinyl-fs` module to allow symlinks to be copied as symlinks and not follow down the tree of files.
-  return await pipeline(
-    readFileAsObjectStream(source, { followSymlinks: false }),
-    // plumber(),
-    writeFileFromObjectStream(destination, { overwrite: true }),
-    size({ title: 'copyFileAndSymlink' })
-  )
+  // using `vinyl-fs` module to allow symlinks to be copied as symlinks and not follow down the tree of files.
+  return await pipeline((0, _vinylFs.src)(source, {
+    followSymlinks: false
+  }), // plumber(),
+  (0, _vinylFs.dest)(destination, {
+    overwrite: true
+  }), (0, _gulpSize.default)({
+    title: 'copyFileAndSymlink'
+  }));
 }
