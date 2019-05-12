@@ -10,7 +10,7 @@ mkdir -p ./distribution/entrypoint/cli && echo "#\!/usr/bin/env node\nmodule.exp
 # source
 yarn run babel --out-dir ./distribution/source "./source" --config-file "./configuration/babel.config.js"
 # test 
-# yarn run babel --out-dir ./distribution/test "./test" --config-file "./configuration/babel.config.js"
+yarn run babel --out-dir ./distribution/test "./test" --config-file "./configuration/babel.config.js"
 # package.json
 yarn run babel --out-dir ./distribution/ "./package.json" --config-file "./configuration/babel.config.js" --copy-files
 # copy yarn lockfile
