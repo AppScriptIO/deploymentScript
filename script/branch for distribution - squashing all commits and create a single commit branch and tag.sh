@@ -1,4 +1,5 @@
 # TODO - remove dev dependencies from package.json.
+read version
 
 ### Newer way that will keep branch connection to the commit tree 
 git stash save -- "checkout stash before release."
@@ -13,7 +14,7 @@ find . \
     -path ./node_modules -prune -o \
     -exec rm -rf {} \; 2> /dev/null
 cp -r ./distribution/* .
-git add -A && git commit -a -m 'build' && git tag 1.2.0; 
+git add -A && git commit -a -m 'build' && git tag $version; 
 git checkout master && \
 git stash pop
 
