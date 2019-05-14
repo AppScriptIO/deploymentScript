@@ -1,10 +1,10 @@
 {
   "name": "@script/buildSourceCode",
   "main": "./script.js",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "dependencies": {
-    "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool",
-    "nodegit": "^0.24.1"
+    "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
+    "nodegit": "*"
   },
   "devDependencies": {},
   "scripts": {

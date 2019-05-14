@@ -1,14 +1,14 @@
 {
   "name": "@dependency/deploymentScript",
-  "main": "",
-  "version": "1.0.5",
+  "main": "x",
+  "version": "1.0.6",
   "workspaces": [
     "./script/*"
   ],
   "private": true,
   "dependencies": {
-    "@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner#semver:^1.x.x",
-    "@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload#semver:^1.x.x"
+    "@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
+    "@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"
   },
   "devDependencies": {
     "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
