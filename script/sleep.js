@@ -1,59 +1,59 @@
-import path from 'path'
-import { spawn, spawnSync } from 'child_process'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");var _path = _interopRequireDefault(require("path"));
+var _child_process = require("child_process");
 
 module.exports = {
-    setInterval: function ({ interval = 1000 } = {}) {
-        // (function endlessProcess() { process.nextTick(endlessProcess) })() // Readable solution but it utilizes all available CPU. https://stackoverflow.com/questions/39082527/how-to-prevent-the-nodejs-event-loop-from-exiting
-        console.log(`Executing interval in ${__filename}. NodeJS version: ${JSON.stringify(process.versions)}`)
-        setInterval(function(){ console.info("Sleeping..."); }, interval);
-    },
-    setTimeout: function ({ timeout = 10000 } = {}) {
-        setTimeout(() => { console.log('setTimeout command ended. The process will exit now.') }, timeout );
-    },
-    inContainer({ ymlFile, serviceName, containerPrefix }) {
-        let containerCommand = 'sleep 1000000'
-        let processCommand = 'docker-compose'
-        let processArg = [
-            `-f ${ymlFile}`,
-            `--project-name ${containerPrefix}`,
-            `run --service-ports --use-aliases`,
-            `--entrypoint '${containerCommand}'`,
-            `${serviceName}`
-        ]
-        spawnSync(processCommand, processArg, { shell: true, stdio: [0,1,2] })
-    }, 
-    inContainer2() {
-        const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
+  setInterval: function ({ interval = 1000 } = {}) {
 
-        console.group(`%s \x1b[33m%s\x1b[0m`,`${message_prefix}`,`ƒ sleep - container with volumes`)
+    console.log(`Executing interval in ${__filename}. NodeJS version: ${JSON.stringify(process.versions)}`);
+    setInterval(function () {console.info("Sleeping...");}, interval);
+  },
+  setTimeout: function ({ timeout = 10000 } = {}) {
+    setTimeout(() => {console.log('setTimeout command ended. The process will exit now.');}, timeout);
+  },
+  inContainer({ ymlFile, serviceName, containerPrefix }) {
+    let containerCommand = 'sleep 1000000';
+    let processCommand = 'docker-compose';
+    let processArg = [
+    `-f ${ymlFile}`,
+    `--project-name ${containerPrefix}`,
+    `run --service-ports --use-aliases`,
+    `--entrypoint '${containerCommand}'`,
+    `${serviceName}`];
 
-        let image = 'node:latest',
-            containerCommand = 'sleep 1000000',
-            processCommand = 'docker',
-            containerPrefix = 'sleepscriptManager',
-            applicationHostPath = path.normalize(path.join(__dirname, '../'))
+    (0, _child_process.spawnSync)(processCommand, processArg, { shell: true, stdio: [0, 1, 2] });
+  },
+  inContainer2() {
+    const message_prefix = `\x1b[3m\x1b[2m•[${_path.default.basename(__filename)} JS script]:\x1b[0m`;
 
-        let processArg = [
-            `run`,
-            // `--volume /var/run/docker.sock:/var/run/docker.sock`,
-            `--volume ${applicationHostPath}:/project/application`,
-            `--volume ${applicationHostPath}:/project/scriptManager`,
-            `--env hostPath=${applicationHostPath}`,
-            `--name ${containerPrefix}`,
-            `${image}`,
-            `${containerCommand}`
-        ]
+    console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ sleep - container with volumes`);
 
-        console.log(
-            `%s \n %s \n %s`,
-            `\x1b[3m\x1b[2m > ${processCommand} ${processArg.join(' ')}\x1b[0m`,
-            `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`,
-            `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`
-        )    
+    let image = 'node:latest',
+    containerCommand = 'sleep 1000000',
+    processCommand = 'docker',
+    containerPrefix = 'sleepscriptManager',
+    applicationHostPath = _path.default.normalize(_path.default.join(__dirname, '../'));
 
-        let cp = spawn(processCommand, processArg, { detached: false, shell: true, stdio: [0,1,2] })
-        cp.on('error', function( err ){ throw err })
-        cp.unref() // prevent parent from waiting to child process and un reference child from parent's event loop.
-        console.groupEnd()
-    }
-}
+    let processArg = [
+    `run`,
+
+    `--volume ${applicationHostPath}:/project/application`,
+    `--volume ${applicationHostPath}:/project/scriptManager`,
+    `--env hostPath=${applicationHostPath}`,
+    `--name ${containerPrefix}`,
+    `${image}`,
+    `${containerCommand}`];
+
+
+    console.log(
+    `%s \n %s \n %s`,
+    `\x1b[3m\x1b[2m > ${processCommand} ${processArg.join(' ')}\x1b[0m`,
+    `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`,
+    `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`);
+
+
+    let cp = (0, _child_process.spawn)(processCommand, processArg, { detached: false, shell: true, stdio: [0, 1, 2] });
+    cp.on('error', function (err) {throw err;});
+    cp.unref();
+    console.groupEnd();
+  } };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NjcmlwdC9zbGVlcC5qcyJdLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIiwic2V0SW50ZXJ2YWwiLCJpbnRlcnZhbCIsImNvbnNvbGUiLCJsb2ciLCJfX2ZpbGVuYW1lIiwiSlNPTiIsInN0cmluZ2lmeSIsInByb2Nlc3MiLCJ2ZXJzaW9ucyIsImluZm8iLCJzZXRUaW1lb3V0IiwidGltZW91dCIsImluQ29udGFpbmVyIiwieW1sRmlsZSIsInNlcnZpY2VOYW1lIiwiY29udGFpbmVyUHJlZml4IiwiY29udGFpbmVyQ29tbWFuZCIsInByb2Nlc3NDb21tYW5kIiwicHJvY2Vzc0FyZyIsInNoZWxsIiwic3RkaW8iLCJpbkNvbnRhaW5lcjIiLCJtZXNzYWdlX3ByZWZpeCIsInBhdGgiLCJiYXNlbmFtZSIsImdyb3VwIiwiaW1hZ2UiLCJhcHBsaWNhdGlvbkhvc3RQYXRoIiwibm9ybWFsaXplIiwiam9pbiIsIl9fZGlybmFtZSIsImNwIiwiZGV0YWNoZWQiLCJvbiIsImVyciIsInVucmVmIiwiZ3JvdXBFbmQiXSwibWFwcGluZ3MiOiJrR0FBQTtBQUNBOztBQUVBQSxNQUFNLENBQUNDLE9BQVAsR0FBaUI7QUFDYkMsRUFBQUEsV0FBVyxFQUFFLFVBQVUsRUFBRUMsUUFBUSxHQUFHLElBQWIsS0FBc0IsRUFBaEMsRUFBb0M7O0FBRTdDQyxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSx5QkFBd0JDLFVBQVcscUJBQW9CQyxJQUFJLENBQUNDLFNBQUwsQ0FBZUMsT0FBTyxDQUFDQyxRQUF2QixDQUFpQyxFQUFyRztBQUNBUixJQUFBQSxXQUFXLENBQUMsWUFBVSxDQUFFRSxPQUFPLENBQUNPLElBQVIsQ0FBYSxhQUFiLEVBQThCLENBQTNDLEVBQTZDUixRQUE3QyxDQUFYO0FBQ0gsR0FMWTtBQU1iUyxFQUFBQSxVQUFVLEVBQUUsVUFBVSxFQUFFQyxPQUFPLEdBQUcsS0FBWixLQUFzQixFQUFoQyxFQUFvQztBQUM1Q0QsSUFBQUEsVUFBVSxDQUFDLE1BQU0sQ0FBRVIsT0FBTyxDQUFDQyxHQUFSLENBQVksc0RBQVosRUFBcUUsQ0FBOUUsRUFBZ0ZRLE9BQWhGLENBQVY7QUFDSCxHQVJZO0FBU2JDLEVBQUFBLFdBQVcsQ0FBQyxFQUFFQyxPQUFGLEVBQVdDLFdBQVgsRUFBd0JDLGVBQXhCLEVBQUQsRUFBNEM7QUFDbkQsUUFBSUMsZ0JBQWdCLEdBQUcsZUFBdkI7QUFDQSxRQUFJQyxjQUFjLEdBQUcsZ0JBQXJCO0FBQ0EsUUFBSUMsVUFBVSxHQUFHO0FBQ1osVUFBS0wsT0FBUSxFQUREO0FBRVosc0JBQWlCRSxlQUFnQixFQUZyQjtBQUdaLHVDQUhZO0FBSVoscUJBQWdCQyxnQkFBaUIsR0FKckI7QUFLWixPQUFFRixXQUFZLEVBTEYsQ0FBakI7O0FBT0Esa0NBQVVHLGNBQVYsRUFBMEJDLFVBQTFCLEVBQXNDLEVBQUVDLEtBQUssRUFBRSxJQUFULEVBQWVDLEtBQUssRUFBRSxDQUFDLENBQUQsRUFBRyxDQUFILEVBQUssQ0FBTCxDQUF0QixFQUF0QztBQUNILEdBcEJZO0FBcUJiQyxFQUFBQSxZQUFZLEdBQUc7QUFDWCxVQUFNQyxjQUFjLEdBQUksbUJBQWtCQyxjQUFLQyxRQUFMLENBQWNwQixVQUFkLENBQTBCLHFCQUFwRTs7QUFFQUYsSUFBQUEsT0FBTyxDQUFDdUIsS0FBUixDQUFlLHNCQUFmLEVBQXNDLEdBQUVILGNBQWUsRUFBdkQsRUFBMEQsa0NBQTFEOztBQUVBLFFBQUlJLEtBQUssR0FBRyxhQUFaO0FBQ0lWLElBQUFBLGdCQUFnQixHQUFHLGVBRHZCO0FBRUlDLElBQUFBLGNBQWMsR0FBRyxRQUZyQjtBQUdJRixJQUFBQSxlQUFlLEdBQUcsb0JBSHRCO0FBSUlZLElBQUFBLG1CQUFtQixHQUFHSixjQUFLSyxTQUFMLENBQWVMLGNBQUtNLElBQUwsQ0FBVUMsU0FBVixFQUFxQixLQUFyQixDQUFmLENBSjFCOztBQU1BLFFBQUlaLFVBQVUsR0FBRztBQUNaLFNBRFk7O0FBR1osZ0JBQVdTLG1CQUFvQix1QkFIbkI7QUFJWixnQkFBV0EsbUJBQW9CLHlCQUpuQjtBQUtaLHNCQUFpQkEsbUJBQW9CLEVBTHpCO0FBTVosY0FBU1osZUFBZ0IsRUFOYjtBQU9aLE9BQUVXLEtBQU0sRUFQSTtBQVFaLE9BQUVWLGdCQUFpQixFQVJQLENBQWpCOzs7QUFXQWQsSUFBQUEsT0FBTyxDQUFDQyxHQUFSO0FBQ0ssb0JBREw7QUFFSyx3QkFBbUJjLGNBQWUsSUFBR0MsVUFBVSxDQUFDVyxJQUFYLENBQWdCLEdBQWhCLENBQXFCLFNBRi9EO0FBR0sscUNBQWdDSCxLQUFNLEVBSDNDO0FBSUssdUNBQWtDVixnQkFBaUIsRUFKeEQ7OztBQU9BLFFBQUllLEVBQUUsR0FBRywwQkFBTWQsY0FBTixFQUFzQkMsVUFBdEIsRUFBa0MsRUFBRWMsUUFBUSxFQUFFLEtBQVosRUFBbUJiLEtBQUssRUFBRSxJQUExQixFQUFnQ0MsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFHLENBQUgsRUFBSyxDQUFMLENBQXZDLEVBQWxDLENBQVQ7QUFDQVcsSUFBQUEsRUFBRSxDQUFDRSxFQUFILENBQU0sT0FBTixFQUFlLFVBQVVDLEdBQVYsRUFBZSxDQUFFLE1BQU1BLEdBQU4sQ0FBVyxDQUEzQztBQUNBSCxJQUFBQSxFQUFFLENBQUNJLEtBQUg7QUFDQWpDLElBQUFBLE9BQU8sQ0FBQ2tDLFFBQVI7QUFDSCxHQXREWSxFQUFqQiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXHJcbmltcG9ydCB7IHNwYXduLCBzcGF3blN5bmMgfSBmcm9tICdjaGlsZF9wcm9jZXNzJ1xyXG5cclxubW9kdWxlLmV4cG9ydHMgPSB7XHJcbiAgICBzZXRJbnRlcnZhbDogZnVuY3Rpb24gKHsgaW50ZXJ2YWwgPSAxMDAwIH0gPSB7fSkge1xyXG4gICAgICAgIC8vIChmdW5jdGlvbiBlbmRsZXNzUHJvY2VzcygpIHsgcHJvY2Vzcy5uZXh0VGljayhlbmRsZXNzUHJvY2VzcykgfSkoKSAvLyBSZWFkYWJsZSBzb2x1dGlvbiBidXQgaXQgdXRpbGl6ZXMgYWxsIGF2YWlsYWJsZSBDUFUuIGh0dHBzOi8vc3RhY2tvdmVyZmxvdy5jb20vcXVlc3Rpb25zLzM5MDgyNTI3L2hvdy10by1wcmV2ZW50LXRoZS1ub2RlanMtZXZlbnQtbG9vcC1mcm9tLWV4aXRpbmdcclxuICAgICAgICBjb25zb2xlLmxvZyhgRXhlY3V0aW5nIGludGVydmFsIGluICR7X19maWxlbmFtZX0uIE5vZGVKUyB2ZXJzaW9uOiAke0pTT04uc3RyaW5naWZ5KHByb2Nlc3MudmVyc2lvbnMpfWApXHJcbiAgICAgICAgc2V0SW50ZXJ2YWwoZnVuY3Rpb24oKXsgY29uc29sZS5pbmZvKFwiU2xlZXBpbmcuLi5cIik7IH0sIGludGVydmFsKTtcclxuICAgIH0sXHJcbiAgICBzZXRUaW1lb3V0OiBmdW5jdGlvbiAoeyB0aW1lb3V0ID0gMTAwMDAgfSA9IHt9KSB7XHJcbiAgICAgICAgc2V0VGltZW91dCgoKSA9PiB7IGNvbnNvbGUubG9nKCdzZXRUaW1lb3V0IGNvbW1hbmQgZW5kZWQuIFRoZSBwcm9jZXNzIHdpbGwgZXhpdCBub3cuJykgfSwgdGltZW91dCApO1xyXG4gICAgfSxcclxuICAgIGluQ29udGFpbmVyKHsgeW1sRmlsZSwgc2VydmljZU5hbWUsIGNvbnRhaW5lclByZWZpeCB9KSB7XHJcbiAgICAgICAgbGV0IGNvbnRhaW5lckNvbW1hbmQgPSAnc2xlZXAgMTAwMDAwMCdcclxuICAgICAgICBsZXQgcHJvY2Vzc0NvbW1hbmQgPSAnZG9ja2VyLWNvbXBvc2UnXHJcbiAgICAgICAgbGV0IHByb2Nlc3NBcmcgPSBbXHJcbiAgICAgICAgICAgIGAtZiAke3ltbEZpbGV9YCxcclxuICAgICAgICAgICAgYC0tcHJvamVjdC1uYW1lICR7Y29udGFpbmVyUHJlZml4fWAsXHJcbiAgICAgICAgICAgIGBydW4gLS1zZXJ2aWNlLXBvcnRzIC0tdXNlLWFsaWFzZXNgLFxyXG4gICAgICAgICAgICBgLS1lbnRyeXBvaW50ICcke2NvbnRhaW5lckNvbW1hbmR9J2AsXHJcbiAgICAgICAgICAgIGAke3NlcnZpY2VOYW1lfWBcclxuICAgICAgICBdXHJcbiAgICAgICAgc3Bhd25TeW5jKHByb2Nlc3NDb21tYW5kLCBwcm9jZXNzQXJnLCB7IHNoZWxsOiB0cnVlLCBzdGRpbzogWzAsMSwyXSB9KVxyXG4gICAgfSwgXHJcbiAgICBpbkNvbnRhaW5lcjIoKSB7XHJcbiAgICAgICAgY29uc3QgbWVzc2FnZV9wcmVmaXggPSBgXFx4MWJbM21cXHgxYlsybeKAolske3BhdGguYmFzZW5hbWUoX19maWxlbmFtZSl9IEpTIHNjcmlwdF06XFx4MWJbMG1gXHJcblxyXG4gICAgICAgIGNvbnNvbGUuZ3JvdXAoYCVzIFxceDFiWzMzbSVzXFx4MWJbMG1gLGAke21lc3NhZ2VfcHJlZml4fWAsYMaSIHNsZWVwIC0gY29udGFpbmVyIHdpdGggdm9sdW1lc2ApXHJcblxyXG4gICAgICAgIGxldCBpbWFnZSA9ICdub2RlOmxhdGVzdCcsXHJcbiAgICAgICAgICAgIGNvbnRhaW5lckNvbW1hbmQgPSAnc2xlZXAgMTAwMDAwMCcsXHJcbiAgICAgICAgICAgIHByb2Nlc3NDb21tYW5kID0gJ2RvY2tlcicsXHJcbiAgICAgICAgICAgIGNvbnRhaW5lclByZWZpeCA9ICdzbGVlcHNjcmlwdE1hbmFnZXInLFxyXG4gICAgICAgICAgICBhcHBsaWNhdGlvbkhvc3RQYXRoID0gcGF0aC5ub3JtYWxpemUocGF0aC5qb2luKF9fZGlybmFtZSwgJy4uLycpKVxyXG5cclxuICAgICAgICBsZXQgcHJvY2Vzc0FyZyA9IFtcclxuICAgICAgICAgICAgYHJ1bmAsXHJcbiAgICAgICAgICAgIC8vIGAtLXZvbHVtZSAvdmFyL3J1bi9kb2NrZXIuc29jazovdmFyL3J1bi9kb2NrZXIuc29ja2AsXHJcbiAgICAgICAgICAgIGAtLXZvbHVtZSAke2FwcGxpY2F0aW9uSG9zdFBhdGh9Oi9wcm9qZWN0L2FwcGxpY2F0aW9uYCxcclxuICAgICAgICAgICAgYC0tdm9sdW1lICR7YXBwbGljYXRpb25Ib3N0UGF0aH06L3Byb2plY3Qvc2NyaXB0TWFuYWdlcmAsXHJcbiAgICAgICAgICAgIGAtLWVudiBob3N0UGF0aD0ke2FwcGxpY2F0aW9uSG9zdFBhdGh9YCxcclxuICAgICAgICAgICAgYC0tbmFtZSAke2NvbnRhaW5lclByZWZpeH1gLFxyXG4gICAgICAgICAgICBgJHtpbWFnZX1gLFxyXG4gICAgICAgICAgICBgJHtjb250YWluZXJDb21tYW5kfWBcclxuICAgICAgICBdXHJcblxyXG4gICAgICAgIGNvbnNvbGUubG9nKFxyXG4gICAgICAgICAgICBgJXMgXFxuICVzIFxcbiAlc2AsXHJcbiAgICAgICAgICAgIGBcXHgxYlszbVxceDFiWzJtID4gJHtwcm9jZXNzQ29tbWFuZH0gJHtwcm9jZXNzQXJnLmpvaW4oJyAnKX1cXHgxYlswbWAsXHJcbiAgICAgICAgICAgIGBcXHRcXHgxYlszbVxceDFiWzJtaW1hZ2U6XFx4MWJbMG0gJHtpbWFnZX1gLFxyXG4gICAgICAgICAgICBgXFx0XFx4MWJbM21cXHgxYlsybWNvbW1hbmQ6XFx4MWJbMG0gJHtjb250YWluZXJDb21tYW5kfWBcclxuICAgICAgICApICAgIFxyXG5cclxuICAgICAgICBsZXQgY3AgPSBzcGF3bihwcm9jZXNzQ29tbWFuZCwgcHJvY2Vzc0FyZywgeyBkZXRhY2hlZDogZmFsc2UsIHNoZWxsOiB0cnVlLCBzdGRpbzogWzAsMSwyXSB9KVxyXG4gICAgICAgIGNwLm9uKCdlcnJvcicsIGZ1bmN0aW9uKCBlcnIgKXsgdGhyb3cgZXJyIH0pXHJcbiAgICAgICAgY3AudW5yZWYoKSAvLyBwcmV2ZW50IHBhcmVudCBmcm9tIHdhaXRpbmcgdG8gY2hpbGQgcHJvY2VzcyBhbmQgdW4gcmVmZXJlbmNlIGNoaWxkIGZyb20gcGFyZW50J3MgZXZlbnQgbG9vcC5cclxuICAgICAgICBjb25zb2xlLmdyb3VwRW5kKClcclxuICAgIH1cclxufSJdfQ==

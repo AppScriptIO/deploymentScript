@@ -1,16 +1,17 @@
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.installYarn = installYarn;
 
+var _child_process = _interopRequireDefault(require("child_process"));
+var _assert = _interopRequireDefault(require("assert"));
+var _commandExists = require("command-exists");
 
-import childProcess from 'child_process'
-import assert from 'assert'
-import { sync as binaryExist } from 'command-exists'
-
-export function installYarn({ yarnPath }) {
-	assert(binaryExist('yarn'), '• "yarn" binary should be installed in the environment.')
-	try {
-		childProcess.execSync('yarn install -y', { cwd: yarnPath, shell: true, stdio:[0,1,2] })
-	} catch (error) {
-		console.log('• ERROR - childprocess error.')
-		console.log(error)
-		process.exit(1)
-	}
+function installYarn({ yarnPath }) {
+  (0, _assert.default)((0, _commandExists.sync)('yarn'), '• "yarn" binary should be installed in the environment.');
+  try {
+    _child_process.default.execSync('yarn install -y', { cwd: yarnPath, shell: true, stdio: [0, 1, 2] });
+  } catch (error) {
+    console.log('• ERROR - childprocess error.');
+    console.log(error);
+    process.exit(1);
+  }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9maWxlc3lzdGVtT3BlcmF0aW9uL2luc3RhbGxQYWNrYWdlL2luc3RhbGwteWFybi5qcyJdLCJuYW1lcyI6WyJpbnN0YWxsWWFybiIsInlhcm5QYXRoIiwiY2hpbGRQcm9jZXNzIiwiZXhlY1N5bmMiLCJjd2QiLCJzaGVsbCIsInN0ZGlvIiwiZXJyb3IiLCJjb25zb2xlIiwibG9nIiwicHJvY2VzcyIsImV4aXQiXSwibWFwcGluZ3MiOiI7O0FBRUE7QUFDQTtBQUNBOztBQUVPLFNBQVNBLFdBQVQsQ0FBcUIsRUFBRUMsUUFBRixFQUFyQixFQUFtQztBQUN6Qyx1QkFBTyx5QkFBWSxNQUFaLENBQVAsRUFBNEIseURBQTVCO0FBQ0EsTUFBSTtBQUNIQywyQkFBYUMsUUFBYixDQUFzQixpQkFBdEIsRUFBeUMsRUFBRUMsR0FBRyxFQUFFSCxRQUFQLEVBQWlCSSxLQUFLLEVBQUUsSUFBeEIsRUFBOEJDLEtBQUssRUFBQyxDQUFDLENBQUQsRUFBRyxDQUFILEVBQUssQ0FBTCxDQUFwQyxFQUF6QztBQUNBLEdBRkQsQ0FFRSxPQUFPQyxLQUFQLEVBQWM7QUFDZkMsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVksK0JBQVo7QUFDQUQsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlGLEtBQVo7QUFDQUcsSUFBQUEsT0FBTyxDQUFDQyxJQUFSLENBQWEsQ0FBYjtBQUNBO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJcblxuaW1wb3J0IGNoaWxkUHJvY2VzcyBmcm9tICdjaGlsZF9wcm9jZXNzJ1xuaW1wb3J0IGFzc2VydCBmcm9tICdhc3NlcnQnXG5pbXBvcnQgeyBzeW5jIGFzIGJpbmFyeUV4aXN0IH0gZnJvbSAnY29tbWFuZC1leGlzdHMnXG5cbmV4cG9ydCBmdW5jdGlvbiBpbnN0YWxsWWFybih7IHlhcm5QYXRoIH0pIHtcblx0YXNzZXJ0KGJpbmFyeUV4aXN0KCd5YXJuJyksICfigKIgXCJ5YXJuXCIgYmluYXJ5IHNob3VsZCBiZSBpbnN0YWxsZWQgaW4gdGhlIGVudmlyb25tZW50LicpXG5cdHRyeSB7XG5cdFx0Y2hpbGRQcm9jZXNzLmV4ZWNTeW5jKCd5YXJuIGluc3RhbGwgLXknLCB7IGN3ZDogeWFyblBhdGgsIHNoZWxsOiB0cnVlLCBzdGRpbzpbMCwxLDJdIH0pXG5cdH0gY2F0Y2ggKGVycm9yKSB7XG5cdFx0Y29uc29sZS5sb2coJ+KAoiBFUlJPUiAtIGNoaWxkcHJvY2VzcyBlcnJvci4nKVxuXHRcdGNvbnNvbGUubG9nKGVycm9yKVxuXHRcdHByb2Nlc3MuZXhpdCgxKVxuXHR9XG59Il19
