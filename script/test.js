@@ -1,9 +1,10 @@
-const { runTest } = require('@dependency/javascriptTestRunner')
+"use strict";const { runTest } = require('@dependency/javascriptTestRunner');
 
 module.exports = function (...args) {
-    const {
-        api, /* supplied by scriptManager */ 
-    } = args[0]
-    args[0].targetProject = api.project // adapter for working with target function interface.
-    runTest(...args)
-}
+  const {
+    api } =
+  args[0];
+  args[0].targetProject = api.project;
+  runTest(...args);
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NjcmlwdC90ZXN0LmpzIl0sIm5hbWVzIjpbInJ1blRlc3QiLCJyZXF1aXJlIiwibW9kdWxlIiwiZXhwb3J0cyIsImFyZ3MiLCJhcGkiLCJ0YXJnZXRQcm9qZWN0IiwicHJvamVjdCJdLCJtYXBwaW5ncyI6ImFBQUEsTUFBTSxFQUFFQSxPQUFGLEtBQWNDLE9BQU8sQ0FBQyxrQ0FBRCxDQUEzQjs7QUFFQUMsTUFBTSxDQUFDQyxPQUFQLEdBQWlCLFVBQVUsR0FBR0MsSUFBYixFQUFtQjtBQUNoQyxRQUFNO0FBQ0ZDLElBQUFBLEdBREU7QUFFRkQsRUFBQUEsSUFBSSxDQUFDLENBQUQsQ0FGUjtBQUdBQSxFQUFBQSxJQUFJLENBQUMsQ0FBRCxDQUFKLENBQVFFLGFBQVIsR0FBd0JELEdBQUcsQ0FBQ0UsT0FBNUI7QUFDQVAsRUFBQUEsT0FBTyxDQUFDLEdBQUdJLElBQUosQ0FBUDtBQUNILENBTkQiLCJzb3VyY2VzQ29udGVudCI6WyJjb25zdCB7IHJ1blRlc3QgfSA9IHJlcXVpcmUoJ0BkZXBlbmRlbmN5L2phdmFzY3JpcHRUZXN0UnVubmVyJylcblxubW9kdWxlLmV4cG9ydHMgPSBmdW5jdGlvbiAoLi4uYXJncykge1xuICAgIGNvbnN0IHtcbiAgICAgICAgYXBpLCAvKiBzdXBwbGllZCBieSBzY3JpcHRNYW5hZ2VyICovIFxuICAgIH0gPSBhcmdzWzBdXG4gICAgYXJnc1swXS50YXJnZXRQcm9qZWN0ID0gYXBpLnByb2plY3QgLy8gYWRhcHRlciBmb3Igd29ya2luZyB3aXRoIHRhcmdldCBmdW5jdGlvbiBpbnRlcmZhY2UuXG4gICAgcnVuVGVzdCguLi5hcmdzKVxufSJdfQ==
