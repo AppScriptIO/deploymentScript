@@ -15,10 +15,10 @@ if [ "$copyCli" = true ] ; then
 fi
 
 # source
-yarn run babel --out-dir ./distribution/source "./source" --config-file "./configuration/babel.config.js"
+yarn run babel --out-dir ./distribution/source "./source" --config-file "./configuration/babel.config.js" --copy-files
 # test - for debugging purposes with
 if [ "$transpileTest" = true ] ; then
-    yarn run babel --out-dir ./distribution/test "./test" --config-file "./configuration/babel.config.js"
+    yarn run babel --out-dir ./distribution/test "./test" --config-file "./configuration/babel.config.js" --copy-files
 fi
 
 # package.json
