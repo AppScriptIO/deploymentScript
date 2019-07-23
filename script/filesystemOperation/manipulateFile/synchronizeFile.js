@@ -1,13 +1,13 @@
 import path from 'path'
 import util from 'util'
 import stream from 'stream'
-const pipeline = util.promisify(stream.pipeline);
+const pipeline = util.promisify(stream.pipeline)
 import mkdirp from 'mkdirp'
 import Rsync from 'rsync'
 import size from 'gulp-size'
 import plumber from 'gulp-plumber'
-import { src as readFileAsObjectStream, dest as writeFileFromObjectStream } from 'vinyl-fs' 
-import { reject } from 'any-promise';
+import { src as readFileAsObjectStream, dest as writeFileFromObjectStream } from 'vinyl-fs'
+import { reject } from 'any-promise'
 
 /*
 import rsyncObjectStream from 'gulp-rsync'
@@ -36,25 +36,28 @@ function gulpRsync(baseSource, source, destination) {
 */
 
 // implementation using `rsync` module directly
-export function recursivelySyncFile({ 
+export function recursivelySyncFile({
   source, // source folder
-  destination, 
+  destination,
   copyContentOnly = false, // wether to copy the contents of the root source folder without the root folder  itself.
-  extraOption = {}
+  extraOption = {},
 } = {}) {
-
   // deal with trailing slash as it may change `rsync` behavior.
   destination = destination.replace(/\/$/, '') // remove trailing slash from `destination` as it has no effect (both cases are the same)
-  if(copyContentOnly) source = (source.substr(-1) != '/') ? `${source}/` : source; // add trailing slash - as rsync will copy only contants when trailing slash is present.
+  if (copyContentOnly) source = source.substr(-1) != '/' ? `${source}/` : source
+  // add trailing slash - as rsync will copy only contants when trailing slash is present.
   else source.replace(/\/$/, '') // remove trailing slash.
 
-  let options = Object.assign({
-    'a': true, // archive
-    // 'v': true, // verbose
-    'z': true, // compress
-    'R': false, // relative - will create a nested path inside the destination using the full path of the source folder.
-    'r': true // recursive
-  }, extraOption)
+  let options = Object.assign(
+    {
+      a: true, // archive
+      // 'v': true, // verbose
+      z: true, // compress
+      R: false, // relative - will create a nested path inside the destination using the full path of the source folder.
+      r: true, // recursive
+    },
+    extraOption,
+  )
 
   let rsync = new Rsync()
     .flags(options)
@@ -65,29 +68,32 @@ export function recursivelySyncFile({
 
   // Create directory.
   return new Promise(resolve => {
-    mkdirp(destination, function(err) {     
-      // Execute the command 
-      rsync.execute(function(error, code, cmd) {
-        if(error) reject(error)
-        console.log(`• RSync ${source} to ${destination}`)
-        resolve()
-      }, function(data) {
-        console.log(' ' + data)
-      })
+    mkdirp(destination, function(err) {
+      // Execute the command
+      rsync.execute(
+        function(error, code, cmd) {
+          if (error) reject(error)
+          console.log(`• RSync ${source} to ${destination}`)
+          resolve()
+        },
+        function(data) {
+          console.log(' ' + data)
+        },
+      )
     })
   })
 }
 
 // implementation using streams.
-export async function copyFileAndSymlink({ 
+export async function copyFileAndSymlink({
   source, // list of files or file matching patterns (globs)
-  destination 
+  destination,
 }) {
-	// using `vinyl-fs` module to allow symlinks to be copied as symlinks and not follow down the tree of files.
+  // using `vinyl-fs` module to allow symlinks to be copied as symlinks and not follow down the tree of files.
   return await pipeline(
     readFileAsObjectStream(source, { followSymlinks: false }),
     // plumber(),
     writeFileFromObjectStream(destination, { overwrite: true }),
-    size({ title: 'copyFileAndSymlink' })
+    size({ title: 'copyFileAndSymlink' }),
   )
 }
