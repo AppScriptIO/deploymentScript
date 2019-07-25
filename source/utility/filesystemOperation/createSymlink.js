@@ -1,18 +1,23 @@
 const filesystem = require('fs')
 
-export function createSymlink(targetArray) {
-  for (const target of targetArray) {
-    // keep original file
-    if (filesystem.existsSync(target.destination)) {
-      let originalPath = `${target.destination}.original`
-      if (!filesystem.existsSync(originalPath)) filesystem.renameSync(target.destination, originalPath)
-    }
-
+export function createSymlink(symlinkTarget) {
+  for (const target of symlinkTarget) {
     try {
-      filesystem.copyFileSync(target.source, target.destination)
-      console.log(`• Copied ✔  ${target.source} --> ${target.destination}`)
+      let destinationStat = filesystem.existsSync(target.destination) && filesystem.lstatSync(target.destination)
+      if (destinationStat) {
+        if (destinationStat.isSymbolicLink()) filesystem.unlinkSync(target.destination)
+        // delete existing symlink or file
+        else if (destinationStat.isFile()) {
+          let originalPath = `${target.destination}.original`
+          if (filesystem.existsSync(originalPath)) filesystem.unlinkSync(target.destination)
+          filesystem.renameSync(target.destination, originalPath)
+        }
+      }
+      filesystem.symlinkSync(target.source, target.destination) // create symlink
+      console.log(`✔ Symlink created: ${target.source} --> ${target.destination}`)
     } catch (error) {
-      throw error
+      console.log(`❌ Symlink failed: ${target.source} --> ${target.destination}`)
+      console.log(error)
     }
   }
 }
