@@ -12,7 +12,7 @@
   "tasks": [{
       "label": "build",
       "type": "shell",
-      "command": "./script/build.sh ${input:transpileTest} ${input:copyCli}",
+      "command": "./script/JSProject/build.sh ${input:transpileTest} ${input:copyCli}",
       "options": {
         "cwd": "${workspaceRoot}",
       },
@@ -25,7 +25,7 @@
     {
       "label": "release",
       "type": "shell",
-      "command": "./script/release.sh ${input:version}",
+      "command": "./script/JSProject/release.sh ${input:version}",
       "options": {
         "cwd": "${workspaceRoot}",
       },
