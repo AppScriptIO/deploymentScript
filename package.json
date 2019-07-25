@@ -7,6 +7,8 @@
   ],
   "private": true,
   "dependencies": {
+    "command-exists": "^1.2.8",
+    "shelljs": "^0.8.3",
     "@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
     "@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"
   },
