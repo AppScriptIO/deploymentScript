@@ -1,21 +1,22 @@
-import filesystem from 'fs'
-import childProcess from 'child_process'
-import path from 'path'
-import assert from 'assert'
-import { sync as binaryExist } from 'command-exists'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.installJspm = installJspm;var _fs = _interopRequireDefault(require("fs"));
+var _child_process = _interopRequireDefault(require("child_process"));
+var _path = _interopRequireDefault(require("path"));
+var _assert = _interopRequireDefault(require("assert"));
+var _commandExists = require("command-exists");
 
-export function installJspm({
-  jspmPath, // path to the jspm configuration dependencies file.
-}) {
-  /*
-		// switch temporarly to nodejs version that jspm install works on, then rollback.
-		childProcess.execSync('n stable; jspm install; n ' + rollbackNodejsVersion, { cwd: jspmPath, shell: true, stdio:[0,1,2] });
-	*/
-  assert(binaryExist('jspm'), '• "jspm" binary should be installed in the environment.')
+function installJspm({
+  jspmPath })
+{
 
-  let packageJson = require(path.join(jspmPath, 'package.json'))
-  let packageFolder = packageJson.jspm.directories.packages ? path.join(jspmPath, packageJson.jspm.directories.packages) : path.join(jspmPath, 'jspm_packages')
 
-  if (!filesystem.existsSync(packageFolder)) childProcess.execSync('jspm install', { cwd: jspmPath, shell: true, stdio: [0, 1, 2] })
-  else console.log('Skipping JSPM pacakges installation, as a package folder already exist.')
+
+
+  (0, _assert.default)((0, _commandExists.sync)('jspm'), '• "jspm" binary should be installed in the environment.');
+
+  let packageJson = require(_path.default.join(jspmPath, 'package.json'));
+  let packageFolder = packageJson.jspm.directories.packages ? _path.default.join(jspmPath, packageJson.jspm.directories.packages) : _path.default.join(jspmPath, 'jspm_packages');
+
+  if (!_fs.default.existsSync(packageFolder)) _child_process.default.execSync('jspm install', { cwd: jspmPath, shell: true, stdio: [0, 1, 2] });else
+  console.log('Skipping JSPM pacakges installation, as a package folder already exist.');
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9wcm92aXNpb25PUy9pbnN0YWxsRVNNb2R1bGUvaW5zdGFsbC1qc3BtLmpzIl0sIm5hbWVzIjpbImluc3RhbGxKc3BtIiwianNwbVBhdGgiLCJwYWNrYWdlSnNvbiIsInJlcXVpcmUiLCJwYXRoIiwiam9pbiIsInBhY2thZ2VGb2xkZXIiLCJqc3BtIiwiZGlyZWN0b3JpZXMiLCJwYWNrYWdlcyIsImZpbGVzeXN0ZW0iLCJleGlzdHNTeW5jIiwiY2hpbGRQcm9jZXNzIiwiZXhlY1N5bmMiLCJjd2QiLCJzaGVsbCIsInN0ZGlvIiwiY29uc29sZSIsImxvZyJdLCJtYXBwaW5ncyI6ImtNQUFBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRU8sU0FBU0EsV0FBVCxDQUFxQjtBQUMxQkMsRUFBQUEsUUFEMEIsRUFBckI7QUFFSjs7Ozs7QUFLRCx1QkFBTyx5QkFBWSxNQUFaLENBQVAsRUFBNEIseURBQTVCOztBQUVBLE1BQUlDLFdBQVcsR0FBR0MsT0FBTyxDQUFDQyxjQUFLQyxJQUFMLENBQVVKLFFBQVYsRUFBb0IsY0FBcEIsQ0FBRCxDQUF6QjtBQUNBLE1BQUlLLGFBQWEsR0FBR0osV0FBVyxDQUFDSyxJQUFaLENBQWlCQyxXQUFqQixDQUE2QkMsUUFBN0IsR0FBd0NMLGNBQUtDLElBQUwsQ0FBVUosUUFBVixFQUFvQkMsV0FBVyxDQUFDSyxJQUFaLENBQWlCQyxXQUFqQixDQUE2QkMsUUFBakQsQ0FBeEMsR0FBcUdMLGNBQUtDLElBQUwsQ0FBVUosUUFBVixFQUFvQixlQUFwQixDQUF6SDs7QUFFQSxNQUFJLENBQUNTLFlBQVdDLFVBQVgsQ0FBc0JMLGFBQXRCLENBQUwsRUFBMkNNLHVCQUFhQyxRQUFiLENBQXNCLGNBQXRCLEVBQXNDLEVBQUVDLEdBQUcsRUFBRWIsUUFBUCxFQUFpQmMsS0FBSyxFQUFFLElBQXhCLEVBQThCQyxLQUFLLEVBQUUsQ0FBQyxDQUFELEVBQUksQ0FBSixFQUFPLENBQVAsQ0FBckMsRUFBdEMsRUFBM0M7QUFDS0MsRUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVkseUVBQVo7QUFDTiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xuaW1wb3J0IGNoaWxkUHJvY2VzcyBmcm9tICdjaGlsZF9wcm9jZXNzJ1xuaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcbmltcG9ydCBhc3NlcnQgZnJvbSAnYXNzZXJ0J1xuaW1wb3J0IHsgc3luYyBhcyBiaW5hcnlFeGlzdCB9IGZyb20gJ2NvbW1hbmQtZXhpc3RzJ1xuXG5leHBvcnQgZnVuY3Rpb24gaW5zdGFsbEpzcG0oe1xuICBqc3BtUGF0aCwgLy8gcGF0aCB0byB0aGUganNwbSBjb25maWd1cmF0aW9uIGRlcGVuZGVuY2llcyBmaWxlLlxufSkge1xuICAvKlxuXHRcdC8vIHN3aXRjaCB0ZW1wb3Jhcmx5IHRvIG5vZGVqcyB2ZXJzaW9uIHRoYXQganNwbSBpbnN0YWxsIHdvcmtzIG9uLCB0aGVuIHJvbGxiYWNrLlxuXHRcdGNoaWxkUHJvY2Vzcy5leGVjU3luYygnbiBzdGFibGU7IGpzcG0gaW5zdGFsbDsgbiAnICsgcm9sbGJhY2tOb2RlanNWZXJzaW9uLCB7IGN3ZDoganNwbVBhdGgsIHNoZWxsOiB0cnVlLCBzdGRpbzpbMCwxLDJdIH0pO1xuXHQqL1xuICBhc3NlcnQoYmluYXJ5RXhpc3QoJ2pzcG0nKSwgJ+KAoiBcImpzcG1cIiBiaW5hcnkgc2hvdWxkIGJlIGluc3RhbGxlZCBpbiB0aGUgZW52aXJvbm1lbnQuJylcblxuICBsZXQgcGFja2FnZUpzb24gPSByZXF1aXJlKHBhdGguam9pbihqc3BtUGF0aCwgJ3BhY2thZ2UuanNvbicpKVxuICBsZXQgcGFja2FnZUZvbGRlciA9IHBhY2thZ2VKc29uLmpzcG0uZGlyZWN0b3JpZXMucGFja2FnZXMgPyBwYXRoLmpvaW4oanNwbVBhdGgsIHBhY2thZ2VKc29uLmpzcG0uZGlyZWN0b3JpZXMucGFja2FnZXMpIDogcGF0aC5qb2luKGpzcG1QYXRoLCAnanNwbV9wYWNrYWdlcycpXG5cbiAgaWYgKCFmaWxlc3lzdGVtLmV4aXN0c1N5bmMocGFja2FnZUZvbGRlcikpIGNoaWxkUHJvY2Vzcy5leGVjU3luYygnanNwbSBpbnN0YWxsJywgeyBjd2Q6IGpzcG1QYXRoLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9KVxuICBlbHNlIGNvbnNvbGUubG9nKCdTa2lwcGluZyBKU1BNIHBhY2FrZ2VzIGluc3RhbGxhdGlvbiwgYXMgYSBwYWNrYWdlIGZvbGRlciBhbHJlYWR5IGV4aXN0LicpXG59XG4iXX0=

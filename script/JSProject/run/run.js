@@ -1,92 +1,92 @@
-console.log('• Running entrypoint application in Manager Container in default mode.')
-console.log(`- passed process arguments: ${JSON.stringify(process.argv)}`)
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-const { execSync, spawn, spawnSync } = require('child_process')
-import path from 'path'
-import filesystem from 'fs'
-import configuration from '../../../../setup/configuration/configuration.js'
-import sleep from './sleep.run.js'
-const applicationPath = path.join(configuration.directory.projectPath, 'application')
-const appDeploymentLifecycle = path.join(applicationPath, 'dependency/appDeploymentLifecycle')
-const distributionServerSide = configuration.distribution.serverSide
-const serverSidePath = configuration.directory.serverSidePath
 
-// Install modules for the app to be run in the spawn app container
-let nodeModuleFolder = `${applicationPath}/source/serverSide/node_modules`
-let packageManagerFolder = `${applicationPath}/source/packageManager/server.yarn/`
-if (!filesystem.existsSync(nodeModuleFolder)) {
+
+var _path = _interopRequireDefault(require("path"));
+var _fs = _interopRequireDefault(require("fs"));
+var _configuration = _interopRequireDefault(require("../../../../setup/configuration/configuration.js"));
+var _sleepRun = _interopRequireDefault(require("./sleep.run.js"));console.log('• Running entrypoint application in Manager Container in default mode.');console.log(`- passed process arguments: ${JSON.stringify(process.argv)}`);const { execSync, spawn, spawnSync } = require('child_process');
+const applicationPath = _path.default.join(_configuration.default.directory.projectPath, 'application');
+const appDeploymentLifecycle = _path.default.join(applicationPath, 'dependency/appDeploymentLifecycle');
+const distributionServerSide = _configuration.default.distribution.serverSide;
+const serverSidePath = _configuration.default.directory.serverSidePath;
+
+
+let nodeModuleFolder = `${applicationPath}/source/serverSide/node_modules`;
+let packageManagerFolder = `${applicationPath}/source/packageManager/server.yarn/`;
+if (!_fs.default.existsSync(nodeModuleFolder)) {
   spawnSync('yarn', [`install`], {
     cwd: packageManagerFolder,
     shell: true,
-    stdio: [0, 1, 2],
-  })
+    stdio: [0, 1, 2] });
+
 }
 
-/*
- * Usage:
- * • ./entrypoint.sh run
- * • ./entrypoint.sh run sleep // run app with no containerCommand, but sleep to keep the container running
- * • ./entrypoint.sh run debug
- * • ./entrypoint.sh run distribution
- * • ./entrypoint.sh run distribution debug
- * • ./entrypoint.sh run livereload
- * • ./entrypoint.sh run livereload debug
- * • ./entrypoint.sh run livereload distribution
- * • ./entrypoint.sh run livereload distribution debug
- */
-let ymlFile = `${appDeploymentLifecycle}/deploymentContainer/development.dockerCompose.yml`
-let serviceName = 'nodejs'
-let containerPrefix = 'app'
+
+
+
+
+
+
+
+
+
+
+
+
+let ymlFile = `${appDeploymentLifecycle}/deploymentContainer/development.dockerCompose.yml`;
+let serviceName = 'nodejs';
+let containerPrefix = 'app';
 switch (process.argv[0]) {
   case 'sleep':
-    sleep({ ymlFile, serviceName, containerPrefix })
-    break
+    (0, _sleepRun.default)({ ymlFile, serviceName, containerPrefix });
+    break;
   default:
-    /***
-     *  TODO: Implement:
-     * • livereload + distribution
-     * • distribution
-     * • livereload
-     * • & default normal mode.
-     * As livereaload + distribution != distribution alone
-     */
+
+
+
+
+
+
+
+
     let appEntrypointPath =
-      process.argv.includes('distribution') && false /* disable loading built serverSide entrypoint */ ? `${distributionServerSide}/entrypoint.js` : `${serverSidePath}/entrypoint.js`
-    console.log(`App enrypoint path: ${appEntrypointPath}`)
+    process.argv.includes('distribution') && false ? `${distributionServerSide}/entrypoint.js` : `${serverSidePath}/entrypoint.js`;
+    console.log(`App enrypoint path: ${appEntrypointPath}`);
 
-    // when using `localhost` chrome shows the files in folders, while using `0.0.0.0` files appear as separated.
-    // `0.0.0.0` allows access from any port (could be usful in containers as external connections not always referred to localhost it seems.)
-    let debugCommand = process.argv.includes('debug') ? `--inspect${process.argv.includes('break') ? '-brk' : ''}=0.0.0.0:9229` : ''
 
-    let containerCommand = process.argv.includes('livereload') ? `node ${debugCommand} ${appDeploymentLifecycle}/nodejsLivereload/ watch:livereload` : `node ${debugCommand} ${appEntrypointPath}`
-    console.log(`• nodejs containerCommand = ${containerCommand}`)
+
+    let debugCommand = process.argv.includes('debug') ? `--inspect${process.argv.includes('break') ? '-brk' : ''}=0.0.0.0:9229` : '';
+
+    let containerCommand = process.argv.includes('livereload') ? `node ${debugCommand} ${appDeploymentLifecycle}/nodejsLivereload/ watch:livereload` : `node ${debugCommand} ${appEntrypointPath}`;
+    console.log(`• nodejs containerCommand = ${containerCommand}`);
 
     let environmentVariable = {
       DEPLOYMENT: 'development',
       SZN_DEBUG: debugCommand ? true : false,
       SZN_DEBUG_COMMAND: debugCommand,
-      hostPath: process.env.hostPath,
-    }
-    if (process.argv.includes('distribution')) environmentVariable['DISTRIBUTION'] = true
-    if (process.argv.includes('distribution'))
-      Object.assign(
-        // shallow merge
-        environmentVariable,
-        {
-          SZN_OPTION_ENTRYPOINT_NAME: 'entrypoint.js',
-          SZN_OPTION_ENTRYPOINT_PATH: path.join(configuration.directory.distributionPath, configuration.directory.serverSide.folderName),
-        },
-      )
+      hostPath: process.env.hostPath };
 
-    // Run docker application container using yml configuration file.
+    if (process.argv.includes('distribution')) environmentVariable['DISTRIBUTION'] = true;
+    if (process.argv.includes('distribution'))
+    Object.assign(
+
+    environmentVariable,
+    {
+      SZN_OPTION_ENTRYPOINT_NAME: 'entrypoint.js',
+      SZN_OPTION_ENTRYPOINT_PATH: _path.default.join(_configuration.default.directory.distributionPath, _configuration.default.directory.serverSide.folderName) });
+
+
+
+
     let processCommand = 'docker-compose',
-      processCommandArgs = [`-f ${ymlFile}`, `--project-name ${containerPrefix}`, `run --service-ports --use-aliases`, `--entrypoint '${containerCommand}'`, `${serviceName}`],
-      processOption = {
-        // cwd: `${applicationPath}`,
-        shell: true,
-        stdio: [0, 1, 2],
-        env: environmentVariable,
-      }
-    spawnSync(processCommand, processCommandArgs, processOption)
-    break
-}
+    processCommandArgs = [`-f ${ymlFile}`, `--project-name ${containerPrefix}`, `run --service-ports --use-aliases`, `--entrypoint '${containerCommand}'`, `${serviceName}`],
+    processOption = {
+
+      shell: true,
+      stdio: [0, 1, 2],
+      env: environmentVariable };
+
+    spawnSync(processCommand, processCommandArgs, processOption);
+    break;}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvcnVuL3J1bi5qcyJdLCJuYW1lcyI6WyJjb25zb2xlIiwibG9nIiwiSlNPTiIsInN0cmluZ2lmeSIsInByb2Nlc3MiLCJhcmd2IiwiZXhlY1N5bmMiLCJzcGF3biIsInNwYXduU3luYyIsInJlcXVpcmUiLCJhcHBsaWNhdGlvblBhdGgiLCJwYXRoIiwiam9pbiIsImNvbmZpZ3VyYXRpb24iLCJkaXJlY3RvcnkiLCJwcm9qZWN0UGF0aCIsImFwcERlcGxveW1lbnRMaWZlY3ljbGUiLCJkaXN0cmlidXRpb25TZXJ2ZXJTaWRlIiwiZGlzdHJpYnV0aW9uIiwic2VydmVyU2lkZSIsInNlcnZlclNpZGVQYXRoIiwibm9kZU1vZHVsZUZvbGRlciIsInBhY2thZ2VNYW5hZ2VyRm9sZGVyIiwiZmlsZXN5c3RlbSIsImV4aXN0c1N5bmMiLCJjd2QiLCJzaGVsbCIsInN0ZGlvIiwieW1sRmlsZSIsInNlcnZpY2VOYW1lIiwiY29udGFpbmVyUHJlZml4IiwiYXBwRW50cnlwb2ludFBhdGgiLCJpbmNsdWRlcyIsImRlYnVnQ29tbWFuZCIsImNvbnRhaW5lckNvbW1hbmQiLCJlbnZpcm9ubWVudFZhcmlhYmxlIiwiREVQTE9ZTUVOVCIsIlNaTl9ERUJVRyIsIlNaTl9ERUJVR19DT01NQU5EIiwiaG9zdFBhdGgiLCJlbnYiLCJPYmplY3QiLCJhc3NpZ24iLCJTWk5fT1BUSU9OX0VOVFJZUE9JTlRfTkFNRSIsIlNaTl9PUFRJT05fRU5UUllQT0lOVF9QQVRIIiwiZGlzdHJpYnV0aW9uUGF0aCIsImZvbGRlck5hbWUiLCJwcm9jZXNzQ29tbWFuZCIsInByb2Nlc3NDb21tYW5kQXJncyIsInByb2Nlc3NPcHRpb24iXSwibWFwcGluZ3MiOiI7Ozs7QUFJQTtBQUNBO0FBQ0E7QUFDQSxrRUFQQUEsT0FBTyxDQUFDQyxHQUFSLENBQVksd0VBQVosRUFDQUQsT0FBTyxDQUFDQyxHQUFSLENBQWEsK0JBQThCQyxJQUFJLENBQUNDLFNB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QXNCLGNBQXRCLENBQUo7QUFDRVMsSUFBQUEsTUFBTSxDQUFDQyxNQUFQOztBQUVFUCxJQUFBQSxtQkFGRjtBQUdFO0FBQ0VRLE1BQUFBLDBCQUEwQixFQUFFLGVBRDlCO0FBRUVDLE1BQUFBLDBCQUEwQixFQUFFakMsY0FBS0MsSUFBTCxDQUFVQyx1QkFBY0MsU0FBZCxDQUF3QitCLGdCQUFsQyxFQUFvRGhDLHVCQUFjQyxTQUFkLENBQXdCSyxVQUF4QixDQUFtQzJCLFVBQXZGLENBRjlCLEVBSEY7Ozs7O0FBVUYsUUFBSUMsY0FBYyxHQUFHLGdCQUFyQjtBQUNFQyxJQUFBQSxrQkFBa0IsR0FBRyxDQUFFLE1BQUtwQixPQUFRLEVBQWYsRUFBbUIsa0JBQWlCRSxlQUFnQixFQUFwRCxFQUF3RCxtQ0FBeEQsRUFBNkYsaUJBQWdCSSxnQkFBaUIsR0FBOUgsRUFBbUksR0FBRUwsV0FBWSxFQUFqSixDQUR2QjtBQUVFb0IsSUFBQUEsYUFBYSxHQUFHOztBQUVkdkIsTUFBQUEsS0FBSyxFQUFFLElBRk87QUFHZEMsTUFBQUEsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFJLENBQUosRUFBTyxDQUFQLENBSE87QUFJZGEsTUFBQUEsR0FBRyxFQUFFTCxtQkFKUyxFQUZsQjs7QUFRQTNCLElBQUFBLFNBQVMsQ0FBQ3VDLGNBQUQsRUFBaUJDLGtCQUFqQixFQUFxQ0MsYUFBckMsQ0FBVDtBQUNBLFVBbkRKIiwic291cmNlc0NvbnRlbnQiOlsiY29uc29sZS5sb2coJ+KAoiBSdW5uaW5nIGVudHJ5cG9pbnQgYXBwbGljYXRpb24gaW4gTWFuYWdlciBDb250YWluZXIgaW4gZGVmYXVsdCBtb2RlLicpXHJcbmNvbnNvbGUubG9nKGAtIHBhc3NlZCBwcm9jZXNzIGFyZ3VtZW50czogJHtKU09OLnN0cmluZ2lmeShwcm9jZXNzLmFyZ3YpfWApXHJcblxyXG5jb25zdCB7IGV4ZWNTeW5jLCBzcGF3biwgc3Bhd25TeW5jIH0gPSByZXF1aXJlKCdjaGlsZF9wcm9jZXNzJylcclxuaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcclxuaW1wb3J0IGZpbGVzeXN0ZW0gZnJvbSAnZnMnXHJcbmltcG9ydCBjb25maWd1cmF0aW9uIGZyb20gJy4uLy4uLy4uLy4uL3NldHVwL2NvbmZpZ3VyYXRpb24vY29uZmlndXJhdGlvbi5qcydcclxuaW1wb3J0IHNsZWVwIGZyb20gJy4vc2xlZXAucnVuLmpzJ1xyXG5jb25zdCBhcHBsaWNhdGlvblBhdGggPSBwYXRoLmpvaW4oY29uZmlndXJhdGlvbi5kaXJlY3RvcnkucHJvamVjdFBhdGgsICdhcHBsaWNhdGlvbicpXHJcbmNvbnN0IGFwcERlcGxveW1lbnRMaWZlY3ljbGUgPSBwYXRoLmpvaW4oYXBwbGljYXRpb25QYXRoLCAnZGVwZW5kZW5jeS9hcHBEZXBsb3ltZW50TGlmZWN5Y2xlJylcclxuY29uc3QgZGlzdHJpYnV0aW9uU2VydmVyU2lkZSA9IGNvbmZpZ3VyYXRpb24uZGlzdHJpYnV0aW9uLnNlcnZlclNpZGVcclxuY29uc3Qgc2VydmVyU2lkZVBhdGggPSBjb25maWd1cmF0aW9uLmRpcmVjdG9yeS5zZXJ2ZXJTaWRlUGF0aFxyXG5cclxuLy8gSW5zdGFsbCBtb2R1bGVzIGZvciB0aGUgYXBwIHRvIGJlIHJ1biBpbiB0aGUgc3Bhd24gYXBwIGNvbnRhaW5lclxyXG5sZXQgbm9kZU1vZHVsZUZvbGRlciA9IGAke2FwcGxpY2F0aW9uUGF0aH0vc291cmNlL3NlcnZlclNpZGUvbm9kZV9tb2R1bGVzYFxyXG5sZXQgcGFja2FnZU1hbmFnZXJGb2xkZXIgPSBgJHthcHBsaWNhdGlvblBhdGh9L3NvdXJjZS9wYWNrYWdlTWFuYWdlci9zZXJ2ZXIueWFybi9gXHJcbmlmICghZmlsZXN5c3RlbS5leGlzdHNTeW5jKG5vZGVNb2R1bGVGb2xkZXIpKSB7XHJcbiAgc3Bhd25TeW5jKCd5YXJuJywgW2BpbnN0YWxsYF0sIHtcclxuICAgIGN3ZDogcGFja2FnZU1hbmFnZXJGb2xkZXIsXHJcbiAgICBzaGVsbDogdHJ1ZSxcclxuICAgIHN0ZGlvOiBbMCwgMSwgMl0sXHJcbiAgfSlcclxufVxyXG5cclxuLypcclxuICogVXNhZ2U6XHJcbiAqIOKAoiAuL2VudHJ5cG9pbnQuc2ggcnVuXHJcbiAqIOKAoiAuL2VudHJ5cG9pbnQuc2ggcnVuIHNsZWVwIC8vIHJ1biBhcHAgd2l0aCBubyBjb250YWluZXJDb21tYW5kLCBidXQgc2xlZXAgdG8ga2VlcCB0aGUgY29udGFpbmVyIHJ1bm5pbmdcclxuICog4oCiIC4vZW50cnlwb2ludC5zaCBydW4gZGVidWdcclxuICog4oCiIC4vZW50cnlwb2ludC5zaCBydW4gZGlzdHJpYnV0aW9uXHJcbiAqIOKAoiAuL2VudHJ5cG9pbnQuc2ggcnVuIGRpc3RyaWJ1dGlvbiBkZWJ1Z1xyXG4gKiDigKIgLi9lbnRyeXBvaW50LnNoIHJ1biBsaXZlcmVsb2FkXHJcbiAqIOKAoiAuL2VudHJ5cG9pbnQuc2ggcnVuIGxpdmVyZWxvYWQgZGVidWdcclxuICog4oCiIC4vZW50cnlwb2ludC5zaCBydW4gbGl2ZXJlbG9hZCBkaXN0cmlidXRpb25cclxuICog4oCiIC4vZW50cnlwb2ludC5zaCBydW4gbGl2ZXJlbG9hZCBkaXN0cmlidXRpb24gZGVidWdcclxuICovXHJcbmxldCB5bWxGaWxlID0gYCR7YXBwRGVwbG95bWVudExpZmVjeWNsZX0vZGVwbG95bWVudENvbnRhaW5lci9kZXZlbG9wbWVudC5kb2NrZXJDb21wb3NlLnltbGBcclxubGV0IHNlcnZpY2VOYW1lID0gJ25vZGVqcydcclxubGV0IGNvbnRhaW5lclByZWZpeCA9ICdhcHAnXHJcbnN3aXRjaCAocHJvY2Vzcy5hcmd2WzBdKSB7XHJcbiAgY2FzZSAnc2xlZXAnOlxyXG4gICAgc2xlZXAoeyB5bWxGaWxlLCBzZXJ2aWNlTmFtZSwgY29udGFpbmVyUHJlZml4IH0pXHJcbiAgICBicmVha1xyXG4gIGRlZmF1bHQ6XHJcbiAgICAvKioqXHJcbiAgICAgKiAgVE9ETzogSW1wbGVtZW50OlxyXG4gICAgICog4oCiIGxpdmVyZWxvYWQgKyBkaXN0cmlidXRpb25cclxuICAgICAqIOKAoiBkaXN0cmlidXRpb25cclxuICAgICAqIOKAoiBsaXZlcmVsb2FkXHJcbiAgICAgKiDigKIgJiBkZWZhdWx0IG5vcm1hbCBtb2RlLlxyXG4gICAgICogQXMgbGl2ZXJlYWxvYWQgKyBkaXN0cmlidXRpb24gIT0gZGlzdHJpYnV0aW9uIGFsb25lXHJcbiAgICAgKi9cclxuICAgIGxldCBhcHBFbnRyeXBvaW50UGF0aCA9XHJcbiAgICAgIHByb2Nlc3MuYXJndi5pbmNsdWRlcygnZGlzdHJpYnV0aW9uJykgJiYgZmFsc2UgLyogZGlzYWJsZSBsb2FkaW5nIGJ1aWx0IHNlcnZlclNpZGUgZW50cnlwb2ludCAqLyA/IGAke2Rpc3RyaWJ1dGlvblNlcnZlclNpZGV9L2VudHJ5cG9pbnQuanNgIDogYCR7c2VydmVyU2lkZVBhdGh9L2VudHJ5cG9pbnQuanNgXHJcbiAgICBjb25zb2xlLmxvZyhgQXBwIGVucnlwb2ludCBwYXRoOiAke2FwcEVudHJ5cG9pbnRQYXRofWApXHJcblxyXG4gICAgLy8gd2hlbiB1c2luZyBgbG9jYWxob3N0YCBjaHJvbWUgc2hvd3MgdGhlIGZpbGVzIGluIGZvbGRlcnMsIHdoaWxlIHVzaW5nIGAwLjAuMC4wYCBmaWxlcyBhcHBlYXIgYXMgc2VwYXJhdGVkLlxyXG4gICAgLy8gYDAuMC4wLjBgIGFsbG93cyBhY2Nlc3MgZnJvbSBhbnkgcG9ydCAoY291bGQgYmUgdXNmdWwgaW4gY29udGFpbmVycyBhcyBleHRlcm5hbCBjb25uZWN0aW9ucyBub3QgYWx3YXlzIHJlZmVycmVkIHRvIGxvY2FsaG9zdCBpdCBzZWVtcy4pXHJcbiAgICBsZXQgZGVidWdDb21tYW5kID0gcHJvY2Vzcy5hcmd2LmluY2x1ZGVzKCdkZWJ1ZycpID8gYC0taW5zcGVjdCR7cHJvY2Vzcy5hcmd2LmluY2x1ZGVzKCdicmVhaycpID8gJy1icmsnIDogJyd9PTAuMC4wLjA6OTIyOWAgOiAnJ1xyXG5cclxuICAgIGxldCBjb250YWluZXJDb21tYW5kID0gcHJvY2Vzcy5hcmd2LmluY2x1ZGVzKCdsaXZlcmVsb2FkJykgPyBgbm9kZSAke2RlYnVnQ29tbWFuZH0gJHthcHBEZXBsb3ltZW50TGlmZWN5Y2xlfS9ub2RlanNMaXZlcmVsb2FkLyB3YXRjaDpsaXZlcmVsb2FkYCA6IGBub2RlICR7ZGVidWdDb21tYW5kfSAke2FwcEVudHJ5cG9pbnRQYXRofWBcclxuICAgIGNvbnNvbGUubG9nKGDigKIgbm9kZWpzIGNvbnRhaW5lckNvbW1hbmQgPSAke2NvbnRhaW5lckNvbW1hbmR9YClcclxuXHJcbiAgICBsZXQgZW52aXJvbm1lbnRWYXJpYWJsZSA9IHtcclxuICAgICAgREVQTE9ZTUVOVDogJ2RldmVsb3BtZW50JyxcclxuICAgICAgU1pOX0RFQlVHOiBkZWJ1Z0NvbW1hbmQgPyB0cnVlIDogZmFsc2UsXHJcbiAgICAgIFNaTl9ERUJVR19DT01NQU5EOiBkZWJ1Z0NvbW1hbmQsXHJcbiAgICAgIGhvc3RQYXRoOiBwcm9jZXNzLmVudi5ob3N0UGF0aCxcclxuICAgIH1cclxuICAgIGlmIChwcm9jZXNzLmFyZ3YuaW5jbHVkZXMoJ2Rpc3RyaWJ1dGlvbicpKSBlbnZpcm9ubWVudFZhcmlhYmxlWydESVNUUklCVVRJT04nXSA9IHRydWVcclxuICAgIGlmIChwcm9jZXNzLmFyZ3YuaW5jbHVkZXMoJ2Rpc3RyaWJ1dGlvbicpKVxyXG4gICAgICBPYmplY3QuYXNzaWduKFxyXG4gICAgICAgIC8vIHNoYWxsb3cgbWVyZ2VcclxuICAgICAgICBlbnZpcm9ubWVudFZhcmlhYmxlLFxyXG4gICAgICAgIHtcclxuICAgICAgICAgIFNaTl9PUFRJT05fRU5UUllQT0lOVF9OQU1FOiAnZW50cnlwb2ludC5qcycsXHJcbiAgICAgICAgICBTWk5fT1BUSU9OX0VOVFJZUE9JTlRfUEFUSDogcGF0aC5qb2luKGNvbmZpZ3VyYXRpb24uZGlyZWN0b3J5LmRpc3RyaWJ1dGlvblBhdGgsIGNvbmZpZ3VyYXRpb24uZGlyZWN0b3J5LnNlcnZlclNpZGUuZm9sZGVyTmFtZSksXHJcbiAgICAgICAgfSxcclxuICAgICAgKVxyXG5cclxuICAgIC8vIFJ1biBkb2NrZXIgYXBwbGljYXRpb24gY29udGFpbmVyIHVzaW5nIHltbCBjb25maWd1cmF0aW9uIGZpbGUuXHJcbiAgICBsZXQgcHJvY2Vzc0NvbW1hbmQgPSAnZG9ja2VyLWNvbXBvc2UnLFxyXG4gICAgICBwcm9jZXNzQ29tbWFuZEFyZ3MgPSBbYC1mICR7eW1sRmlsZX1gLCBgLS1wcm9qZWN0LW5hbWUgJHtjb250YWluZXJQcmVmaXh9YCwgYHJ1biAtLXNlcnZpY2UtcG9ydHMgLS11c2UtYWxpYXNlc2AsIGAtLWVudHJ5cG9pbnQgJyR7Y29udGFpbmVyQ29tbWFuZH0nYCwgYCR7c2VydmljZU5hbWV9YF0sXHJcbiAgICAgIHByb2Nlc3NPcHRpb24gPSB7XHJcbiAgICAgICAgLy8gY3dkOiBgJHthcHBsaWNhdGlvblBhdGh9YCxcclxuICAgICAgICBzaGVsbDogdHJ1ZSxcclxuICAgICAgICBzdGRpbzogWzAsIDEsIDJdLFxyXG4gICAgICAgIGVudjogZW52aXJvbm1lbnRWYXJpYWJsZSxcclxuICAgICAgfVxyXG4gICAgc3Bhd25TeW5jKHByb2Nlc3NDb21tYW5kLCBwcm9jZXNzQ29tbWFuZEFyZ3MsIHByb2Nlc3NPcHRpb24pXHJcbiAgICBicmVha1xyXG59XHJcbiJdfQ==
