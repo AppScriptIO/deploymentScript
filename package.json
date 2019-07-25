@@ -1,7 +1,7 @@
 {
   "name": "@dependency/deploymentScript",
   "main": "x",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "workspaces": [
     "./script/*"
   ],
