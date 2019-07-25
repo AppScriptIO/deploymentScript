@@ -1,14 +1,15 @@
-import childProcess from 'child_process'
-import assert from 'assert'
-import { sync as binaryExist } from 'command-exists'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.installNpm = installNpm;var _child_process = _interopRequireDefault(require("child_process"));
+var _assert = _interopRequireDefault(require("assert"));
+var _commandExists = require("command-exists");
 
-export function installNpm({ npmPath, flag = ['--production=true' /*'--pure-lockfile'*/] }) {
-  assert(binaryExist('npm'), '• "npm" binary should be installed in the environment.')
+function installNpm({ npmPath, flag = ['--production=true'] }) {
+  (0, _assert.default)((0, _commandExists.sync)('npm'), '• "npm" binary should be installed in the environment.');
   try {
-    childProcess.spawnSync('npm', ['install', ...flag], { cwd: npmPath, shell: true, stdio: [0, 1, 2] })
+    _child_process.default.spawnSync('npm', ['install', ...flag], { cwd: npmPath, shell: true, stdio: [0, 1, 2] });
   } catch (error) {
-    console.log('• ERROR - childprocess error.')
-    console.log(error)
-    process.exit(1)
+    console.log('• ERROR - childprocess error.');
+    console.log(error);
+    process.exit(1);
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9wcm92aXNpb25PUy9pbnN0YWxsRVNNb2R1bGUvaW5zdGFsbC1ucG0uanMiXSwibmFtZXMiOlsiaW5zdGFsbE5wbSIsIm5wbVBhdGgiLCJmbGFnIiwiY2hpbGRQcm9jZXNzIiwic3Bhd25TeW5jIiwiY3dkIiwic2hlbGwiLCJzdGRpbyIsImVycm9yIiwiY29uc29sZSIsImxvZyIsInByb2Nlc3MiLCJleGl0Il0sIm1hcHBpbmdzIjoiZ01BQUE7QUFDQTtBQUNBOztBQUVPLFNBQVNBLFVBQVQsQ0FBb0IsRUFBRUMsT0FBRixFQUFXQyxJQUFJLEdBQUcsQ0FBQyxtQkFBRCxDQUFsQixFQUFwQixFQUFxRjtBQUMxRix1QkFBTyx5QkFBWSxLQUFaLENBQVAsRUFBMkIsd0RBQTNCO0FBQ0EsTUFBSTtBQUNGQywyQkFBYUMsU0FBYixDQUF1QixLQUF2QixFQUE4QixDQUFDLFNBQUQsRUFBWSxHQUFHRixJQUFmLENBQTlCLEVBQW9ELEVBQUVHLEdBQUcsRUFBRUosT0FBUCxFQUFnQkssS0FBSyxFQUFFLElBQXZCLEVBQTZCQyxLQUFLLEVBQUUsQ0FBQyxDQUFELEVBQUksQ0FBSixFQUFPLENBQVAsQ0FBcEMsRUFBcEQ7QUFDRCxHQUZELENBRUUsT0FBT0MsS0FBUCxFQUFjO0FBQ2RDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLCtCQUFaO0FBQ0FELElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZRixLQUFaO0FBQ0FHLElBQUFBLE9BQU8sQ0FBQ0MsSUFBUixDQUFhLENBQWI7QUFDRDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGNoaWxkUHJvY2VzcyBmcm9tICdjaGlsZF9wcm9jZXNzJ1xuaW1wb3J0IGFzc2VydCBmcm9tICdhc3NlcnQnXG5pbXBvcnQgeyBzeW5jIGFzIGJpbmFyeUV4aXN0IH0gZnJvbSAnY29tbWFuZC1leGlzdHMnXG5cbmV4cG9ydCBmdW5jdGlvbiBpbnN0YWxsTnBtKHsgbnBtUGF0aCwgZmxhZyA9IFsnLS1wcm9kdWN0aW9uPXRydWUnIC8qJy0tcHVyZS1sb2NrZmlsZScqL10gfSkge1xuICBhc3NlcnQoYmluYXJ5RXhpc3QoJ25wbScpLCAn4oCiIFwibnBtXCIgYmluYXJ5IHNob3VsZCBiZSBpbnN0YWxsZWQgaW4gdGhlIGVudmlyb25tZW50LicpXG4gIHRyeSB7XG4gICAgY2hpbGRQcm9jZXNzLnNwYXduU3luYygnbnBtJywgWydpbnN0YWxsJywgLi4uZmxhZ10sIHsgY3dkOiBucG1QYXRoLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9KVxuICB9IGNhdGNoIChlcnJvcikge1xuICAgIGNvbnNvbGUubG9nKCfigKIgRVJST1IgLSBjaGlsZHByb2Nlc3MgZXJyb3IuJylcbiAgICBjb25zb2xlLmxvZyhlcnJvcilcbiAgICBwcm9jZXNzLmV4aXQoMSlcbiAgfVxufVxuIl19
