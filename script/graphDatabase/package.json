@@ -1,0 +1,11 @@
+{
+    "name": "@script/graphDatabase",
+    "version": "1.0.0",
+    "main": "./script.js",
+    "scripts": {},
+    "dependencies": {
+        "@dependency/entity": "https://github.com/AppScriptIO/entity#semver:^1.x.x",
+        "@dependency/graph": "https://github.com/AppScriptIO/graph#semver:^1.x.x"
+    },
+    "devDependencies": {}
+}

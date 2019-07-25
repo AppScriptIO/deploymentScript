@@ -1,6 +1,6 @@
 import filesystem from 'fs'
 import path from 'path'
-import { default as git, Commit, Repository, Reference, Branch, Signature, Reset } from 'nodegit'
+// import { default as git, Commit, Repository, Reference, Branch, Signature, Reset } from 'nodegit'
 import { build } from '@dependency/buildTool'
 
 /**
