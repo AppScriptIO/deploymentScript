@@ -7,10 +7,16 @@
   ],
   "private": true,
   "dependencies": {
-    "command-exists": "^1.2.8",
-    "shelljs": "^0.8.3",
     "@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
-    "@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"
+    "@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x",
+    "any-promise": "^1.3.0",
+    "command-exists": "^1.2.8",
+    "gulp-plumber": "^1.2.1",
+    "gulp-size": "^3.0.0",
+    "mkdirp": "^0.5.1",
+    "rsync": "^0.6.1",
+    "shelljs": "^0.8.3",
+    "vinyl-fs": "^3.0.3"
   },
   "devDependencies": {
     "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",

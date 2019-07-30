@@ -8,9 +8,7 @@ const { Database } = DatabaseModule
 import { boltCypherModelAdapterFunction } from '@dependency/graph/source/implementationPlugin/databaseModelAdapter/boltCypherModelAdapter.js'
 
 let concreteDatabaseBehavior = new Database.clientInterface({
-  implementationList: {
-    boltCypherModelAdapter: boltCypherModelAdapterFunction(),
-  },
+  implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction() },
   defaultImplementation: 'boltCypherModelAdapter',
 })
 let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
