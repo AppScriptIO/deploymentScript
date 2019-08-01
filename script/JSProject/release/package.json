@@ -1,0 +1,12 @@
+{
+  "name": "@script/githubRelease",
+  "main": "./script.js",
+  "version": "1.0.0",
+  "dependencies": {
+    "nodegit": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "preinstall": "echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n' && sudo apt-get install -y libgit2-dev"
+  }
+}
