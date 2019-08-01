@@ -1,23 +1,24 @@
-import filesystem from 'fs'
-import path from 'path'
-import { build } from '@dependency/buildTool'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.webappProject = webappProject;exports.moduleProject = moduleProject;
 
-// build process for webapps relying on appscript module.
-export function webappProject(...args) {
-  // adapter for working with target function interface of `scriptManager`.
-  const { api /* supplied by scriptManager */ } = args[0]
-  args[0].targetProject = api.project
-  args[0].entryNodeKey ||= '58c15cc8-6f40-4d0b-815a-0b8594aeb972' // graph tasks traversal entrypoint
-  args[0].taskContextName = 'webappProjectTask'
-  build(...args).catch(console.error)
+var _buildTool = require("@dependency/buildTool");
+
+
+function webappProject(...args) {var _args$;
+
+  const { api } = args[0];
+  args[0].targetProject = api.project;
+  (_args$ = args[0]).entryNodeKey || (_args$.entryNodeKey = '58c15cc8-6f40-4d0b-815a-0b8594aeb972');
+  args[0].taskContextName = 'webappProjectTask';
+  (0, _buildTool.build)(...args).catch(console.error);
 }
 
-// build process for Javascript module repositories
-export function moduleProject(...args) {
-  // adapter for working with target function interface of `scriptManager`.
-  const { api /* supplied by scriptManager */ } = args[0]
-  args[0].targetProject = api.project
-  args[0].entryNodeKey ||= '171d18f8-9d25-4483-aeb9-a29c9fbed6ac' // graph tasks traversal entrypoint
-  args[0].taskContextName = 'moduleProjectTask'
-  build(...args).catch(console.error)
+
+function moduleProject(...args) {var _args$2;
+
+  const { api } = args[0];
+  args[0].targetProject = api.project;
+  (_args$2 = args[0]).entryNodeKey || (_args$2.entryNodeKey = '171d18f8-9d25-4483-aeb9-a29c9fbed6ac');
+  args[0].taskContextName = 'moduleProjectTask';
+  (0, _buildTool.build)(...args).catch(console.error);
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvYnVpbGRTb3VyY2VDb2RlL3NjcmlwdC5qcyJdLCJuYW1lcyI6WyJ3ZWJhcHBQcm9qZWN0IiwiYXJncyIsImFwaSIsInRhcmdldFByb2plY3QiLCJwcm9qZWN0IiwiZW50cnlOb2RlS2V5IiwidGFza0NvbnRleHROYW1lIiwiY2F0Y2giLCJjb25zb2xlIiwiZXJyb3IiLCJtb2R1bGVQcm9qZWN0Il0sIm1hcHBpbmdzIjoiOztBQUVBOzs7QUFHTyxTQUFTQSxhQUFULENBQXVCLEdBQUdDLElBQTFCLEVBQWdDOztBQUVyQyxRQUFNLEVBQUVDLEdBQUYsS0FBMENELElBQUksQ0FBQyxDQUFELENBQXBEO0FBQ0FBLEVBQUFBLElBQUksQ0FBQyxDQUFELENBQUosQ0FBUUUsYUFBUixHQUF3QkQsR0FBRyxDQUFDRSxPQUE1QjtBQUNBLFlBQUFILElBQUksQ0FBQyxDQUFELENBQUosRUFBUUksWUFBUixZQUFRQSxZQUFSLEdBQXlCLHNDQUF6QjtBQUNBSixFQUFBQSxJQUFJLENBQUMsQ0FBRCxDQUFKLENBQVFLLGVBQVIsR0FBMEIsbUJBQTFCO0FBQ0Esd0JBQU0sR0FBR0wsSUFBVCxFQUFlTSxLQUFmLENBQXFCQyxPQUFPLENBQUNDLEtBQTdCO0FBQ0Q7OztBQUdNLFNBQVNDLGFBQVQsQ0FBdUIsR0FBR1QsSUFBMUIsRUFBZ0M7O0FBRXJDLFFBQU0sRUFBRUMsR0FBRixLQUEwQ0QsSUFBSSxDQUFDLENBQUQsQ0FBcEQ7QUFDQUEsRUFBQUEsSUFBSSxDQUFDLENBQUQsQ0FBSixDQUFRRSxhQUFSLEdBQXdCRCxHQUFHLENBQUNFLE9BQTVCO0FBQ0EsYUFBQUgsSUFBSSxDQUFDLENBQUQsQ0FBSixFQUFRSSxZQUFSLGFBQVFBLFlBQVIsR0FBeUIsc0NBQXpCO0FBQ0FKLEVBQUFBLElBQUksQ0FBQyxDQUFELENBQUosQ0FBUUssZUFBUixHQUEwQixtQkFBMUI7QUFDQSx3QkFBTSxHQUFHTCxJQUFULEVBQWVNLEtBQWYsQ0FBcUJDLE9BQU8sQ0FBQ0MsS0FBN0I7QUFDRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xyXG5pbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xyXG5pbXBvcnQgeyBidWlsZCB9IGZyb20gJ0BkZXBlbmRlbmN5L2J1aWxkVG9vbCdcclxuXHJcbi8vIGJ1aWxkIHByb2Nlc3MgZm9yIHdlYmFwcHMgcmVseWluZyBvbiBhcHBzY3JpcHQgbW9kdWxlLlxyXG5leHBvcnQgZnVuY3Rpb24gd2ViYXBwUHJvamVjdCguLi5hcmdzKSB7XHJcbiAgLy8gYWRhcHRlciBmb3Igd29ya2luZyB3aXRoIHRhcmdldCBmdW5jdGlvbiBpbnRlcmZhY2Ugb2YgYHNjcmlwdE1hbmFnZXJgLlxyXG4gIGNvbnN0IHsgYXBpIC8qIHN1cHBsaWVkIGJ5IHNjcmlwdE1hbmFnZXIgKi8gfSA9IGFyZ3NbMF1cclxuICBhcmdzWzBdLnRhcmdldFByb2plY3QgPSBhcGkucHJvamVjdFxyXG4gIGFyZ3NbMF0uZW50cnlOb2RlS2V5IHx8PSAnNThjMTVjYzgtNmY0MC00ZDBiLTgxNWEtMGI4NTk0YWViOTcyJyAvLyBncmFwaCB0YXNrcyB0cmF2ZXJzYWwgZW50cnlwb2ludFxyXG4gIGFyZ3NbMF0udGFza0NvbnRleHROYW1lID0gJ3dlYmFwcFByb2plY3RUYXNrJ1xyXG4gIGJ1aWxkKC4uLmFyZ3MpLmNhdGNoKGNvbnNvbGUuZXJyb3IpXHJcbn1cclxuXHJcbi8vIGJ1aWxkIHByb2Nlc3MgZm9yIEphdmFzY3JpcHQgbW9kdWxlIHJlcG9zaXRvcmllc1xyXG5leHBvcnQgZnVuY3Rpb24gbW9kdWxlUHJvamVjdCguLi5hcmdzKSB7XHJcbiAgLy8gYWRhcHRlciBmb3Igd29ya2luZyB3aXRoIHRhcmdldCBmdW5jdGlvbiBpbnRlcmZhY2Ugb2YgYHNjcmlwdE1hbmFnZXJgLlxyXG4gIGNvbnN0IHsgYXBpIC8qIHN1cHBsaWVkIGJ5IHNjcmlwdE1hbmFnZXIgKi8gfSA9IGFyZ3NbMF1cclxuICBhcmdzWzBdLnRhcmdldFByb2plY3QgPSBhcGkucHJvamVjdFxyXG4gIGFyZ3NbMF0uZW50cnlOb2RlS2V5IHx8PSAnMTcxZDE4ZjgtOWQyNS00NDgzLWFlYjktYTI5YzlmYmVkNmFjJyAvLyBncmFwaCB0YXNrcyB0cmF2ZXJzYWwgZW50cnlwb2ludFxyXG4gIGFyZ3NbMF0udGFza0NvbnRleHROYW1lID0gJ21vZHVsZVByb2plY3RUYXNrJ1xyXG4gIGJ1aWxkKC4uLmFyZ3MpLmNhdGNoKGNvbnNvbGUuZXJyb3IpXHJcbn1cclxuIl19
