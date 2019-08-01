@@ -1,7 +1,7 @@
 {
   "name": "@dependency/deploymentScript",
   "main": "x",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "workspaces": [
     "./script/*"
   ],
@@ -9,6 +9,7 @@
   "dependencies": {
     "@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
     "@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x",
+    "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
     "any-promise": "^1.3.0",
     "command-exists": "^1.2.8",
     "gulp-plumber": "^1.2.1",

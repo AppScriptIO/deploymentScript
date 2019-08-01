@@ -1,10 +1,5 @@
 {
   "name": "@script/buildSourceCode",
   "main": "./script.js",
-  "version": "1.0.0",
-  "dependencies": {
-    "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x"
-  },
-  "devDependencies": {},
-  "scripts": {}
+  "version": "1.0.0"
 }
