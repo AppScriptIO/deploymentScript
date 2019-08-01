@@ -15,11 +15,7 @@ const serverSidePath = configuration.directory.serverSidePath
 let nodeModuleFolder = `${applicationPath}/source/serverSide/node_modules`
 let packageManagerFolder = `${applicationPath}/source/packageManager/server.yarn/`
 if (!filesystem.existsSync(nodeModuleFolder)) {
-  spawnSync('yarn', [`install`], {
-    cwd: packageManagerFolder,
-    shell: true,
-    stdio: [0, 1, 2],
-  })
+  spawnSync('yarn', [`install`], {    cwd: packageManagerFolder,    shell: true,    stdio: [0, 1, 2]  })
 }
 
 /*
