@@ -6,6 +6,7 @@ import { Entity } from '@dependency/entity'
 import { Database as DatabaseModule } from '@dependency/graph'
 const { Database } = DatabaseModule
 import { boltCypherModelAdapterFunction } from '@dependency/graph/source/implementationPlugin/databaseModelAdapter/boltCypherModelAdapter.js'
+import assert from 'assert'
 
 let concreteDatabaseBehavior = new Database.clientInterface({
   implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction() },
@@ -15,8 +16,12 @@ let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getIns
 let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
 
 export async function loadGraphDataFromFile({ api /**scriptManager api*/, shouldClearDatabase = false, graphDataFilePath } = {}) {
+  assert(graphDataFilePath, `• graphDataFilePath must be passed to script - ${graphDataFilePath}`)
+  const targetProjectRootPath = api.project.configuration.configuration.directory.root
   if (shouldClearDatabase) await clearDatabase()
-  let graphData = graphDataFilePath ? await filesystem.readFile(graphDataFilePath) : { node: [], edge: [] }
+  let absolutePath = path.isAbsolute(graphDataFilePath) ? graphDataFilePath : path.join(targetProjectRootPath, graphDataFilePath)
+  let graphData = require(absolutePath)
+  assert(Array.isArray(graphData.node) && Array.isArray(graphData.edge), `• Unsupported graph data strcuture- ${graphData.edge} - ${graphData.node}`)
   await concereteDatabase.loadGraphData({ nodeEntryData: graphData.node, connectionEntryData: graphData.edge })
   concereteDatabase.driverInstance.close()
 }
