@@ -1,6 +1,6 @@
 import filesystem from 'fs'
 import path from 'path'
-import { default as git, Commit, Repository, Reference, Branch, Signature, Reset } from 'nodegit'
+import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
 
 //? TODO: Releases could be created for source code and for distribution code
 
@@ -8,12 +8,14 @@ import { default as git, Commit, Repository, Reference, Branch, Signature, Reset
  * ○ Push new version to github tags.
  * ○ Create a new release from the pushed tag.
  * Release a new tag in Github:
+ *  0. stash changes temporarily
  *  1. Create a temporary branch or use an existing branch and checkout to it.
- *  2. Rebase onto master (in case the temporary branch exists) - similar to overriding branch history with the master branch.
+ *  2. Rebase or Reseting onto master (in case the temporary branch exists) - similar to overriding branch history with the master branch.
  *  3. Build code and commit with a distribution message.
  *  4. Create a release/tag.
  *  5. cleanup branches.
  *  6. git checkout master
+ *  7. pop last stash files
  *
  *  @sieEffect - creates a tag and deletes temporary branch.
  *
@@ -22,44 +24,53 @@ import { default as git, Commit, Repository, Reference, Branch, Signature, Reset
  *
  * `nodegit` documentation: https://www.nodegit.org/api
  */
-async function createGithubBranchedRelease({
+export async function createGithubBranchedRelease({
   // 'branched release' in the sense of a tag that points to an additional build commit other than the master commit for example.
   api,
   temporaryBranchName = 'distribution', // branch used to build source code and create a distribution tag from
   brachToPointTo = 'master', // default branch for latest commit.
-  commitToPointTo = null, // unrelated commit to point to
+  commitToPointTo = null, // unrelated commit to point to while creating temporary branch
   tagName,
-  buildCallback = build, // build async function that will handle building source code and preparing the package for distribution.
+  tagger = git.Signature.now('meow', 'test@example.com'),
+  // buildCallback = build, // build async function that will handle building source code and preparing the package for distribution.
 }) {
   const targetProject = api.project,
     targetProjectRoot = targetProject.configuration.rootPath,
-    targetProjectGitUrl = 'https://github.com/AppScriptIO/scriptManager'
+    targetProjectGitUrl = targetProject.configuration.configuration?.build.repositoryURL
 
-  const repository = await git.Repository.open(targetProjectRoot),
-    tagger = git.Signature.now('meow', 'test@example.com')
+  // read git repository
+  const repository = await git.Repository.open(targetProjectRoot)
   brachToPointTo = await git.Branch.lookup(repository, brachToPointTo, 1) // convert to branch reference
+  // get latest commit from branch
+  let getLatestCommit = await repository.getReferenceCommit(brachToPointTo)
   // set commit reference
-  commitToPointTo = Boolean(commitToPointTo)
-    ? await git.Commit.lookup(repository, commitToPointTo) // get commit from supplied commit id parameter
-    : await repository.getReferenceCommit(brachToPointTo) // get latest commit from branch
+  if (commitToPointTo) {
+    commitToPointTo = await git.Commit.lookup(repository, commitToPointTo) // get commit from supplied commit id parameter
+  } else commitToPointTo = getLatestCommit
+
   // get all branches remote and local
-  let branchReferenceList = await repository.getReferences(git.Reference.TYPE.OID)
+  let branchReferenceList = await repository.getReferences().then(referenceList => referenceList.filter(reference => reference.type() == git.Reference.TYPE.DIRECT))
 
   // check if `temporaryBranchName` branch, that is used, exists.
   let doesTemporaryBranchExist = branchReferenceList.some(branch => branch.toString().includes(temporaryBranchName))
   let temporaryBranch // Branch reference
   if (!doesTemporaryBranchExist) {
-    // create branch
+    // create temporary branch
     temporaryBranch = await git.Branch.create(repository, temporaryBranchName, commitToPointTo, 1).catch(error => console.error(error))
-    console.log(`• Created   temporary branch ${await temporaryBranch.name()} from commit ${commitToPointTo.sha()}`)
-  } else {
-    temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1)
-  }
+    console.log(`• Created temporary branch ${await temporaryBranch.name()} from commit ${commitToPointTo.sha()}`)
+  } else temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1)
+
+  // check if there are untracked or staged files
+  let statuseList = await repository.getStatus()
+  if (statuseList.length > 0)
+    // stash changes that are still not committed
+    await git.Stash.save(repository, tagger, 'checkout stash before release', git.Stash.FLAGS.INCLUDE_UNTRACKED)
+
   // checkout temporary
   await repository.checkoutBranch(await temporaryBranch.name())
 
   /** reset temporary branch to the commit to point to (targetCommit)
-   * Another option is to use rebasing where current commits are saved // rebasingExample()
+   * NOTE: Another option is to use rebasing where current commits are saved - check  `rebasingExample()` function
    */
   await git.Reset.reset(repository, commitToPointTo, git.Reset.TYPE.HARD)
     .then(number => {
@@ -68,7 +79,7 @@ async function createGithubBranchedRelease({
     .catch(error => console.error)
 
   // run build
-  await buildCallback({ targetProjectRoot }).then(() => console.log('Project built successfully !'))
+  // await buildCallback({ targetProjectRoot }).then(() => console.log('Project built successfully !'))
 
   // Create commit of all files.
   let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
@@ -89,21 +100,16 @@ async function createGithubBranchedRelease({
   let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit
   await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0).then(oid => console.log(`• Tag created ${oid}`))
 
-  await repository.checkoutBranch(brachToPointTo) // make sure the branch is checkedout.
-  // delete temporary branch
-  try {
-    if (git.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`)
-    // By reassigning the variable and looking up the branch the garbage collector will kick in. The reference for the branch in libgit2 shouldn't be in memory as mentioned in https://github.com/libgit2/libgit2/blob/859d92292e008a4d04d68fb6dc20a1dfa68e4874/include/git2/refs.h#L385-L398
-    temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1) // referesh value of temporaryBranch - for some reason using the same reference prevents deletion of branch.
-    let error = git.Branch.delete(temporaryBranch)
-    if (error) throw new Error(`Code thrown by 'libgit2' bindings = ${error}\n \tCheck https://www.nodegit.org/api/error/#CODE`)
-    console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
-  } catch (error) {
-    throw error
-  }
+  // make sure the branch is checkedout.
+  await repository.checkoutBranch(brachToPointTo) // checkout former branch (usually master branch)
+
+  // apply temporarly stashed files
+  if (statuseList.length > 0) await git.Stash.pop(repository, 0 /** last stached position */)
 }
 
-// rebase into master branch to follow the latest master commit. TODO: this is an example - fix async operation.
+/** rebase into master branch to follow the latest master commit. TODO: this is an example - fix async operation.
+ *  This is an option for rebasing a temporary branch to the latest commit (or a newer commit). Another option is to use `reset` to a different commit.
+ */
 function rebasingExample({ repository, branch, fromBranch, toBranch }) {
   return repository.rebaseBranches(
     branch.name(), // branch commits to move
@@ -121,4 +127,16 @@ function rebasingExample({ repository, branch, fromBranch, toBranch }) {
   )
 }
 
-export { createGithubBranchedRelease }
+async function deleteTemporaryBranch({ repository, temporaryBranch }) {
+  // delete temporary branch
+  try {
+    if (git.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`)
+    // By reassigning the variable and looking up the branch the garbage collector will kick in. The reference for the branch in libgit2 shouldn't be in memory as mentioned in https://github.com/libgit2/libgit2/blob/859d92292e008a4d04d68fb6dc20a1dfa68e4874/include/git2/refs.h#L385-L398
+    temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1) // referesh value of temporaryBranch - for some reason using the same reference prevents deletion of branch.
+    let error = git.Branch.delete(temporaryBranch)
+    if (error) throw new Error(`Code thrown by 'libgit2' bindings = ${error}\n \tCheck https://www.nodegit.org/api/error/#CODE`)
+    console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
+  } catch (error) {
+    throw error
+  }
+}
