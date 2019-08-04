@@ -89,6 +89,7 @@ export async function copyFileAndSymlink({
   source, // list of files or file matching patterns (globs)
   destination,
 }) {
+  if (!Array.isArray(source)) source = [source]
   // using `vinyl-fs` module to allow symlinks to be copied as symlinks and not follow down the tree of files.
   return await pipeline(
     readFileAsObjectStream(source, { followSymlinks: false }),
