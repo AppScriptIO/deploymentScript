@@ -1,6 +1,18 @@
 import filesystem from 'fs'
 import path from 'path'
+import childProcess from 'child_process'
+import filesystemExtra from 'fs-extra'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
+import { copyFile } from '../../../source/utility/filesystemOperation/copyFile.js'
+const getDirectory = source => filesystem.readdirSync(source, { withFileTypes: true }).filter(dirent => dirent.isDirectory())
+const getAllDirent = source => filesystem.readdirSync(source, { withFileTypes: true })
+/** Filter array with async function
+ * https://stackoverflow.com/questions/33355528/filtering-an-array-with-a-function-that-returns-a-promise
+ */
+async function filterAsync(arr, callback) {
+  const fail = Symbol()
+  return (await Promise.all(arr.map(async item => ((await callback(item)) ? item : fail)))).filter(i => i !== fail)
+}
 
 //? TODO: Releases could be created for source code and for distribution code
 
@@ -32,9 +44,10 @@ export async function createGithubBranchedRelease({
   commitToPointTo = null, // unrelated commit to point to while creating temporary branch
   tagName,
   tagger = git.Signature.now('meow', 'test@example.com'),
-  // buildCallback = build, // build async function that will handle building source code and preparing the package for distribution.
+  buildCallback, // build async function that will handle building source code and preparing the package for distribution.
 }) {
   const targetProject = api.project,
+    targetProjectConfig = targetProject.configuration.configuration,
     targetProjectRoot = targetProject.configuration.rootPath,
     targetProjectGitUrl = targetProject.configuration.configuration?.build.repositoryURL
 
@@ -67,7 +80,7 @@ export async function createGithubBranchedRelease({
     await git.Stash.save(repository, tagger, 'checkout stash before release', git.Stash.FLAGS.INCLUDE_UNTRACKED)
 
   // checkout temporary
-  await repository.checkoutBranch(await temporaryBranch.name())
+  await repository.checkoutBranch(await temporaryBranch.name()).then(async () => console.log(`Checked branch ${await temporaryBranch.name()}`))
 
   /** reset temporary branch to the commit to point to (targetCommit)
    * NOTE: Another option is to use rebasing where current commits are saved - check  `rebasingExample()` function
@@ -79,7 +92,29 @@ export async function createGithubBranchedRelease({
     .catch(error => console.error)
 
   // run build
-  // await buildCallback({ targetProjectRoot }).then(() => console.log('Project built successfully !'))
+  if (buildCallback) await buildCallback().then(() => console.log('Project built successfully !'))
+
+  /** Make distribution folder as root directory in the branch */
+  // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
+  let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
+    gitIgnorePath = path.join(targetProjectRoot, './.gitignore')
+  if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
+  copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
+
+  // get top directories that are ignored
+  let direntList = getAllDirent(targetProjectRoot) // get all files and directories on top level
+  // check if path is ignored
+  let ignoredDirectoryList = await filterAsync(direntList, async dirent => (await git.Ignore.pathIsIgnored(repository, path.join(targetProjectRoot, dirent.name))) |> Boolean)
+  // ignoredDirectoryList = ignoredDirectoryList.map(dirent => path.join(targetProjectRoot, dirent.name)) // get absolute paths
+  // get dirent list to delete
+  let direntToDelete = direntList.filter(dirent => !ignoredDirectoryList.includes(dirent)) // remove ignored dirents from delete list
+  /** Delete dirent list that includes directories and files */
+  let deleteAbsolutePathList = direntToDelete.map(dirent => path.join(targetProjectRoot, dirent.name))
+  for (let absolutePath of deleteAbsolutePathList) {
+    filesystemExtra.removeSync(absolutePath)
+  }
+  // copy distribution contents to root project level
+  filesystemExtra.copySync(targetProjectConfig.directory.distribution, targetProjectRoot)
 
   // Create commit of all files.
   let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
@@ -101,7 +136,7 @@ export async function createGithubBranchedRelease({
   await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0).then(oid => console.log(`• Tag created ${oid}`))
 
   // make sure the branch is checkedout.
-  await repository.checkoutBranch(brachToPointTo) // checkout former branch (usually master branch)
+  await repository.checkoutBranch(brachToPointTo).then(async () => console.log(`Checked branch ${await brachToPointTo.name()}`)) // checkout former branch (usually master branch)
 
   // apply temporarly stashed files
   if (statuseList.length > 0) await git.Stash.pop(repository, 0 /** last stached position */)
