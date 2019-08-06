@@ -13,13 +13,42 @@ import writeJsonFile from 'write-json-file'
 import nestedObjectAssign from 'nested-object-assign'
 const dependencyKeyword = ['dependencies', 'devDependencies', 'peerDependencies'] // package.json dependencies key values
 
+/** increase package.json version to prepare for new release */
+export async function bumpVersion({
+  api,
+  token, // github token for Graphql API
+}) {
+  token ||= process.env.GITHUB_TOKEN || lookupGithubToken({ sshPath: '/e/.ssh' })
+  assert(token, `❌ Github access token must be supplied.`)
+
+  const targetProjectConfig = api.project.configuration.configuration,
+    targetRootPath = targetProjectConfig.directory.root,
+    targetPackagePath = path.join(targetRootPath, 'package.json')
+
+  // read package.json file
+  let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
+
+  // bump version
+  let updatedVersion = semanticVersioner.inc(packageConfig.version, 'patch') // increment version by release type - release type (major, premajor, minor, preminor, patch, prepatch, or prerelease).
+
+  // update pacakge.json
+  console.log(`• Updating pacakge.json file ${targetPackagePath} with bumped version ${packageConfig.version} --> ${updatedVersion}`)
+  packageConfig.version = updatedVersion
+  await writeJsonFile(targetPackagePath, packageConfig)
+
+  return updatedVersion
+}
+
 // adapter to the scriptManager api.
 function adapter(...args) {
   const { api /* supplied by scriptManager */ } = args[0]
   args[0].targetProject = api.project // adapter for working with target function interface.
   updateGithubPackage(...args).catch(error => console.error(error))
 }
-
+export { adapter as checkVersion }
+/**
+ * Update github dependencies in package.json files, using the github api that checks for the latest github release and compares it to local semver version.
+ */
 async function updateGithubPackage({
   targetProject, // target project's configuration instance.
   token, // github token for Graphql API
@@ -166,5 +195,3 @@ function updateVersion({ parsedUrl, newVersion: latestRelease }) {
   // parsedUrl.hash = latestRelease // Important: gitUrlParser.stringify doesn't take care of hashes for some reason.
   return `${gitUrlParser.stringify(parsedUrl)}#${semverPrefix}${latestRelease}`
 }
-
-export { adapter as checkVersion }
