@@ -12,18 +12,20 @@ import { createGraphqlClient } from './utility/createGraphqlClient.js'
 import writeJsonFile from 'write-json-file'
 import nestedObjectAssign from 'nested-object-assign'
 const dependencyKeyword = ['dependencies', 'devDependencies', 'peerDependencies'] // package.json dependencies key values
+import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
 
 /** increase package.json version to prepare for new release */
 export async function bumpVersion({
   api,
   token, // github token for Graphql API
+  tagger = git.Signature.now('meow', 'test@example.com'),
 }) {
   token ||= process.env.GITHUB_TOKEN || lookupGithubToken({ sshPath: '/e/.ssh' })
   assert(token, `❌ Github access token must be supplied.`)
 
   const targetProjectConfig = api.project.configuration.configuration,
-    targetRootPath = targetProjectConfig.directory.root,
-    targetPackagePath = path.join(targetRootPath, 'package.json')
+    targetProjectRoot = targetProjectConfig.directory.root,
+    targetPackagePath = path.join(targetProjectRoot, 'package.json')
 
   // read package.json file
   let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
@@ -35,6 +37,21 @@ export async function bumpVersion({
   console.log(`• Updating pacakge.json file ${targetPackagePath} with bumped version ${packageConfig.version} --> ${updatedVersion}`)
   packageConfig.version = updatedVersion
   await writeJsonFile(targetPackagePath, packageConfig)
+
+  // commit changes
+  const repository = await git.Repository.open(targetProjectRoot)
+  // Create commit of all files.
+  let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
+  let treeObject = await index
+    .addAll(['**'])
+    .then(() => index.write())
+    .then(() => index.writeTree()) // add files and create a tree object.
+  let parentCommit = await repository.getHeadCommit() // get latest commit
+  await repository
+    .createCommit('HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */, tagger, tagger, `📦 Bump package.json version.`, treeObject, [
+      parentCommit,
+    ])
+    .then(oid => console.log(`• Commit created ${oid} for package.json version bump`))
 
   return updatedVersion
 }
@@ -58,8 +75,8 @@ async function updateGithubPackage({
   if (!token) token = process.env.GITHUB_TOKEN || lookupGithubToken()
   assert(token, `❌ Github access token must be supplied.`)
 
-  const targetRootPath = targetProject.configuration.rootPath,
-    targetPackagePath = path.join(targetRootPath, 'package.json')
+  const targetProjectRoot = targetProject.configuration.rootPath,
+    targetPackagePath = path.join(targetProjectRoot, 'package.json')
 
   const graphqlClient = createGraphqlClient({ token, endpoint: githubGraphqlEndpoint })
 

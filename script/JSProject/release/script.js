@@ -127,9 +127,7 @@ export async function createGithubBranchedRelease({
     .createCommit('HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */, tagger, tagger, `🏗️ Build distribution code.`, treeObject, [
       parentCommit,
     ])
-    .then(oid => {
-      console.log(`• Commit created ${oid} for distribution code`)
-    })
+    .then(oid => console.log(`• Commit created ${oid} for distribution code`))
 
   // tag and create a release.
   let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit
