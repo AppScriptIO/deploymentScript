@@ -3,7 +3,7 @@
     "main": "./script.js",
     "version": "0.0.0",
     "scripts": {
-        "preinstall": "echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n'; if ! [ $(id -u) = 0 ]; then echo \"Must be root to run script\" && exit 1; fi; DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl && sudo apt -y autoremove # libssl-dev libssh2-1-dev  libffi-dev  zlib1g-dev python-cffi python-dev  python-pip build-essential cmake  gcc  pkg-config  git libhttp-parser-dev python-setuptools wget # https://stackoverflow.com/questions/37634883/installing-libgit2-and-pygit2-on-debian-docker"
+        "preinstall": "CHECK=\"$(dpkg -l | grep libgit2-27 2>/dev/null)\"; if [ -z \"$CHECK\" ]; then echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n'; fi && if ! [ $(id -u) = 0 ]; then echo \"Must be root to run script\" && exit 1; fi && DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl"
     },
     "dependencies": {
         "nodegit": "next",
