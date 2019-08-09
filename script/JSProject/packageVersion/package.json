@@ -3,7 +3,7 @@
     "main": "./script.js",
     "version": "0.0.0",
     "scripts": {
-        "preinstall": "CHECK=\"$(dpkg -l | grep libgit2-27 2>/dev/null)\"; if [ -z \"$CHECK\" ]; then echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n'; fi && if ! [ $(id -u) = 0 ]; then echo \"Must be root to run script\" && exit 1; fi && DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl"
+        "preinstall": "CHECK=\"$(dpkg -l | grep libgit2-27 2>/dev/null)\"; if [ -z \"$CHECK\" ]; then echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n'; if ! [ $(id -u) = 0 ]; then echo \"Must be root to run script\"; fi && DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl; else echo 'nodegit is installed.'; fi"
     },
     "dependencies": {
         "nodegit": "next",
