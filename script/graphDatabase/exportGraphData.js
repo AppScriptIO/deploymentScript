@@ -1,12 +1,12 @@
 // produce json graph data from database queries
 
 import path from 'path'
+import assert from 'assert'
 import { promises as filesystem } from 'fs'
 import { Entity } from '@dependency/entity'
-import { Database as DatabaseModule } from '@dependency/graph'
+import { Database as DatabaseModule } from '@dependency/graphTraversal'
 const { Database } = DatabaseModule
-import { boltCypherModelAdapterFunction } from '@dependency/graph/source/implementationPlugin/databaseModelAdapter/boltCypherModelAdapter.js'
-import assert from 'assert'
+import { boltCypherModelAdapterFunction } from '@dependency/graphTraversal/source/implementationPlugin/databaseModelAdapter/boltCypherModelAdapter.js'
 
 let concreteDatabaseBehavior = new Database.clientInterface({
   implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction() },
