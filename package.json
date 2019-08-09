@@ -7,6 +7,9 @@
     "./script/*",
     "./script/JSProject/*"
   ],
+  "scripts": {
+    "buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
+  },
   "private": true,
   "dependencies": {
     "@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
@@ -14,6 +17,8 @@
     "@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"
   },
   "devDependencies": {
+    "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
+    "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
     "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
     "typescript": "^3.3.3333"
   }
