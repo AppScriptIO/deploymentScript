@@ -8,7 +8,7 @@
 		"./script/JSProject/*"
 	],
 	"scripts": {
-		"preinstall": "yarn install --ignore-scripts",
+		"preinstall": "yarn install --ignore-scripts # install workspaces when used as a dependency",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
 	},
 	"private": true,
