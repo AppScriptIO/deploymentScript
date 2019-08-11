@@ -1,23 +1,24 @@
-const filesystem = require('fs')
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.createSymlink = createSymlink;const filesystem = require('fs');
 
-export function createSymlink(symlinkTarget) {
+function createSymlink(symlinkTarget) {
   for (const target of symlinkTarget) {
     try {
-      let destinationStat = filesystem.existsSync(target.destination) && filesystem.lstatSync(target.destination)
+      let destinationStat = filesystem.existsSync(target.destination) && filesystem.lstatSync(target.destination);
       if (destinationStat) {
-        if (destinationStat.isSymbolicLink()) filesystem.unlinkSync(target.destination)
-        // delete existing symlink or file
-        else if (destinationStat.isFile()) {
-          let originalPath = `${target.destination}.original`
-          if (filesystem.existsSync(originalPath)) filesystem.unlinkSync(target.destination)
-          filesystem.renameSync(target.destination, originalPath)
-        }
+        if (destinationStat.isSymbolicLink()) filesystem.unlinkSync(target.destination);else
+
+          if (destinationStat.isFile()) {
+            let originalPath = `${target.destination}.original`;
+            if (filesystem.existsSync(originalPath)) filesystem.unlinkSync(target.destination);
+            filesystem.renameSync(target.destination, originalPath);
+          }
       }
-      filesystem.symlinkSync(target.source, target.destination) // create symlink
-      console.log(`✔ Symlink created: ${target.source} --> ${target.destination}`)
+      filesystem.symlinkSync(target.source, target.destination);
+      console.log(`✔ Symlink created: ${target.source} --> ${target.destination}`);
     } catch (error) {
-      console.log(`❌ Symlink failed: ${target.source} --> ${target.destination}`)
-      console.log(error)
+      console.log(`❌ Symlink failed: ${target.source} --> ${target.destination}`);
+      console.log(error);
     }
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5L2ZpbGVzeXN0ZW1PcGVyYXRpb24vY3JlYXRlU3ltbGluay5qcyJdLCJuYW1lcyI6WyJmaWxlc3lzdGVtIiwicmVxdWlyZSIsImNyZWF0ZVN5bWxpbmsiLCJzeW1saW5rVGFyZ2V0IiwidGFyZ2V0IiwiZGVzdGluYXRpb25TdGF0IiwiZXhpc3RzU3luYyIsImRlc3RpbmF0aW9uIiwibHN0YXRTeW5jIiwiaXNTeW1ib2xpY0xpbmsiLCJ1bmxpbmtTeW5jIiwiaXNGaWxlIiwib3JpZ2luYWxQYXRoIiwicmVuYW1lU3luYyIsInN5bWxpbmtTeW5jIiwic291cmNlIiwiY29uc29sZSIsImxvZyIsImVycm9yIl0sIm1hcHBpbmdzIjoiaUhBQUEsTUFBTUEsVUFBVSxHQUFHQyxPQUFPLENBQUMsSUFBRCxDQUExQjs7QUFFTyxTQUFTQyxhQUFULENBQXVCQyxhQUF2QixFQUFzQztBQUMzQyxPQUFLLE1BQU1DLE1BQVgsSUFBcUJELGFBQXJCLEVBQW9DO0FBQ2xDLFFBQUk7QUFDRixVQUFJRSxlQUFlLEdBQUdMLFVBQVUsQ0FBQ00sVUFBWCxDQUFzQkYsTUFBTSxDQUFDRyxXQUE3QixLQUE2Q1AsVUFBVSxDQUFDUSxTQUFYLENBQXFCSixNQUFNLENBQUNHLFdBQTVCLENBQW5FO0FBQ0EsVUFBSUYsZUFBSixFQUFxQjtBQUNuQixZQUFJQSxlQUFlLENBQUNJLGNBQWhCLEVBQUosRUFBc0NULFVBQVUsQ0FBQ1UsVUFBWCxDQUFzQk4sTUFBTSxDQUFDRyxXQUE3QixFQUF0Qzs7QUFFSyxjQUFJRixlQUFlLENBQUNNLE1BQWhCLEVBQUosRUFBOEI7QUFDakMsZ0JBQUlDLFlBQVksR0FBSSxHQUFFUixNQUFNLENBQUNHLFdBQVksV0FBekM7QUFDQSxnQkFBSVAsVUFBVSxDQUFDTSxVQUFYLENBQXNCTSxZQUF0QixDQUFKLEVBQXlDWixVQUFVLENBQUNVLFVBQVgsQ0FBc0JOLE1BQU0sQ0FBQ0csV0FBN0I7QUFDekNQLFlBQUFBLFVBQVUsQ0FBQ2EsVUFBWCxDQUFzQlQsTUFBTSxDQUFDRyxXQUE3QixFQUEwQ0ssWUFBMUM7QUFDRDtBQUNGO0FBQ0RaLE1BQUFBLFVBQVUsQ0FBQ2MsV0FBWCxDQUF1QlYsTUFBTSxDQUFDVyxNQUE5QixFQUFzQ1gsTUFBTSxDQUFDRyxXQUE3QztBQUNBUyxNQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSxzQkFBcUJiLE1BQU0sQ0FBQ1csTUFBTyxRQUFPWCxNQUFNLENBQUNHLFdBQVksRUFBMUU7QUFDRCxLQWJELENBYUUsT0FBT1csS0FBUCxFQUFjO0FBQ2RGLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLHFCQUFvQmIsTUFBTSxDQUFDVyxNQUFPLFFBQU9YLE1BQU0sQ0FBQ0csV0FBWSxFQUF6RTtBQUNBUyxNQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWUMsS0FBWjtBQUNEO0FBQ0Y7QUFDRiIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IGZpbGVzeXN0ZW0gPSByZXF1aXJlKCdmcycpXG5cbmV4cG9ydCBmdW5jdGlvbiBjcmVhdGVTeW1saW5rKHN5bWxpbmtUYXJnZXQpIHtcbiAgZm9yIChjb25zdCB0YXJnZXQgb2Ygc3ltbGlua1RhcmdldCkge1xuICAgIHRyeSB7XG4gICAgICBsZXQgZGVzdGluYXRpb25TdGF0ID0gZmlsZXN5c3RlbS5leGlzdHNTeW5jKHRhcmdldC5kZXN0aW5hdGlvbikgJiYgZmlsZXN5c3RlbS5sc3RhdFN5bmModGFyZ2V0LmRlc3RpbmF0aW9uKVxuICAgICAgaWYgKGRlc3RpbmF0aW9uU3RhdCkge1xuICAgICAgICBpZiAoZGVzdGluYXRpb25TdGF0LmlzU3ltYm9saWNMaW5rKCkpIGZpbGVzeXN0ZW0udW5saW5rU3luYyh0YXJnZXQuZGVzdGluYXRpb24pXG4gICAgICAgIC8vIGRlbGV0ZSBleGlzdGluZyBzeW1saW5rIG9yIGZpbGVcbiAgICAgICAgZWxzZSBpZiAoZGVzdGluYXRpb25TdGF0LmlzRmlsZSgpKSB7XG4gICAgICAgICAgbGV0IG9yaWdpbmFsUGF0aCA9IGAke3RhcmdldC5kZXN0aW5hdGlvbn0ub3JpZ2luYWxgXG4gICAgICAgICAgaWYgKGZpbGVzeXN0ZW0uZXhpc3RzU3luYyhvcmlnaW5hbFBhdGgpKSBmaWxlc3lzdGVtLnVubGlua1N5bmModGFyZ2V0LmRlc3RpbmF0aW9uKVxuICAgICAgICAgIGZpbGVzeXN0ZW0ucmVuYW1lU3luYyh0YXJnZXQuZGVzdGluYXRpb24sIG9yaWdpbmFsUGF0aClcbiAgICAgICAgfVxuICAgICAgfVxuICAgICAgZmlsZXN5c3RlbS5zeW1saW5rU3luYyh0YXJnZXQuc291cmNlLCB0YXJnZXQuZGVzdGluYXRpb24pIC8vIGNyZWF0ZSBzeW1saW5rXG4gICAgICBjb25zb2xlLmxvZyhg4pyUIFN5bWxpbmsgY3JlYXRlZDogJHt0YXJnZXQuc291cmNlfSAtLT4gJHt0YXJnZXQuZGVzdGluYXRpb259YClcbiAgICB9IGNhdGNoIChlcnJvcikge1xuICAgICAgY29uc29sZS5sb2coYOKdjCBTeW1saW5rIGZhaWxlZDogJHt0YXJnZXQuc291cmNlfSAtLT4gJHt0YXJnZXQuZGVzdGluYXRpb259YClcbiAgICAgIGNvbnNvbGUubG9nKGVycm9yKVxuICAgIH1cbiAgfVxufVxuIl19
