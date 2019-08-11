@@ -18,6 +18,7 @@
 		"@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"
 	},
 	"devDependencies": {
+		"@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
 		"@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
 		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
 		"@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
