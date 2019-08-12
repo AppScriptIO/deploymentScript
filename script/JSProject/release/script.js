@@ -103,6 +103,13 @@ export async function createGithubBranchedRelease({
 
   // get top directories that are ignored
   let direntList = getAllDirent(targetProjectRoot) // get all files and directories on top level
+
+  // TODO: Deal with subdirectory node_modules and ignored files. The issues is that the whole toplevel directory is removed.
+  // // get all 2nd level directories - this allows for workspaces to keep node_modules folder in a subdirectory.
+  // for (let toplevelDirent of direntList) {
+  //   let subDirentList =
+  // }
+
   // check if path is ignored
   let ignoredDirectoryList = await filterAsync(direntList, async dirent => (await git.Ignore.pathIsIgnored(repository, path.join(targetProjectRoot, dirent.name))) |> Boolean)
   // ignoredDirectoryList = ignoredDirectoryList.map(dirent => path.join(targetProjectRoot, dirent.name)) // get absolute paths
