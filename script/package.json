@@ -1,0 +1,10 @@
+{
+	"name": "@script/workspace",
+	"main": "x",
+	"version": "0.0.0",
+	"workspaces": [
+		"./*",
+		"./JSProject/*"
+	],
+	"private": true
+}

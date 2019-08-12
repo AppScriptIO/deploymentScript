@@ -2,15 +2,13 @@
 	"name": "@dependency/deploymentScript",
 	"main": "x",
 	"version": "1.1.8",
-	"workspaces": [
-		"./source",
-		"./script/*",
-		"./script/JSProject/*"
-	],
 	"scripts": {
-		"preinstall": "yarn install --ignore-scripts # install workspaces when used as a dependency",
+		"preinstall": "yarn install --ignore-scripts && (cd ./script && yarn install) # install workspaces when used as a dependency # NOTES: --ignore-scripts doesn't work because nodegit depends on scripst to be installed correctly. # and using --modules-folder to the same node_modules causes issues. ",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
 	},
+	"workspaces": [
+		"./source"
+	],
 	"private": true,
 	"dependencies": {
 		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
