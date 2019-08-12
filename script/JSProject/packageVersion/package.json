@@ -6,7 +6,7 @@
         "preinstall": "CHECK=\"$(dpkg -l | grep libgit2-27 2>/dev/null)\"; if [ -z \"$CHECK\" ]; then echo 'Machine global peer dependency \"nodegit\" is required. Checking for libgit2...\n'; if ! [ $(id -u) = 0 ]; then echo \"Must be root to run script\"; fi && DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl; else echo 'nodegit is installed.'; fi"
     },
     "dependencies": {
-        "nodegit": "next",
+        "nodegit": "^0.25.0",
         "apollo-cache-inmemory": "^1.4.2",
         "apollo-client": "^2.4.12",
         "apollo-link": "^1.2.8",
