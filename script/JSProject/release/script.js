@@ -1,182 +1,183 @@
-import filesystem from 'fs'
-import path from 'path'
-import childProcess from 'child_process'
-import filesystemExtra from 'fs-extra'
-import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
-import { copyFile } from '../../../source/utility/filesystemOperation/copyFile.js'
-const getDirectory = source => filesystem.readdirSync(source, { withFileTypes: true }).filter(dirent => dirent.isDirectory())
-const getAllDirent = source => filesystem.readdirSync(source, { withFileTypes: true })
-/** Filter array with async function
- * https://stackoverflow.com/questions/33355528/filtering-an-array-with-a-function-that-returns-a-promise
- */
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.createGithubBranchedRelease = createGithubBranchedRelease;var _fs = _interopRequireDefault(require("fs"));
+var _path = _interopRequireDefault(require("path"));
+
+var _fsExtra = _interopRequireDefault(require("fs-extra"));
+var _nodegit = _interopRequireDefault(require("nodegit"));
+var _copyFile = require("../../../source/utility/filesystemOperation/copyFile.js");
+const getDirectory = source => _fs.default.readdirSync(source, { withFileTypes: true }).filter(dirent => dirent.isDirectory());
+const getAllDirent = source => _fs.default.readdirSync(source, { withFileTypes: true });
+
+
+
 async function filterAsync(arr, callback) {
-  const fail = Symbol()
-  return (await Promise.all(arr.map(async item => ((await callback(item)) ? item : fail)))).filter(i => i !== fail)
+  const fail = Symbol();
+  return (await Promise.all(arr.map(async item => (await callback(item)) ? item : fail))).filter(i => i !== fail);
 }
 
-//? TODO: Releases could be created for source code and for distribution code
 
-/**
- * ○ Push new version to github tags.
- * ○ Create a new release from the pushed tag.
- * Release a new tag in Github:
- *  0. stash changes temporarily
- *  1. Create a temporary branch or use an existing branch and checkout to it.
- *  2. Rebase or Reseting onto master (in case the temporary branch exists) - similar to overriding branch history with the master branch.
- *  3. Build code and commit with a distribution message.
- *  4. Create a release/tag.
- *  5. cleanup branches.
- *  6. git checkout master
- *  7. pop last stash files
- *
- *  @sieEffect - creates a tag and deletes temporary branch.
- *
- * Simple example equivalent shell script:
- * ```git checkout distribution && git rebase --onto master distribution && echo "Test Page" > new.js && git add -A && git commit -a -m 'build' && git tag v5; git checkout master```
- *
- * `nodegit` documentation: https://www.nodegit.org/api
- */
-export async function createGithubBranchedRelease({
-  // 'branched release' in the sense of a tag that points to an additional build commit other than the master commit for example.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function createGithubBranchedRelease({
+
   api,
-  temporaryBranchName = 'distribution', // branch used to build source code and create a distribution tag from
-  brachToPointTo = 'master', // default branch for latest commit.
-  commitToPointTo = null, // unrelated commit to point to while creating temporary branch
+  temporaryBranchName = 'distribution',
+  brachToPointTo = 'master',
+  commitToPointTo = null,
   tagName,
-  tagger = git.Signature.now('meow', 'test@example.com'),
-  buildCallback, // build async function that will handle building source code and preparing the package for distribution.
-}) {
+  tagger = _nodegit.default.Signature.now('meow', 'test@example.com'),
+  buildCallback })
+{var _targetProject$config;
   const targetProject = api.project,
-    targetProjectConfig = targetProject.configuration.configuration,
-    targetProjectRoot = targetProject.configuration.rootPath,
-    targetProjectGitUrl = targetProject.configuration.configuration?.build.repositoryURL
+  targetProjectConfig = targetProject.configuration.configuration,
+  targetProjectRoot = targetProject.configuration.rootPath,
+  targetProjectGitUrl = (_targetProject$config = targetProject.configuration.configuration) === null || _targetProject$config === void 0 ? void 0 : _targetProject$config.build.repositoryURL;
 
-  // read git repository
-  const repository = await git.Repository.open(targetProjectRoot)
-  brachToPointTo = await git.Branch.lookup(repository, brachToPointTo, 1) // convert to branch reference
-  // get latest commit from branch
-  let getLatestCommit = await repository.getReferenceCommit(brachToPointTo)
-  // set commit reference
+
+  const repository = await _nodegit.default.Repository.open(targetProjectRoot);
+  brachToPointTo = await _nodegit.default.Branch.lookup(repository, brachToPointTo, 1);
+
+  let getLatestCommit = await repository.getReferenceCommit(brachToPointTo);
+
   if (commitToPointTo) {
-    commitToPointTo = await git.Commit.lookup(repository, commitToPointTo) // get commit from supplied commit id parameter
-  } else commitToPointTo = getLatestCommit
+    commitToPointTo = await _nodegit.default.Commit.lookup(repository, commitToPointTo);
+  } else commitToPointTo = getLatestCommit;
 
-  // get all branches remote and local
-  let branchReferenceList = await repository.getReferences().then(referenceList => referenceList.filter(reference => reference.type() == git.Reference.TYPE.DIRECT))
 
-  // check if `temporaryBranchName` branch, that is used, exists.
-  let doesTemporaryBranchExist = branchReferenceList.some(branch => branch.toString().includes(temporaryBranchName))
-  let temporaryBranch // Branch reference
+  let branchReferenceList = await repository.getReferences().then(referenceList => referenceList.filter(reference => reference.type() == _nodegit.default.Reference.TYPE.DIRECT));
+
+
+  let doesTemporaryBranchExist = branchReferenceList.some(branch => branch.toString().includes(temporaryBranchName));
+  let temporaryBranch;
   if (!doesTemporaryBranchExist) {
-    // create temporary branch
-    temporaryBranch = await git.Branch.create(repository, temporaryBranchName, commitToPointTo, 1).catch(error => console.error(error))
-    console.log(`• Created temporary branch ${await temporaryBranch.name()} from commit ${commitToPointTo.sha()}`)
-  } else temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1)
 
-  // check if there are untracked or staged files
-  let statuseList = await repository.getStatus()
+    temporaryBranch = await _nodegit.default.Branch.create(repository, temporaryBranchName, commitToPointTo, 1).catch(error => console.error(error));
+    console.log(`• Created temporary branch ${await temporaryBranch.name()} from commit ${commitToPointTo.sha()}`);
+  } else temporaryBranch = await _nodegit.default.Branch.lookup(repository, temporaryBranchName, 1);
+
+
+  let statuseList = await repository.getStatus();
   if (statuseList.length > 0)
-    // stash changes that are still not committed
-    await git.Stash.save(repository, tagger, 'checkout stash before release', git.Stash.FLAGS.INCLUDE_UNTRACKED)
 
-  // checkout temporary
-  await repository.checkoutBranch(await temporaryBranch.name()).then(async () => console.log(`Checked branch ${await temporaryBranch.name()}`))
+    await _nodegit.default.Stash.save(repository, tagger, 'checkout stash before release', _nodegit.default.Stash.FLAGS.INCLUDE_UNTRACKED);
 
-  /** reset temporary branch to the commit to point to (targetCommit)
-   * NOTE: Another option is to use rebasing where current commits are saved - check  `rebasingExample()` function
-   */
-  await git.Reset.reset(repository, commitToPointTo, git.Reset.TYPE.HARD)
-    .then(number => {
-      if (number) throw new Error(`• Could not reset repository ${repository} to commit ${commitToPointTo}`)
-    })
-    .catch(error => console.error)
 
-  // run build
-  if (buildCallback) await buildCallback().then(() => console.log('Project built successfully !'))
+  await repository.checkoutBranch((await temporaryBranch.name())).then(async () => console.log(`Checked branch ${await temporaryBranch.name()}`));
 
-  /** Make distribution folder as root directory in the branch */
-  // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
-  let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
-    gitIgnorePath = path.join(targetProjectRoot, './.gitignore')
-  if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
-  copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
 
-  // get top directories that are ignored
-  let direntList = getAllDirent(targetProjectRoot) // get all files and directories on top level
 
-  // TODO: Deal with subdirectory node_modules and ignored files. The issues is that the whole toplevel directory is removed.
-  // // get all 2nd level directories - this allows for workspaces to keep node_modules folder in a subdirectory.
-  // for (let toplevelDirent of direntList) {
-  //   let subDirentList =
-  // }
 
-  // check if path is ignored
-  let ignoredDirectoryList = await filterAsync(direntList, async dirent => (await git.Ignore.pathIsIgnored(repository, path.join(targetProjectRoot, dirent.name))) |> Boolean)
-  // ignoredDirectoryList = ignoredDirectoryList.map(dirent => path.join(targetProjectRoot, dirent.name)) // get absolute paths
-  // get dirent list to delete
-  let direntToDelete = direntList.filter(dirent => !ignoredDirectoryList.includes(dirent)) // remove ignored dirents from delete list
-  /** Delete dirent list that includes directories and files */
-  let deleteAbsolutePathList = direntToDelete.map(dirent => path.join(targetProjectRoot, dirent.name))
+  await _nodegit.default.Reset.reset(repository, commitToPointTo, _nodegit.default.Reset.TYPE.HARD).
+  then(number => {
+    if (number) throw new Error(`• Could not reset repository ${repository} to commit ${commitToPointTo}`);
+  }).
+  catch(error => console.error);
+
+
+  if (buildCallback) await buildCallback().then(() => console.log('Project built successfully !'));
+
+
+
+  let gitExcludePath = _path.default.join(targetProjectRoot, './.git/info/exclude'),
+  gitIgnorePath = _path.default.join(targetProjectRoot, './.gitignore');
+  if (_fs.default.existsSync(gitExcludePath)) _fs.default.unlinkSync(gitExcludePath);
+  (0, _copyFile.copyFile)([{ source: gitIgnorePath, destination: gitExcludePath }]);
+
+
+  let direntList = getAllDirent(targetProjectRoot);
+
+
+
+
+
+
+
+
+  let ignoredDirectoryList = await filterAsync(direntList, async dirent => {var _ref;return _ref = await _nodegit.default.Ignore.pathIsIgnored(repository, _path.default.join(targetProjectRoot, dirent.name)), Boolean(_ref);});
+
+
+  let direntToDelete = direntList.filter(dirent => !ignoredDirectoryList.includes(dirent));
+
+  let deleteAbsolutePathList = direntToDelete.map(dirent => _path.default.join(targetProjectRoot, dirent.name));
   for (let absolutePath of deleteAbsolutePathList) {
-    filesystemExtra.removeSync(absolutePath)
+    _fsExtra.default.removeSync(absolutePath);
   }
-  // copy distribution contents to root project level
-  filesystemExtra.copySync(targetProjectConfig.directory.distribution, targetProjectRoot)
 
-  // Create commit of all files.
-  let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
-  let treeObject = await index
-    .addAll(['**'])
-    .then(() => index.write())
-    .then(() => index.writeTree()) // add files and create a tree object.
-  let parentCommit = await repository.getHeadCommit() // get latest commit
-  await repository
-    .createCommit('HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */, tagger, tagger, `🏗️ Build distribution code.`, treeObject, [
-      parentCommit,
-    ])
-    .then(oid => console.log(`• Commit created ${oid} for distribution code`))
+  _fsExtra.default.copySync(targetProjectConfig.directory.distribution, targetProjectRoot);
 
-  // tag and create a release.
-  let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit
-  await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0).then(oid => console.log(`• Tag created ${oid}`))
 
-  // make sure the branch is checkedout.
-  await repository.checkoutBranch(brachToPointTo).then(async () => console.log(`Checked branch ${await brachToPointTo.name()}`)) // checkout former branch (usually master branch)
+  let index = await repository.refreshIndex();
+  let treeObject = await index.
+  addAll(['**']).
+  then(() => index.write()).
+  then(() => index.writeTree());
+  let parentCommit = await repository.getHeadCommit();
+  await repository.
+  createCommit('HEAD' || null, tagger, tagger, `🏗️ Build distribution code.`, treeObject, [
+  parentCommit]).
 
-  // apply temporarly stashed files
-  if (statuseList.length > 0) await git.Stash.pop(repository, 0 /** last stached position */)
+  then(oid => console.log(`• Commit created ${oid} for distribution code`));
+
+
+  let latestTemporaryBranchCommit = await repository.getHeadCommit();
+  await _nodegit.default.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0).then(oid => console.log(`• Tag created ${oid}`));
+
+
+  await repository.checkoutBranch(brachToPointTo).then(async () => console.log(`Checked branch ${await brachToPointTo.name()}`));
+
+
+  if (statuseList.length > 0) await _nodegit.default.Stash.pop(repository, 0);
 }
 
-/** rebase into master branch to follow the latest master commit. TODO: this is an example - fix async operation.
- *  This is an option for rebasing a temporary branch to the latest commit (or a newer commit). Another option is to use `reset` to a different commit.
- */
+
+
+
 function rebasingExample({ repository, branch, fromBranch, toBranch }) {
   return repository.rebaseBranches(
-    branch.name(), // branch commits to move
-    fromBranch.name(), // till commits that are intersected with this branch (old branch)
-    toBranch.name(), // onto the new branch.
-    git.Signature.now('meow', 'test@example.com'),
-    rebase => {
-      console.log('One operation')
-      return Promise.resolve()
-    },
-    rebaseMetadata => {
-      console.log('Finished rebase')
-      return Promise.resolve()
-    },
-  )
+  branch.name(),
+  fromBranch.name(),
+  toBranch.name(),
+  _nodegit.default.Signature.now('meow', 'test@example.com'),
+  rebase => {
+    console.log('One operation');
+    return Promise.resolve();
+  },
+  rebaseMetadata => {
+    console.log('Finished rebase');
+    return Promise.resolve();
+  });
+
 }
 
 async function deleteTemporaryBranch({ repository, temporaryBranch }) {
-  // delete temporary branch
+
   try {
-    if (git.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`)
-    // By reassigning the variable and looking up the branch the garbage collector will kick in. The reference for the branch in libgit2 shouldn't be in memory as mentioned in https://github.com/libgit2/libgit2/blob/859d92292e008a4d04d68fb6dc20a1dfa68e4874/include/git2/refs.h#L385-L398
-    temporaryBranch = await git.Branch.lookup(repository, temporaryBranchName, 1) // referesh value of temporaryBranch - for some reason using the same reference prevents deletion of branch.
-    let error = git.Branch.delete(temporaryBranch)
-    if (error) throw new Error(`Code thrown by 'libgit2' bindings = ${error}\n \tCheck https://www.nodegit.org/api/error/#CODE`)
-    console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`)
+    if (_nodegit.default.Branch.isCheckedOut(temporaryBranch)) throw new Error(`Cannot delete a checked out branch ${await temporaryBranch.name()}.`);
+
+    temporaryBranch = await _nodegit.default.Branch.lookup(repository, temporaryBranchName, 1);
+    let error = _nodegit.default.Branch.delete(temporaryBranch);
+    if (error) throw new Error(`Code thrown by 'libgit2' bindings = ${error}\n \tCheck https://www.nodegit.org/api/error/#CODE`);
+    console.log(`• Deleted tempoarary branch ${await temporaryBranch.name()}.`);
   } catch (error) {
-    throw error
+    throw error;
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvcmVsZWFzZS9zY3JpcHQuanMiXSwibmFtZXMiOlsiZ2V0RGlyZWN0b3J5Iiwic291cmNlIiwiZmlsZXN5c3RlbSIsInJlYWRkaXJTeW5jIiwid2l0aEZpbGVUeXBlcyIsImZpbHRlciIsImRpcmVudCIsImlzRGlyZWN0b3J5IiwiZ2V0QWxsRGlyZW50IiwiZmlsdGVyQXN5bmMiLCJhcnIiLCJjYWxsYmFjayIsImZhaWwiLCJTeW1ib2wiLCJQcm9taXNlIiwiYWxsIiwibWFwIiwiaXRlbSIsImkiLCJjcmVhdGVHaXRodWJCcmFuY2hlZFJlbGVhc2UiLCJhcGkiLCJ0ZW1wb3JhcnlCcmFuY2hOYW1lIiwiYnJhY2hUb1BvaW50VG8iLCJjb21taXRUb1BvaW50VG8iLCJ0YWdOYW1lIiwidGFnZ2VyIiwiZ2l0IiwiU2lnbmF0dXJlIiwibm93IiwiYnVpbGRDYWxsYmFjayIsInRhcmdldFByb2plY3QiLCJwcm9qZWN0IiwidGFyZ2V0UHJvamVjdENvbmZpZyIsImNvbmZpZ3VyYXRpb24iLCJ0YXJnZXRQcm9qZWN0Um9vdCIsInJvb3RQYXRoIiwidGFyZ2V0UHJvamVjdEdpdFVybCIsImJ1aWxkIiwicmVwb3NpdG9yeVVSTCIsInJlcG9zaXRvcnkiLCJSZXBvc2l0b3J5Iiwib3BlbiIsIkJyYW5jaCIsImxvb2t1cCIsImdldExhdGVzdENvbW1pdCIsImdldFJlZmVyZW5jZUNvbW1pdCIsIkNvbW1pdCIsImJyYW5jaFJlZmVyZW5jZUxpc3QiLCJnZXRSZWZlcmVuY2VzIiwidGhlbiIsInJlZmVyZW5jZUxpc3QiLCJyZWZlcmVuY2UiLCJ0eXBlIiwiUmVmZXJlbmNlIiwiVFlQRSIsIkRJUkVDVCIsImRvZXNUZW1wb3JhcnlCcmFuY2hFeGlzdCIsInNvbWUiLCJicmFuY2giLCJ0b1N0cmluZyIsImluY2x1ZGVzIiwidGVtcG9yYXJ5QnJhbmNoIiwiY3JlYXRlIiwiY2F0Y2giLCJlcnJvciIsImNvbnNvbGUiLCJsb2ciLCJuYW1lIiwic2hhIiwic3RhdHVzZUxpc3QiLCJnZXRTdGF0dXMiLCJsZW5ndGgiLCJTdGFzaCIsInNhdmUiLCJGTEFHUyIsIklOQ0xVREVfVU5UUkFDS0VEIiwiY2hlY2tvdXRCcmFuY2giLCJSZXNldCIsInJlc2V0IiwiSEFSRCIsIm51bWJlciIsIkVycm9yIiwiZ2l0RXhjbHVkZVBhdGgiLCJwYXRoIiwiam9pbiIsImdpdElnbm9yZVBhdGgiLCJleGlzdHNTeW5jIiwidW5saW5rU3luYyIsImRlc3RpbmF0aW9uIiwiZGlyZW50TGlzdCIsImlnbm9yZWREaXJlY3RvcnlMaXN0IiwiSWdub3JlIiwicGF0aElzSWdub3JlZCIsIkJvb2xlYW4iLCJkaXJlbnRUb0RlbGV0ZSIsImRlbGV0ZUFic29sdXRlUGF0aExpc3QiLCJhYnNvbHV0ZVBhdGgiLCJmaWxlc3lzdGVtRXh0cmEiLCJyZW1vdmVTeW5jIiwiY29weVN5bmMiLCJkaXJlY3RvcnkiLCJkaXN0cmlidXRpb24iLCJpbmRleCIsInJlZnJlc2hJbmRleCIsInRyZWVPYmplY3QiLCJhZGRBbGwiLCJ3cml0ZSIsIndyaXRlVHJlZSIsInBhcmVudENvbW1pdCIsImdldEhlYWRDb21taXQiLCJjcmVhdGVDb21taXQiLCJvaWQiLCJsYXRlc3RUZW1wb3JhcnlCcmFuY2hDb21taXQiLCJUYWciLCJwb3AiLCJyZWJhc2luZ0V4YW1wbGUiLCJmcm9tQnJhbmNoIiwidG9CcmFuY2giLCJyZWJhc2VCcmFuY2hlcyIsInJlYmFzZSIsInJlc29sdmUiLCJyZWJhc2VNZXRhZGF0YSIsImRlbGV0ZVRlbXBvcmFyeUJyYW5jaCIsImlzQ2hlY2tlZE91dCIsImRlbGV0ZSJdLCJtYXBwaW5ncyI6ImtPQUFBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0EsTUFBTUEsWUFBWSxHQUFHQyxNQUFNLElBQUlDLFlBQVdDLFdBQVgsQ0FBdUJGLE1BQXZCLEVBQStCLEVBQUVHLGFBQWEsRUFBRSxJQUFqQixFQUEvQixFQUF3REMsTUFBeEQsQ0FBK0RDLE1BQU0sSUFBSUEsTUFBTSxDQUFDQyxXQUFQLEVBQXpFLENBQS9CO0FBQ0EsTUFBTUMsWUFBWSxHQUFHUCxNQUFNLElBQUlDLFlBQVdDLFdBQVgsQ0FBdUJGLE1BQXZCLEVBQStCLEVBQUVHLGFBQWEsRUFBRSxJQUFqQixFQUEvQixDQUEvQjs7OztBQUlBLGVBQWVLLFdBQWYsQ0FBMkJDLEdBQTNCLEVBQWdDQyxRQUFoQyxFQUEwQztBQUN4QyxRQUFNQyxJQUFJLEdBQUdDLE1BQU0sRUFBbkI7QUFDQSxTQUFPLENBQUMsTUFBTUMsT0FBTyxDQUFDQyxHQUFSLENBQVlMLEdBQUcsQ0FBQ00sR0FBSixDQUFRLE1BQU1DLElBQU4sSUFBZSxDQUFDLE1BQU1OLFFBQVEsQ0FBQ00sSUFBRCxDQUFmLElBQXlCQSxJQUF6QixHQUFnQ0wsSUFBdkQsQ0FBWixDQUFQLEVBQW1GUCxNQUFuRixDQUEwRmEsQ0FBQyxJQUFJQSxDQUFDLEtBQUtOLElBQXJHLENBQVA7QUFDRDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBd0JNLGVBQWVPLDJCQUFmLENBQTJDOztBQUVoREMsRUFBQUEsR0FGZ0Q7QUFHaERDLEVBQUFBLG1CQUFtQixHQUFHLGNBSDBCO0FBSWhEQyxFQUFBQSxjQUFjLEdBQUcsUUFKK0I7QUFLaERDLEVBQUFBLGVBQWUsR0FBRyxJQUw4QjtBQU1oREMsRUFBQUEsT0FOZ0Q7QUFPaERDLEVBQUFBLE1BQU0sR0FBR0MsaUJBQUlDLFNBQUosQ0FBY0MsR0FBZCxDQUFrQixNQUFsQixFQUEwQixrQkFBMUIsQ0FQdUM7QUFRaERDLEVBQUFBLGFBUmdELEVBQTNDO0FBU0o7QUFDRCxRQUFNQyxhQUFhLEdBQUdWLEdBQUcsQ0FBQ1csT0FBMUI7QUFDRUMsRUFBQUEsbUJBQW1CLEdBQUdGLGFBQWEsQ0FBQ0csYUFBZCxDQUE0QkEsYUFEcEQ7QUFFRUMsRUFBQUEsaUJBQWlCLEdBQUdKLGFBQWEsQ0FBQ0csYUFBZCxDQUE0QkUsUUFGbEQ7QUFHRUMsRUFBQUEsbUJBQW1CLDRCQUFHTixhQUFhLENBQUNHLGFBQWQsQ0FBNEJBLGFBQS9CLDBEQUFHLHNCQUEyQ0ksS0FBM0MsQ0FBaURDLGFBSHpFOzs7QUFNQSxRQUFNQyxVQUFVLEdBQUcsTUFBTWIsaUJBQUljLFVBQUosQ0FBZUMsSUFBZixDQUFvQlAsaUJBQXBCLENBQXpCO0FBQ0FaLEVBQUFBLGNBQWMsR0FBRyxNQUFNSSxpQkFBSWdCLE1BQUosQ0FBV0MsTUFBWCxDQUFrQkosVUFBbEIsRUFBOEJqQixjQUE5QixFQUE4QyxDQUE5QyxDQUF2Qjs7QUFFQSxNQUFJc0IsZUFBZSxHQUFHLE1BQU1MLFVBQVUsQ0FBQ00sa0JBQVgsQ0FBOEJ2QixjQUE5QixDQUE1Qjs7QUFFQSxNQUFJQyxlQUFKLEVBQXFCO0FBQ25CQSxJQUFBQSxlQUFlLEdBQUcsTUFBTUcsaUJBQUlvQixNQUFKLENBQVdILE1BQVgsQ0FBa0JKLFVBQWxCLEVBQThCaEIsZUFBOUIsQ0FBeEI7QUFDRCxHQUZELE1BRU9BLGVBQWUsR0FBR3FCLGVBQWxCOzs7QUFHUCxNQUFJRyxtQkFBbUIsR0FBRyxNQUFNUixVQUFVLENBQUNTLGFBQVgsR0FBMkJDLElBQTNCLENBQWdDQyxhQUFhLElBQUlBLGFBQWEsQ0FBQzdDLE1BQWQsQ0FBcUI4QyxTQUFTLElBQUlBLFNBQVMsQ0FBQ0MsSUFBVixNQUFvQjFCLGlCQUFJMkIsU0FBSixDQUFjQyxJQUFkLENBQW1CQyxNQUF6RSxDQUFqRCxDQUFoQzs7O0FBR0EsTUFBSUMsd0JBQXdCLEdBQUdULG1CQUFtQixDQUFDVSxJQUFwQixDQUF5QkMsTUFBTSxJQUFJQSxNQUFNLENBQUNDLFFBQVAsR0FBa0JDLFFBQWxCLENBQTJCdkMsbUJBQTNCLENBQW5DLENBQS9CO0FBQ0EsTUFBSXdDLGVBQUo7QUFDQSxNQUFJLENBQUNMLHdCQUFMLEVBQStCOztBQUU3QkssSUFBQUEsZUFBZSxHQUFHLE1BQU1uQyxpQkFBSWdCLE1BQUosQ0FBV29CLE1BQVgsQ0FBa0J2QixVQUFsQixFQUE4QmxCLG1CQUE5QixFQUFtREUsZUFBbkQsRUFBb0UsQ0FBcEUsRUFBdUV3QyxLQUF2RSxDQUE2RUMsS0FBSyxJQUFJQyxPQUFPLENBQUNELEtBQVIsQ0FBY0EsS0FBZCxDQUF0RixDQUF4QjtBQUNBQyxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSw4QkFBNkIsTUFBTUwsZUFBZSxDQUFDTSxJQUFoQixFQUF1QixnQkFBZTVDLGVBQWUsQ0FBQzZDLEdBQWhCLEVBQXNCLEVBQTVHO0FBQ0QsR0FKRCxNQUlPUCxlQUFlLEdBQUcsTUFBTW5DLGlCQUFJZ0IsTUFBSixDQUFXQyxNQUFYLENBQWtCSixVQUFsQixFQUE4QmxCLG1CQUE5QixFQUFtRCxDQUFuRCxDQUF4Qjs7O0FBR1AsTUFBSWdELFdBQVcsR0FBRyxNQUFNOUIsVUFBVSxDQUFDK0IsU0FBWCxFQUF4QjtBQUNBLE1BQUlELFdBQVcsQ0FBQ0UsTUFBWixHQUFxQixDQUF6Qjs7QUFFRSxVQUFNN0MsaUJBQUk4QyxLQUFKLENBQVVDLElBQVYsQ0FBZWxDLFVBQWYsRUFBMkJkLE1BQTNCLEVBQW1DLCtCQUFuQyxFQUFvRUMsaUJBQUk4QyxLQUFKLENBQVVFLEtBQVYsQ0FBZ0JDLGlCQUFwRixDQUFOOzs7QUFHRixRQUFNcEMsVUFBVSxDQUFDcUMsY0FBWCxFQUEwQixNQUFNZixlQUFlLENBQUNNLElBQWhCLEVBQWhDLEdBQXdEbEIsSUFBeEQsQ0FBNkQsWUFBWWdCLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLGtCQUFpQixNQUFNTCxlQUFlLENBQUNNLElBQWhCLEVBQXVCLEVBQTNELENBQXpFLENBQU47Ozs7O0FBS0EsUUFBTXpDLGlCQUFJbUQsS0FBSixDQUFVQyxLQUFWLENBQWdCdkMsVUFBaEIsRUFBNEJoQixlQUE1QixFQUE2Q0csaUJBQUltRCxLQUFKLENBQVV2QixJQUFWLENBQWV5QixJQUE1RDtBQUNIOUIsRUFBQUEsSUFERyxDQUNFK0IsTUFBTSxJQUFJO0FBQ2QsUUFBSUEsTUFBSixFQUFZLE1BQU0sSUFBSUMsS0FBSixDQUFXLGdDQUErQjFDLFVBQVcsY0FBYWhCLGVBQWdCLEVBQWxGLENBQU47QUFDYixHQUhHO0FBSUh3QyxFQUFBQSxLQUpHLENBSUdDLEtBQUssSUFBSUMsT0FBTyxDQUFDRCxLQUpwQixDQUFOOzs7QUFPQSxNQUFJbkMsYUFBSixFQUFtQixNQUFNQSxhQUFhLEdBQUdvQixJQUFoQixDQUFxQixNQUFNZ0IsT0FBTyxDQUFDQyxHQUFSLENBQVksOEJBQVosQ0FBM0IsQ0FBTjs7OztBQUluQixNQUFJZ0IsY0FBYyxHQUFHQyxjQUFLQyxJQUFMLENBQVVsRCxpQkFBVixFQUE2QixxQkFBN0IsQ0FBckI7QUFDRW1ELEVBQUFBLGFBQWEsR0FBR0YsY0FBS0MsSUFBTCxDQUFVbEQsaUJBQVYsRUFBNkIsY0FBN0IsQ0FEbEI7QUFFQSxNQUFJaEMsWUFBV29GLFVBQVgsQ0FBc0JKLGNBQXRCLENBQUosRUFBMkNoRixZQUFXcUYsVUFBWCxDQUFzQkwsY0FBdEI7QUFDM0MsMEJBQVMsQ0FBQyxFQUFFakYsTUFBTSxFQUFFb0YsYUFBVixFQUF5QkcsV0FBVyxFQUFFTixjQUF0QyxFQUFELENBQVQ7OztBQUdBLE1BQUlPLFVBQVUsR0FBR2pGLFlBQVksQ0FBQzBCLGlCQUFELENBQTdCOzs7Ozs7Ozs7QUFTQSxNQUFJd0Qsb0JBQW9CLEdBQUcsTUFBTWpGLFdBQVcsQ0FBQ2dGLFVBQUQsRUFBYSxNQUFNbkYsTUFBTiw0QkFBaUIsTUFBTW9CLGlCQUFJaUUsTUFBSixDQUFXQyxhQUFYLENBQXlCckQsVUFBekIsRUFBcUM0QyxjQUFLQyxJQUFMLENBQVVsRCxpQkFBVixFQUE2QjVCLE1BQU0sQ0FBQzZELElBQXBDLENBQXJDLENBQXZCLEVBQTJHMEIsT0FBM0csUUFBYixDQUE1Qzs7O0FBR0EsTUFBSUMsY0FBYyxHQUFHTCxVQUFVLENBQUNwRixNQUFYLENBQWtCQyxNQUFNLElBQUksQ0FBQ29GLG9CQUFvQixDQUFDOUIsUUFBckIsQ0FBOEJ0RCxNQUE5QixDQUE3QixDQUFyQjs7QUFFQSxNQUFJeUYsc0JBQXNCLEdBQUdELGNBQWMsQ0FBQzlFLEdBQWYsQ0FBbUJWLE1BQU0sSUFBSTZFLGNBQUtDLElBQUwsQ0FBVWxELGlCQUFWLEVBQTZCNUIsTUFBTSxDQUFDNkQsSUFBcEMsQ0FBN0IsQ0FBN0I7QUFDQSxPQUFLLElBQUk2QixZQUFULElBQXlCRCxzQkFBekIsRUFBaUQ7QUFDL0NFLHFCQUFnQkMsVUFBaEIsQ0FBMkJGLFlBQTNCO0FBQ0Q7O0FBRURDLG1CQUFnQkUsUUFBaEIsQ0FBeUJuRSxtQkFBbUIsQ0FBQ29FLFNBQXBCLENBQThCQyxZQUF2RCxFQUFxRW5FLGlCQUFyRTs7O0FBR0EsTUFBSW9FLEtBQUssR0FBRyxNQUFNL0QsVUFBVSxDQUFDZ0UsWUFBWCxFQUFsQjtBQUNBLE1BQUlDLFVBQVUsR0FBRyxNQUFNRixLQUFLO0FBQ3pCRyxFQUFBQSxNQURvQixDQUNiLENBQUMsSUFBRCxDQURhO0FBRXBCeEQsRUFBQUEsSUFGb0IsQ0FFZixNQUFNcUQsS0FBSyxDQUFDSSxLQUFOLEVBRlM7QUFHcEJ6RCxFQUFBQSxJQUhvQixDQUdmLE1BQU1xRCxLQUFLLENBQUNLLFNBQU4sRUFIUyxDQUF2QjtBQUlBLE1BQUlDLFlBQVksR0FBRyxNQUFNckUsVUFBVSxDQUFDc0UsYUFBWCxFQUF6QjtBQUNBLFFBQU10RSxVQUFVO0FBQ2J1RSxFQUFBQSxZQURHLENBQ1UsVUFBMEYsSUFEcEcsRUFDa0lyRixNQURsSSxFQUMwSUEsTUFEMUksRUFDbUosOEJBRG5KLEVBQ2tMK0UsVUFEbEwsRUFDOEw7QUFDaE1JLEVBQUFBLFlBRGdNLENBRDlMOztBQUlIM0QsRUFBQUEsSUFKRyxDQUlFOEQsR0FBRyxJQUFJOUMsT0FBTyxDQUFDQyxHQUFSLENBQWEsb0JBQW1CNkMsR0FBSSx3QkFBcEMsQ0FKVCxDQUFOOzs7QUFPQSxNQUFJQywyQkFBMkIsR0FBRyxNQUFNekUsVUFBVSxDQUFDc0UsYUFBWCxFQUF4QztBQUNBLFFBQU1uRixpQkFBSXVGLEdBQUosQ0FBUW5ELE1BQVIsQ0FBZXZCLFVBQWYsRUFBMkJmLE9BQTNCLEVBQW9Dd0YsMkJBQXBDLEVBQWlFdkYsTUFBakUsRUFBMEUsb0NBQTFFLEVBQStHLENBQS9HLEVBQWtId0IsSUFBbEgsQ0FBdUg4RCxHQUFHLElBQUk5QyxPQUFPLENBQUNDLEdBQVIsQ0FBYSxpQkFBZ0I2QyxHQUFJLEVBQWpDLENBQTlILENBQU47OztBQUdBLFFBQU14RSxVQUFVLENBQUNxQyxjQUFYLENBQTBCdEQsY0FBMUIsRUFBMEMyQixJQUExQyxDQUErQyxZQUFZZ0IsT0FBTyxDQUFDQyxHQUFSLENBQWEsa0JBQWlCLE1BQU01QyxjQUFjLENBQUM2QyxJQUFmLEVBQXNCLEVBQTFELENBQTNELENBQU47OztBQUdBLE1BQUlFLFdBQVcsQ0FBQ0UsTUFBWixHQUFxQixDQUF6QixFQUE0QixNQUFNN0MsaUJBQUk4QyxLQUFKLENBQVUwQyxHQUFWLENBQWMzRSxVQUFkLEVBQTBCLENBQTFCLENBQU47QUFDN0I7Ozs7O0FBS0QsU0FBUzRFLGVBQVQsQ0FBeUIsRUFBRTVFLFVBQUYsRUFBY21CLE1BQWQsRUFBc0IwRCxVQUF0QixFQUFrQ0MsUUFBbEMsRUFBekIsRUFBdUU7QUFDckUsU0FBTzlFLFVBQVUsQ0FBQytFLGNBQVg7QUFDTDVELEVBQUFBLE1BQU0sQ0FBQ1MsSUFBUCxFQURLO0FBRUxpRCxFQUFBQSxVQUFVLENBQUNqRCxJQUFYLEVBRks7QUFHTGtELEVBQUFBLFFBQVEsQ0FBQ2xELElBQVQsRUFISztBQUlMekMsbUJBQUlDLFNBQUosQ0FBY0MsR0FBZCxDQUFrQixNQUFsQixFQUEwQixrQkFBMUIsQ0FKSztBQUtMMkYsRUFBQUEsTUFBTSxJQUFJO0FBQ1J0RCxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWSxlQUFaO0FBQ0EsV0FBT3BELE9BQU8sQ0FBQzBHLE9BQVIsRUFBUDtBQUNELEdBUkk7QUFTTEMsRUFBQUEsY0FBYyxJQUFJO0FBQ2hCeEQsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVksaUJBQVo7QUFDQSxXQUFPcEQsT0FBTyxDQUFDMEcsT0FBUixFQUFQO0FBQ0QsR0FaSSxDQUFQOztBQWNEOztBQUVELGVBQWVFLHFCQUFmLENBQXFDLEVBQUVuRixVQUFGLEVBQWNzQixlQUFkLEVBQXJDLEVBQXNFOztBQUVwRSxNQUFJO0FBQ0YsUUFBSW5DLGlCQUFJZ0IsTUFBSixDQUFXaUYsWUFBWCxDQUF3QjlELGVBQXhCLENBQUosRUFBOEMsTUFBTSxJQUFJb0IsS0FBSixDQUFXLHNDQUFxQyxNQUFNcEIsZUFBZSxDQUFDTSxJQUFoQixFQUF1QixHQUE3RSxDQUFOOztBQUU5Q04sSUFBQUEsZUFBZSxHQUFHLE1BQU1uQyxpQkFBSWdCLE1BQUosQ0FBV0MsTUFBWCxDQUFrQkosVUFBbEIsRUFBOEJsQixtQkFBOUIsRUFBbUQsQ0FBbkQsQ0FBeEI7QUFDQSxRQUFJMkMsS0FBSyxHQUFHdEMsaUJBQUlnQixNQUFKLENBQVdrRixNQUFYLENBQWtCL0QsZUFBbEIsQ0FBWjtBQUNBLFFBQUlHLEtBQUosRUFBVyxNQUFNLElBQUlpQixLQUFKLENBQVcsdUNBQXNDakIsS0FBTSxvREFBdkQsQ0FBTjtBQUNYQyxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSwrQkFBOEIsTUFBTUwsZUFBZSxDQUFDTSxJQUFoQixFQUF1QixHQUF4RTtBQUNELEdBUEQsQ0FPRSxPQUFPSCxLQUFQLEVBQWM7QUFDZCxVQUFNQSxLQUFOO0FBQ0Q7QUFDRiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xyXG5pbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xyXG5pbXBvcnQgY2hpbGRQcm9jZXNzIGZyb20gJ2NoaWxkX3Byb2Nlc3MnXHJcbmltcG9ydCBmaWxlc3lzdGVtRXh0cmEgZnJvbSAnZnMtZXh0cmEnXHJcbmltcG9ydCB7IGRlZmF1bHQgYXMgZ2l0LCBDb21taXQsIFJlcG9zaXRvcnksIFJlZmVyZW5jZSwgQnJhbmNoLCBTaWduYXR1cmUsIFJlc2V0LCBTdGFzaCB9IGZyb20gJ25vZGVnaXQnXHJcbmltcG9ydCB7IGNvcHlGaWxlIH0gZnJvbSAnLi4vLi4vLi4vc291cmNlL3V0aWxpdHkvZmlsZXN5c3RlbU9wZXJhdGlvbi9jb3B5RmlsZS5qcydcclxuY29uc3QgZ2V0RGlyZWN0b3J5ID0gc291cmNlID0+IGZpbGVzeXN0ZW0ucmVhZGRpclN5bmMoc291cmNlLCB7IHdpdGhGaWxlVHlwZXM6IHRydWUgfSkuZmlsdGVyKGRpcmVudCA9PiBkaXJlbnQuaXNEaXJlY3RvcnkoKSlcclxuY29uc3QgZ2V0QWxsRGlyZW50ID0gc291cmNlID0+IGZpbGVzeXN0ZW0ucmVhZGRpclN5bmMoc291cmNlLCB7IHdpdGhGaWxlVHlwZXM6IHRydWUgfSlcclxuLyoqIEZpbHRlciBhcnJheSB3aXRoIGFzeW5jIGZ1bmN0aW9uXHJcbiAqIGh0dHBzOi8vc3RhY2tvdmVyZmxvdy5jb20vcXVlc3Rpb25zLzMzMzU1NTI4L2ZpbHRlcmluZy1hbi1hcnJheS13aXRoLWEtZnVuY3Rpb24tdGhhdC1yZXR1cm5zLWEtcHJvbWlzZVxyXG4gKi9cclxuYXN5bmMgZnVuY3Rpb24gZmlsdGVyQXN5bmMoYXJyLCBjYWxsYmFjaykge1xyXG4gIGNvbnN0IGZhaWwgPSBTeW1ib2woKVxyXG4gIHJldHVybiAoYXdhaXQgUHJvbWlzZS5hbGwoYXJyLm1hcChhc3luYyBpdGVtID0+ICgoYXdhaXQgY2FsbGJhY2soaXRlbSkpID8gaXRlbSA6IGZhaWwpKSkpLmZpbHRlcihpID0+IGkgIT09IGZhaWwpXHJcbn1cclxuXHJcbi8vPyBUT0RPOiBSZWxlYXNlcyBjb3VsZCBiZSBjcmVhdGVkIGZvciBzb3VyY2UgY29kZSBhbmQgZm9yIGRpc3RyaWJ1dGlvbiBjb2RlXHJcblxyXG4vKipcclxuICog4peLIFB1c2ggbmV3IHZlcnNpb24gdG8gZ2l0aHViIHRhZ3MuXHJcbiAqIOKXiyBDcmVhdGUgYSBuZXcgcmVsZWFzZSBmcm9tIHRoZSBwdXNoZWQgdGFnLlxyXG4gKiBSZWxlYXNlIGEgbmV3IHRhZyBpbiBHaXRodWI6XHJcbiAqICAwLiBzdGFzaCBjaGFuZ2VzIHRlbXBvcmFyaWx5XHJcbiAqICAxLiBDcmVhdGUgYSB0ZW1wb3JhcnkgYnJhbmNoIG9yIHVzZSBhbiBleGlzdGluZyBicmFuY2ggYW5kIGNoZWNrb3V0IHRvIGl0LlxyXG4gKiAgMi4gUmViYXNlIG9yIFJlc2V0aW5nIG9udG8gbWFzdGVyIChpbiBjYXNlIHRoZSB0ZW1wb3JhcnkgYnJhbmNoIGV4aXN0cykgLSBzaW1pbGFyIHRvIG92ZXJyaWRpbmcgYnJhbmNoIGhpc3Rvcnkgd2l0aCB0aGUgbWFzdGVyIGJyYW5jaC5cclxuICogIDMuIEJ1aWxkIGNvZGUgYW5kIGNvbW1pdCB3aXRoIGEgZGlzdHJpYnV0aW9uIG1lc3NhZ2UuXHJcbiAqICA0LiBDcmVhdGUgYSByZWxlYXNlL3RhZy5cclxuICogIDUuIGNsZWFudXAgYnJhbmNoZXMuXHJcbiAqICA2LiBnaXQgY2hlY2tvdXQgbWFzdGVyXHJcbiAqICA3LiBwb3AgbGFzdCBzdGFzaCBmaWxlc1xyXG4gKlxyXG4gKiAgQHNpZUVmZmVjdCAtIGNyZWF0ZXMgYSB0YWcgYW5kIGRlbGV0ZXMgdGVtcG9yYXJ5IGJyYW5jaC5cclxuICpcclxuICogU2ltcGxlIGV4YW1wbGUgZXF1aXZhbGVudCBzaGVsbCBzY3JpcHQ6XHJcbiAqIGBgYGdpdCBjaGVja291dCBkaXN0cmlidXRpb24gJiYgZ2l0IHJlYmFzZSAtLW9udG8gbWFzdGVyIGRpc3RyaWJ1dGlvbiAmJiBlY2hvIFwiVGVzdCBQYWdlXCIgPiBuZXcuanMgJiYgZ2l0IGFkZCAtQSAmJiBnaXQgY29tbWl0IC1hIC1tICdidWlsZCcgJiYgZ2l0IHRhZyB2NTsgZ2l0IGNoZWNrb3V0IG1hc3RlcmBgYFxyXG4gKlxyXG4gKiBgbm9kZWdpdGAgZG9jdW1lbnRhdGlvbjogaHR0cHM6Ly93d3cubm9kZWdpdC5vcmcvYXBpXHJcbiAqL1xyXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gY3JlYXRlR2l0aHViQnJhbmNoZWRSZWxlYXNlKHtcclxuICAvLyAnYnJhbmNoZWQgcmVsZWFzZScgaW4gdGhlIHNlbnNlIG9mIGEgdGFnIHRoYXQgcG9pbnRzIHRvIGFuIGFkZGl0aW9uYWwgYnVpbGQgY29tbWl0IG90aGVyIHRoYW4gdGhlIG1hc3RlciBjb21taXQgZm9yIGV4YW1wbGUuXHJcbiAgYXBpLFxyXG4gIHRlbXBvcmFyeUJyYW5jaE5hbWUgPSAnZGlzdHJpYnV0aW9uJywgLy8gYnJhbmNoIHVzZWQgdG8gYnVpbGQgc291cmNlIGNvZGUgYW5kIGNyZWF0ZSBhIGRpc3RyaWJ1dGlvbiB0YWcgZnJvbVxyXG4gIGJyYWNoVG9Qb2ludFRvID0gJ21hc3RlcicsIC8vIGRlZmF1bHQgYnJhbmNoIGZvciBsYXRlc3QgY29tbWl0LlxyXG4gIGNvbW1pdFRvUG9pbnRUbyA9IG51bGwsIC8vIHVucmVsYXRlZCBjb21taXQgdG8gcG9pbnQgdG8gd2hpbGUgY3JlYXRpbmcgdGVtcG9yYXJ5IGJyYW5jaFxyXG4gIHRhZ05hbWUsXHJcbiAgdGFnZ2VyID0gZ2l0LlNpZ25hdHVyZS5ub3coJ21lb3cnLCAndGVzdEBleGFtcGxlLmNvbScpLFxyXG4gIGJ1aWxkQ2FsbGJhY2ssIC8vIGJ1aWxkIGFzeW5jIGZ1bmN0aW9uIHRoYXQgd2lsbCBoYW5kbGUgYnVpbGRpbmcgc291cmNlIGNvZGUgYW5kIHByZXBhcmluZyB0aGUgcGFja2FnZSBmb3IgZGlzdHJpYnV0aW9uLlxyXG59KSB7XHJcbiAgY29uc3QgdGFyZ2V0UHJvamVjdCA9IGFwaS5wcm9qZWN0LFxyXG4gICAgdGFyZ2V0UHJvamVjdENvbmZpZyA9IHRhcmdldFByb2plY3QuY29uZmlndXJhdGlvbi5jb25maWd1cmF0aW9uLFxyXG4gICAgdGFyZ2V0UHJvamVjdFJvb3QgPSB0YXJnZXRQcm9qZWN0LmNvbmZpZ3VyYXRpb24ucm9vdFBhdGgsXHJcbiAgICB0YXJnZXRQcm9qZWN0R2l0VXJsID0gdGFyZ2V0UHJvamVjdC5jb25maWd1cmF0aW9uLmNvbmZpZ3VyYXRpb24/LmJ1aWxkLnJlcG9zaXRvcnlVUkxcclxuXHJcbiAgLy8gcmVhZCBnaXQgcmVwb3NpdG9yeVxyXG4gIGNvbnN0IHJlcG9zaXRvcnkgPSBhd2FpdCBnaXQuUmVwb3NpdG9yeS5vcGVuKHRhcmdldFByb2plY3RSb290KVxyXG4gIGJyYWNoVG9Qb2ludFRvID0gYXdhaXQgZ2l0LkJyYW5jaC5sb29rdXAocmVwb3NpdG9yeSwgYnJhY2hUb1BvaW50VG8sIDEpIC8vIGNvbnZlcnQgdG8gYnJhbmNoIHJlZmVyZW5jZVxyXG4gIC8vIGdldCBsYXRlc3QgY29tbWl0IGZyb20gYnJhbmNoXHJcbiAgbGV0IGdldExhdGVzdENvbW1pdCA9IGF3YWl0IHJlcG9zaXRvcnkuZ2V0UmVmZXJlbmNlQ29tbWl0KGJyYWNoVG9Qb2ludFRvKVxyXG4gIC8vIHNldCBjb21taXQgcmVmZXJlbmNlXHJcbiAgaWYgKGNvbW1pdFRvUG9pbnRUbykge1xyXG4gICAgY29tbWl0VG9Qb2ludFRvID0gYXdhaXQgZ2l0LkNvbW1pdC5sb29rdXAocmVwb3NpdG9yeSwgY29tbWl0VG9Qb2ludFRvKSAvLyBnZXQgY29tbWl0IGZyb20gc3VwcGxpZWQgY29tbWl0IGlkIHBhcmFtZXRlclxyXG4gIH0gZWxzZSBjb21taXRUb1BvaW50VG8gPSBnZXRMYXRlc3RDb21taXRcclxuXHJcbiAgLy8gZ2V0IGFsbCBicmFuY2hlcyByZW1vdGUgYW5kIGxvY2FsXHJcbiAgbGV0IGJyYW5jaFJlZmVyZW5jZUxpc3QgPSBhd2FpdCByZXBvc2l0b3J5LmdldFJlZmVyZW5jZXMoKS50aGVuKHJlZmVyZW5jZUxpc3QgPT4gcmVmZXJlbmNlTGlzdC5maWx0ZXIocmVmZXJlbmNlID0+IHJlZmVyZW5jZS50eXBlKCkgPT0gZ2l0LlJlZmVyZW5jZS5UWVBFLkRJUkVDVCkpXHJcblxyXG4gIC8vIGNoZWNrIGlmIGB0ZW1wb3JhcnlCcmFuY2hOYW1lYCBicmFuY2gsIHRoYXQgaXMgdXNlZCwgZXhpc3RzLlxyXG4gIGxldCBkb2VzVGVtcG9yYXJ5QnJhbmNoRXhpc3QgPSBicmFuY2hSZWZlcmVuY2VMaXN0LnNvbWUoYnJhbmNoID0+IGJyYW5jaC50b1N0cmluZygpLmluY2x1ZGVzKHRlbXBvcmFyeUJyYW5jaE5hbWUpKVxyXG4gIGxldCB0ZW1wb3JhcnlCcmFuY2ggLy8gQnJhbmNoIHJlZmVyZW5jZVxyXG4gIGlmICghZG9lc1RlbXBvcmFyeUJyYW5jaEV4aXN0KSB7XHJcbiAgICAvLyBjcmVhdGUgdGVtcG9yYXJ5IGJyYW5jaFxyXG4gICAgdGVtcG9yYXJ5QnJhbmNoID0gYXdhaXQgZ2l0LkJyYW5jaC5jcmVhdGUocmVwb3NpdG9yeSwgdGVtcG9yYXJ5QnJhbmNoTmFtZSwgY29tbWl0VG9Qb2ludFRvLCAxKS5jYXRjaChlcnJvciA9PiBjb25zb2xlLmVycm9yKGVycm9yKSlcclxuICAgIGNvbnNvbGUubG9nKGDigKIgQ3JlYXRlZCB0ZW1wb3JhcnkgYnJhbmNoICR7YXdhaXQgdGVtcG9yYXJ5QnJhbmNoLm5hbWUoKX0gZnJvbSBjb21taXQgJHtjb21taXRUb1BvaW50VG8uc2hhKCl9YClcclxuICB9IGVsc2UgdGVtcG9yYXJ5QnJhbmNoID0gYXdhaXQgZ2l0LkJyYW5jaC5sb29rdXAocmVwb3NpdG9yeSwgdGVtcG9yYXJ5QnJhbmNoTmFtZSwgMSlcclxuXHJcbiAgLy8gY2hlY2sgaWYgdGhlcmUgYXJlIHVudHJhY2tlZCBvciBzdGFnZWQgZmlsZXNcclxuICBsZXQgc3RhdHVzZUxpc3QgPSBhd2FpdCByZXBvc2l0b3J5LmdldFN0YXR1cygpXHJcbiAgaWYgKHN0YXR1c2VMaXN0Lmxlbmd0aCA+IDApXHJcbiAgICAvLyBzdGFzaCBjaGFuZ2VzIHRoYXQgYXJlIHN0aWxsIG5vdCBjb21taXR0ZWRcclxuICAgIGF3YWl0IGdpdC5TdGFzaC5zYXZlKHJlcG9zaXRvcnksIHRhZ2dlciwgJ2NoZWNrb3V0IHN0YXNoIGJlZm9yZSByZWxlYXNlJywgZ2l0LlN0YXNoLkZMQUdTLklOQ0xVREVfVU5UUkFDS0VEKVxyXG5cclxuICAvLyBjaGVja291dCB0ZW1wb3JhcnlcclxuICBhd2FpdCByZXBvc2l0b3J5LmNoZWNrb3V0QnJhbmNoKGF3YWl0IHRlbXBvcmFyeUJyYW5jaC5uYW1lKCkpLnRoZW4oYXN5bmMgKCkgPT4gY29uc29sZS5sb2coYENoZWNrZWQgYnJhbmNoICR7YXdhaXQgdGVtcG9yYXJ5QnJhbmNoLm5hbWUoKX1gKSlcclxuXHJcbiAgLyoqIHJlc2V0IHRlbXBvcmFyeSBicmFuY2ggdG8gdGhlIGNvbW1pdCB0byBwb2ludCB0byAodGFyZ2V0Q29tbWl0KVxyXG4gICAqIE5PVEU6IEFub3RoZXIgb3B0aW9uIGlzIHRvIHVzZSByZWJhc2luZyB3aGVyZSBjdXJyZW50IGNvbW1pdHMgYXJlIHNhdmVkIC0gY2hlY2sgIGByZWJhc2luZ0V4YW1wbGUoKWAgZnVuY3Rpb25cclxuICAgKi9cclxuICBhd2FpdCBnaXQuUmVzZXQucmVzZXQocmVwb3NpdG9yeSwgY29tbWl0VG9Qb2ludFRvLCBnaXQuUmVzZXQuVFlQRS5IQVJEKVxyXG4gICAgLnRoZW4obnVtYmVyID0+IHtcclxuICAgICAgaWYgKG51bWJlcikgdGhyb3cgbmV3IEVycm9yKGDigKIgQ291bGQgbm90IHJlc2V0IHJlcG9zaXRvcnkgJHtyZXBvc2l0b3J5fSB0byBjb21taXQgJHtjb21taXRUb1BvaW50VG99YClcclxuICAgIH0pXHJcbiAgICAuY2F0Y2goZXJyb3IgPT4gY29uc29sZS5lcnJvcilcclxuXHJcbiAgLy8gcnVuIGJ1aWxkXHJcbiAgaWYgKGJ1aWxkQ2FsbGJhY2spIGF3YWl0IGJ1aWxkQ2FsbGJhY2soKS50aGVuKCgpID0+IGNvbnNvbGUubG9nKCdQcm9qZWN0IGJ1aWx0IHN1Y2Nlc3NmdWxseSAhJykpXHJcblxyXG4gIC8qKiBNYWtlIGRpc3RyaWJ1dGlvbiBmb2xkZXIgYXMgcm9vdCBkaXJlY3RvcnkgaW4gdGhlIGJyYW5jaCAqL1xyXG4gIC8vIGRlbGV0aW5nIC5naXRpZ25vcmUgd2lsbCBtYWtlIGl0IGZhc3RlciwgYnkgcHJldmVudGluZyBub2RlX21vZHVsZXMgZnJvbSBiZWluZyBwcm9jZXNzZWQgYnkgdG9vbHMgd2hpbGUgZGVsZXRpbmcgZmlsZXMuXHJcbiAgbGV0IGdpdEV4Y2x1ZGVQYXRoID0gcGF0aC5qb2luKHRhcmdldFByb2plY3RSb290LCAnLi8uZ2l0L2luZm8vZXhjbHVkZScpLFxyXG4gICAgZ2l0SWdub3JlUGF0aCA9IHBhdGguam9pbih0YXJnZXRQcm9qZWN0Um9vdCwgJy4vLmdpdGlnbm9yZScpXHJcbiAgaWYgKGZpbGVzeXN0ZW0uZXhpc3RzU3luYyhnaXRFeGNsdWRlUGF0aCkpIGZpbGVzeXN0ZW0udW5saW5rU3luYyhnaXRFeGNsdWRlUGF0aCkgLy8gcmVtb3ZlIGZpbGVcclxuICBjb3B5RmlsZShbeyBzb3VyY2U6IGdpdElnbm9yZVBhdGgsIGRlc3RpbmF0aW9uOiBnaXRFeGNsdWRlUGF0aCB9XSkgLy8gY29weSAuZ2l0aWdub3JlIHRvIGAuZ2l0YCBmb2xkZXJcclxuXHJcbiAgLy8gZ2V0IHRvcCBkaXJlY3RvcmllcyB0aGF0IGFyZSBpZ25vcmVkXHJcbiAgbGV0IGRpcmVudExpc3QgPSBnZXRBbGxEaXJlbnQodGFyZ2V0UHJvamVjdFJvb3QpIC8vIGdldCBhbGwgZmlsZXMgYW5kIGRpcmVjdG9yaWVzIG9uIHRvcCBsZXZlbFxyXG5cclxuICAvLyBUT0RPOiBEZWFsIHdpdGggc3ViZGlyZWN0b3J5IG5vZGVfbW9kdWxlcyBhbmQgaWdub3JlZCBmaWxlcy4gVGhlIGlzc3VlcyBpcyB0aGF0IHRoZSB3aG9sZSB0b3BsZXZlbCBkaXJlY3RvcnkgaXMgcmVtb3ZlZC5cclxuICAvLyAvLyBnZXQgYWxsIDJuZCBsZXZlbCBkaXJlY3RvcmllcyAtIHRoaXMgYWxsb3dzIGZvciB3b3Jrc3BhY2VzIHRvIGtlZXAgbm9kZV9tb2R1bGVzIGZvbGRlciBpbiBhIHN1YmRpcmVjdG9yeS5cclxuICAvLyBmb3IgKGxldCB0b3BsZXZlbERpcmVudCBvZiBkaXJlbnRMaXN0KSB7XHJcbiAgLy8gICBsZXQgc3ViRGlyZW50TGlzdCA9XHJcbiAgLy8gfVxyXG5cclxuICAvLyBjaGVjayBpZiBwYXRoIGlzIGlnbm9yZWRcclxuICBsZXQgaWdub3JlZERpcmVjdG9yeUxpc3QgPSBhd2FpdCBmaWx0ZXJBc3luYyhkaXJlbnRMaXN0LCBhc3luYyBkaXJlbnQgPT4gKGF3YWl0IGdpdC5JZ25vcmUucGF0aElzSWdub3JlZChyZXBvc2l0b3J5LCBwYXRoLmpvaW4odGFyZ2V0UHJvamVjdFJvb3QsIGRpcmVudC5uYW1lKSkpIHw+IEJvb2xlYW4pXHJcbiAgLy8gaWdub3JlZERpcmVjdG9yeUxpc3QgPSBpZ25vcmVkRGlyZWN0b3J5TGlzdC5tYXAoZGlyZW50ID0+IHBhdGguam9pbih0YXJnZXRQcm9qZWN0Um9vdCwgZGlyZW50Lm5hbWUpKSAvLyBnZXQgYWJzb2x1dGUgcGF0aHNcclxuICAvLyBnZXQgZGlyZW50IGxpc3QgdG8gZGVsZXRlXHJcbiAgbGV0IGRpcmVudFRvRGVsZXRlID0gZGlyZW50TGlzdC5maWx0ZXIoZGlyZW50ID0+ICFpZ25vcmVkRGlyZWN0b3J5TGlzdC5pbmNsdWRlcyhkaXJlbnQpKSAvLyByZW1vdmUgaWdub3JlZCBkaXJlbnRzIGZyb20gZGVsZXRlIGxpc3RcclxuICAvKiogRGVsZXRlIGRpcmVudCBsaXN0IHRoYXQgaW5jbHVkZXMgZGlyZWN0b3JpZXMgYW5kIGZpbGVzICovXHJcbiAgbGV0IGRlbGV0ZUFic29sdXRlUGF0aExpc3QgPSBkaXJlbnRUb0RlbGV0ZS5tYXAoZGlyZW50ID0+IHBhdGguam9pbih0YXJnZXRQcm9qZWN0Um9vdCwgZGlyZW50Lm5hbWUpKVxyXG4gIGZvciAobGV0IGFic29sdXRlUGF0aCBvZiBkZWxldGVBYnNvbHV0ZVBhdGhMaXN0KSB7XHJcbiAgICBmaWxlc3lzdGVtRXh0cmEucmVtb3ZlU3luYyhhYnNvbHV0ZVBhdGgpXHJcbiAgfVxyXG4gIC8vIGNvcHkgZGlzdHJpYnV0aW9uIGNvbnRlbnRzIHRvIHJvb3QgcHJvamVjdCBsZXZlbFxyXG4gIGZpbGVzeXN0ZW1FeHRyYS5jb3B5U3luYyh0YXJnZXRQcm9qZWN0Q29uZmlnLmRpcmVjdG9yeS5kaXN0cmlidXRpb24sIHRhcmdldFByb2plY3RSb290KVxyXG5cclxuICAvLyBDcmVhdGUgY29tbWl0IG9mIGFsbCBmaWxlcy5cclxuICBsZXQgaW5kZXggPSBhd2FpdCByZXBvc2l0b3J5LnJlZnJlc2hJbmRleCgpIC8vIGludmFsaWRhdGVzIGFuZCBncmFicyBuZXcgaW5kZXggZnJvbSByZXBvc2l0b3J5LlxyXG4gIGxldCB0cmVlT2JqZWN0ID0gYXdhaXQgaW5kZXhcclxuICAgIC5hZGRBbGwoWycqKiddKVxyXG4gICAgLnRoZW4oKCkgPT4gaW5kZXgud3JpdGUoKSlcclxuICAgIC50aGVuKCgpID0+IGluZGV4LndyaXRlVHJlZSgpKSAvLyBhZGQgZmlsZXMgYW5kIGNyZWF0ZSBhIHRyZWUgb2JqZWN0LlxyXG4gIGxldCBwYXJlbnRDb21taXQgPSBhd2FpdCByZXBvc2l0b3J5LmdldEhlYWRDb21taXQoKSAvLyBnZXQgbGF0ZXN0IGNvbW1pdFxyXG4gIGF3YWl0IHJlcG9zaXRvcnlcclxuICAgIC5jcmVhdGVDb21taXQoJ0hFQUQnIC8qIHVwZGF0ZSB0aGUgSEVBRCByZWZlcmVuY2UgLSBzbyB0aGF0IHRoZSBIRUFEIHdpbGwgcG9pbnQgdG8gdGhlIGxhdGVzdCBnaXQgKi8gfHwgbnVsbCAvKiBkbyBub3QgdXBkYXRlIHJlZiAqLywgdGFnZ2VyLCB0YWdnZXIsIGDwn4+X77iPIEJ1aWxkIGRpc3RyaWJ1dGlvbiBjb2RlLmAsIHRyZWVPYmplY3QsIFtcclxuICAgICAgcGFyZW50Q29tbWl0LFxyXG4gICAgXSlcclxuICAgIC50aGVuKG9pZCA9PiBjb25zb2xlLmxvZyhg4oCiIENvbW1pdCBjcmVhdGVkICR7b2lkfSBmb3IgZGlzdHJpYnV0aW9uIGNvZGVgKSlcclxuXHJcbiAgLy8gdGFnIGFuZCBjcmVhdGUgYSByZWxlYXNlLlxyXG4gIGxldCBsYXRlc3RUZW1wb3JhcnlCcmFuY2hDb21taXQgPSBhd2FpdCByZXBvc2l0b3J5LmdldEhlYWRDb21taXQoKSAvLyBnZXQgbGF0ZXN0IGNvbW1pdFxyXG4gIGF3YWl0IGdpdC5UYWcuY3JlYXRlKHJlcG9zaXRvcnksIHRhZ05hbWUsIGxhdGVzdFRlbXBvcmFyeUJyYW5jaENvbW1pdCwgdGFnZ2VyLCBgUmVsZWFzZSBvZiBkaXN0cmlidXRpb24gY29kZSBvbmx5LmAsIDApLnRoZW4ob2lkID0+IGNvbnNvbGUubG9nKGDigKIgVGFnIGNyZWF0ZWQgJHtvaWR9YCkpXHJcblxyXG4gIC8vIG1ha2Ugc3VyZSB0aGUgYnJhbmNoIGlzIGNoZWNrZWRvdXQuXHJcbiAgYXdhaXQgcmVwb3NpdG9yeS5jaGVja291dEJyYW5jaChicmFjaFRvUG9pbnRUbykudGhlbihhc3luYyAoKSA9PiBjb25zb2xlLmxvZyhgQ2hlY2tlZCBicmFuY2ggJHthd2FpdCBicmFjaFRvUG9pbnRUby5uYW1lKCl9YCkpIC8vIGNoZWNrb3V0IGZvcm1lciBicmFuY2ggKHVzdWFsbHkgbWFzdGVyIGJyYW5jaClcclxuXHJcbiAgLy8gYXBwbHkgdGVtcG9yYXJseSBzdGFzaGVkIGZpbGVzXHJcbiAgaWYgKHN0YXR1c2VMaXN0Lmxlbmd0aCA+IDApIGF3YWl0IGdpdC5TdGFzaC5wb3AocmVwb3NpdG9yeSwgMCAvKiogbGFzdCBzdGFjaGVkIHBvc2l0aW9uICovKVxyXG59XHJcblxyXG4vKiogcmViYXNlIGludG8gbWFzdGVyIGJyYW5jaCB0byBmb2xsb3cgdGhlIGxhdGVzdCBtYXN0ZXIgY29tbWl0LiBUT0RPOiB0aGlzIGlzIGFuIGV4YW1wbGUgLSBmaXggYXN5bmMgb3BlcmF0aW9uLlxyXG4gKiAgVGhpcyBpcyBhbiBvcHRpb24gZm9yIHJlYmFzaW5nIGEgdGVtcG9yYXJ5IGJyYW5jaCB0byB0aGUgbGF0ZXN0IGNvbW1pdCAob3IgYSBuZXdlciBjb21taXQpLiBBbm90aGVyIG9wdGlvbiBpcyB0byB1c2UgYHJlc2V0YCB0byBhIGRpZmZlcmVudCBjb21taXQuXHJcbiAqL1xyXG5mdW5jdGlvbiByZWJhc2luZ0V4YW1wbGUoeyByZXBvc2l0b3J5LCBicmFuY2gsIGZyb21CcmFuY2gsIHRvQnJhbmNoIH0pIHtcclxuICByZXR1cm4gcmVwb3NpdG9yeS5yZWJhc2VCcmFuY2hlcyhcclxuICAgIGJyYW5jaC5uYW1lKCksIC8vIGJyYW5jaCBjb21taXRzIHRvIG1vdmVcclxuICAgIGZyb21CcmFuY2gubmFtZSgpLCAvLyB0aWxsIGNvbW1pdHMgdGhhdCBhcmUgaW50ZXJzZWN0ZWQgd2l0aCB0aGlzIGJyYW5jaCAob2xkIGJyYW5jaClcclxuICAgIHRvQnJhbmNoLm5hbWUoKSwgLy8gb250byB0aGUgbmV3IGJyYW5jaC5cclxuICAgIGdpdC5TaWduYXR1cmUubm93KCdtZW93JywgJ3Rlc3RAZXhhbXBsZS5jb20nKSxcclxuICAgIHJlYmFzZSA9PiB7XHJcbiAgICAgIGNvbnNvbGUubG9nKCdPbmUgb3BlcmF0aW9uJylcclxuICAgICAgcmV0dXJuIFByb21pc2UucmVzb2x2ZSgpXHJcbiAgICB9LFxyXG4gICAgcmViYXNlTWV0YWRhdGEgPT4ge1xyXG4gICAgICBjb25zb2xlLmxvZygnRmluaXNoZWQgcmViYXNlJylcclxuICAgICAgcmV0dXJuIFByb21pc2UucmVzb2x2ZSgpXHJcbiAgICB9LFxyXG4gIClcclxufVxyXG5cclxuYXN5bmMgZnVuY3Rpb24gZGVsZXRlVGVtcG9yYXJ5QnJhbmNoKHsgcmVwb3NpdG9yeSwgdGVtcG9yYXJ5QnJhbmNoIH0pIHtcclxuICAvLyBkZWxldGUgdGVtcG9yYXJ5IGJyYW5jaFxyXG4gIHRyeSB7XHJcbiAgICBpZiAoZ2l0LkJyYW5jaC5pc0NoZWNrZWRPdXQodGVtcG9yYXJ5QnJhbmNoKSkgdGhyb3cgbmV3IEVycm9yKGBDYW5ub3QgZGVsZXRlIGEgY2hlY2tlZCBvdXQgYnJhbmNoICR7YXdhaXQgdGVtcG9yYXJ5QnJhbmNoLm5hbWUoKX0uYClcclxuICAgIC8vIEJ5IHJlYXNzaWduaW5nIHRoZSB2YXJpYWJsZSBhbmQgbG9va2luZyB1cCB0aGUgYnJhbmNoIHRoZSBnYXJiYWdlIGNvbGxlY3RvciB3aWxsIGtpY2sgaW4uIFRoZSByZWZlcmVuY2UgZm9yIHRoZSBicmFuY2ggaW4gbGliZ2l0MiBzaG91bGRuJ3QgYmUgaW4gbWVtb3J5IGFzIG1lbnRpb25lZCBpbiBodHRwczovL2dpdGh1Yi5jb20vbGliZ2l0Mi9saWJnaXQyL2Jsb2IvODU5ZDkyMjkyZTAwOGE0ZDA0ZDY4ZmI2ZGMyMGExZGZhNjhlNDg3NC9pbmNsdWRlL2dpdDIvcmVmcy5oI0wzODUtTDM5OFxyXG4gICAgdGVtcG9yYXJ5QnJhbmNoID0gYXdhaXQgZ2l0LkJyYW5jaC5sb29rdXAocmVwb3NpdG9yeSwgdGVtcG9yYXJ5QnJhbmNoTmFtZSwgMSkgLy8gcmVmZXJlc2ggdmFsdWUgb2YgdGVtcG9yYXJ5QnJhbmNoIC0gZm9yIHNvbWUgcmVhc29uIHVzaW5nIHRoZSBzYW1lIHJlZmVyZW5jZSBwcmV2ZW50cyBkZWxldGlvbiBvZiBicmFuY2guXHJcbiAgICBsZXQgZXJyb3IgPSBnaXQuQnJhbmNoLmRlbGV0ZSh0ZW1wb3JhcnlCcmFuY2gpXHJcbiAgICBpZiAoZXJyb3IpIHRocm93IG5ldyBFcnJvcihgQ29kZSB0aHJvd24gYnkgJ2xpYmdpdDInIGJpbmRpbmdzID0gJHtlcnJvcn1cXG4gXFx0Q2hlY2sgaHR0cHM6Ly93d3cubm9kZWdpdC5vcmcvYXBpL2Vycm9yLyNDT0RFYClcclxuICAgIGNvbnNvbGUubG9nKGDigKIgRGVsZXRlZCB0ZW1wb2FyYXJ5IGJyYW5jaCAke2F3YWl0IHRlbXBvcmFyeUJyYW5jaC5uYW1lKCl9LmApXHJcbiAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgIHRocm93IGVycm9yXHJcbiAgfVxyXG59XHJcbiJdfQ==
