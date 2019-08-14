@@ -1,5 +1,6 @@
 import filesystem from 'fs'
 import path from 'path'
+import assert from 'assert'
 import childProcess from 'child_process'
 import filesystemExtra from 'fs-extra'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
@@ -43,8 +44,10 @@ export async function createGithubBranchedRelease({
   brachToPointTo = 'master', // default branch for latest commit.
   commitToPointTo = null, // unrelated commit to point to while creating temporary branch
   tagName,
-  tagger = git.Signature.now('meow', 'test@example.com'),
   buildCallback, // build async function that will handle building source code and preparing the package for distribution.
+  tagger,
+}: {
+  tagger: { name: '', email: '' },
 }) {
   const targetProject = api.project,
     targetProjectConfig = targetProject.configuration.configuration,
@@ -54,6 +57,11 @@ export async function createGithubBranchedRelease({
   // read git repository
   const repository = await git.Repository.open(targetProjectRoot)
   brachToPointTo = await git.Branch.lookup(repository, brachToPointTo, 1) // convert to branch reference
+
+  // load taggerSignature signature
+  let taggerSignature = tagger ? git.Signature.now(tagger.name, tagger.email) : await git.Signature.default(repository)
+  assert(taggerSignature, `❌ Github username should be passed or found in the git local/system configs.`)
+
   // get latest commit from branch
   let getLatestCommit = await repository.getReferenceCommit(brachToPointTo)
   // set commit reference
@@ -77,7 +85,7 @@ export async function createGithubBranchedRelease({
   let statuseList = await repository.getStatus()
   if (statuseList.length > 0)
     // stash changes that are still not committed
-    await git.Stash.save(repository, tagger, 'checkout stash before release', git.Stash.FLAGS.INCLUDE_UNTRACKED)
+    await git.Stash.save(repository, taggerSignature, 'checkout stash before release', git.Stash.FLAGS.INCLUDE_UNTRACKED)
 
   // checkout temporary
   await repository.checkoutBranch(await temporaryBranch.name()).then(async () => console.log(`Checked branch ${await temporaryBranch.name()}`))
@@ -131,14 +139,19 @@ export async function createGithubBranchedRelease({
     .then(() => index.writeTree()) // add files and create a tree object.
   let parentCommit = await repository.getHeadCommit() // get latest commit
   await repository
-    .createCommit('HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */, tagger, tagger, `🏗️ Build distribution code.`, treeObject, [
-      parentCommit,
-    ])
+    .createCommit(
+      'HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */,
+      taggerSignature,
+      taggerSignature,
+      `🏗️ Build distribution code.`,
+      treeObject,
+      [parentCommit],
+    )
     .then(oid => console.log(`• Commit created ${oid} for distribution code`))
 
   // tag and create a release.
   let latestTemporaryBranchCommit = await repository.getHeadCommit() // get latest commit
-  await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, tagger, `Release of distribution code only.`, 0).then(oid => console.log(`• Tag created ${oid}`))
+  await git.Tag.create(repository, tagName, latestTemporaryBranchCommit, taggerSignature, `Release of distribution code only.`, 0).then(oid => console.log(`• Tag created ${oid}`))
 
   // make sure the branch is checkedout.
   await repository.checkoutBranch(brachToPointTo).then(async () => console.log(`Checked branch ${await brachToPointTo.name()}`)) // checkout former branch (usually master branch)

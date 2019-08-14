@@ -18,7 +18,9 @@ import { default as git, Commit, Repository, Reference, Branch, Signature, Reset
 export async function bumpVersion({
   api,
   token, // github token for Graphql API
-  tagger = git.Signature.now('meow', 'test@example.com'),
+  tagger,
+}: {
+  tagger: { name: '', email: '' },
 }) {
   token ||= process.env.GITHUB_TOKEN || lookupGithubToken({ sshPath: '/e/.ssh' })
   assert(token, `❌ Github access token must be supplied.`)
@@ -26,6 +28,13 @@ export async function bumpVersion({
   const targetProjectConfig = api.project.configuration.configuration,
     targetProjectRoot = targetProjectConfig.directory.root,
     targetPackagePath = path.join(targetProjectRoot, 'package.json')
+
+  // commit changes
+  const repository = await git.Repository.open(targetProjectRoot)
+
+  // load taggerSignature signature
+  let taggerSignature = tagger ? git.Signature.now(tagger.name, tagger.email) : await git.Signature.default(repository)
+  assert(taggerSignature, `❌ Github username should be passed or found in the git local/system configs.`)
 
   // read package.json file
   let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
@@ -38,8 +47,6 @@ export async function bumpVersion({
   packageConfig.version = updatedVersion
   await writeJsonFile(targetPackagePath, packageConfig)
 
-  // commit changes
-  const repository = await git.Repository.open(targetProjectRoot)
   // Create commit of all files.
   let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
   let treeObject = await index
@@ -48,9 +55,14 @@ export async function bumpVersion({
     .then(() => index.writeTree()) // add files and create a tree object.
   let parentCommit = await repository.getHeadCommit() // get latest commit
   await repository
-    .createCommit('HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */, tagger, tagger, `📦 Bump package.json version.`, treeObject, [
-      parentCommit,
-    ])
+    .createCommit(
+      'HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */,
+      taggerSignature,
+      taggerSignature,
+      `📦 Bump package.json version.`,
+      treeObject,
+      [parentCommit],
+    )
     .then(oid => console.log(`• Commit created ${oid} for package.json version bump`))
 
   return updatedVersion
