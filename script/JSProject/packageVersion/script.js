@@ -11,8 +11,18 @@ import { getReleases, githubGraphqlEndpoint } from './graphqlQuery/github.graphq
 import { createGraphqlClient } from './utility/createGraphqlClient.js'
 import writeJsonFile from 'write-json-file'
 import nestedObjectAssign from 'nested-object-assign'
+import parseGitIgnore from 'parse-gitignore'
 const dependencyKeyword = ['dependencies', 'devDependencies', 'peerDependencies'] // package.json dependencies key values
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
+
+// TODO: Move lookupCOnfigFile to configurationManagement repository.
+function lookupConfigFile({ targetProjectRoot, configName }) {
+  let configPossiblePath = [path.join(targetProjectRoot, configName), path.join(targetProjectRoot, 'configuration', configName)]
+  // find existing config file
+  let configPathArray = configPossiblePath.filter(configPath => filesystem.existsSync(configPath))
+  assert(configPathArray.length > 0, `• ${configName} lookup failed, file not found in the configuration possible paths - ${configPossiblePath}.`)
+  return configPathArray[0]
+}
 
 /** increase package.json version to prepare for new release */
 export async function bumpVersion({
@@ -47,10 +57,13 @@ export async function bumpVersion({
   packageConfig.version = updatedVersion
   await writeJsonFile(targetPackagePath, packageConfig)
 
+  // get gitIgnore file patterns
+  let gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
+  let gitIgnorePattern = parseGitIgnore(filesystem.readFileSync(gitIgnorePath)).map(item => '!' + item)
   // Create commit of all files.
   let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
   let treeObject = await index
-    .addAll(['**'])
+    .addAll(['**'].concat(gitIgnorePattern))
     .then(() => index.write())
     .then(() => index.writeTree()) // add files and create a tree object.
   let parentCommit = await repository.getHeadCommit() // get latest commit
