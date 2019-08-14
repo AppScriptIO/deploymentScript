@@ -15,6 +15,14 @@ async function filterAsync(arr, callback) {
   return (await Promise.all(arr.map(async item => ((await callback(item)) ? item : fail)))).filter(i => i !== fail)
 }
 
+function lookupConfigFile({ targetProjectRoot, configName }) {
+  let configPossiblePath = [path.join(targetProjectRoot, configName), path.join(targetProjectRoot, 'configuration', configName)]
+  // find existing config file
+  let configPathArray = configPossiblePath.filter(configPath => filesystem.existsSync(configPath))
+  assert(configPathArray.length > 0, `• ${configName} lookup failed, file not found in the configuration possible paths - ${configPossiblePath}.`)
+  return configPathArray[0]
+}
+
 //? TODO: Releases could be created for source code and for distribution code
 
 /**
@@ -105,7 +113,7 @@ export async function createGithubBranchedRelease({
   /** Make distribution folder as root directory in the branch */
   // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
   let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
-    gitIgnorePath = path.join(targetProjectRoot, './.gitignore')
+    gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
   if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
   copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
 
