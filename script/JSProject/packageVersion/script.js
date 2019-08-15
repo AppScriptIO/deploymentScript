@@ -1,239 +1,240 @@
-import path from 'path'
-import util from 'util'
-import assert from 'assert'
-import os from 'os'
-import filesystem from 'fs'
-import modifyJson from 'jsonfile'
-import gitUrlParser from 'git-url-parse'
-import semanticVersioner from 'semver'
-import { pickBy, remove as removeMutateArray } from 'lodash'
-import { getReleases, githubGraphqlEndpoint } from './graphqlQuery/github.graphql.js'
-import { createGraphqlClient } from './utility/createGraphqlClient.js'
-import writeJsonFile from 'write-json-file'
-import nestedObjectAssign from 'nested-object-assign'
-import parseGitIgnore from 'parse-gitignore'
-const dependencyKeyword = ['dependencies', 'devDependencies', 'peerDependencies'] // package.json dependencies key values
-import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.bumpVersion = bumpVersion;exports.checkVersion = adapter;var _path = _interopRequireDefault(require("path"));
 
-// TODO: Move lookupCOnfigFile to configurationManagement repository.
+var _assert = _interopRequireDefault(require("assert"));
+var _os = _interopRequireDefault(require("os"));
+var _fs = _interopRequireDefault(require("fs"));
+var _jsonfile = _interopRequireDefault(require("jsonfile"));
+var _gitUrlParse = _interopRequireDefault(require("git-url-parse"));
+var _semver = _interopRequireDefault(require("semver"));
+var _lodash = require("lodash");
+var _githubGraphql = require("./graphqlQuery/github.graphql.js");
+var _createGraphqlClient = require("./utility/createGraphqlClient.js");
+var _writeJsonFile = _interopRequireDefault(require("write-json-file"));
+var _nestedObjectAssign = _interopRequireDefault(require("nested-object-assign"));
+var _parseGitignore = _interopRequireDefault(require("parse-gitignore"));
+
+var _nodegit = _interopRequireDefault(require("nodegit"));const dependencyKeyword = ['dependencies', 'devDependencies', 'peerDependencies'];
+
+
 function lookupConfigFile({ targetProjectRoot, configName }) {
-  let configPossiblePath = [path.join(targetProjectRoot, configName), path.join(targetProjectRoot, 'configuration', configName)]
-  // find existing config file
-  let configPathArray = configPossiblePath.filter(configPath => filesystem.existsSync(configPath))
-  assert(configPathArray.length > 0, `• ${configName} lookup failed, file not found in the configuration possible paths - ${configPossiblePath}.`)
-  return configPathArray[0]
+  let configPossiblePath = [_path.default.join(targetProjectRoot, configName), _path.default.join(targetProjectRoot, 'configuration', configName)];
+
+  let configPathArray = configPossiblePath.filter(configPath => _fs.default.existsSync(configPath));
+  (0, _assert.default)(configPathArray.length > 0, `• ${configName} lookup failed, file not found in the configuration possible paths - ${configPossiblePath}.`);
+  return configPathArray[0];
 }
 
-/** increase package.json version to prepare for new release */
-export async function bumpVersion({
+
+async function bumpVersion({
   api,
-  token, // github token for Graphql API
-  tagger,
-}: {
-  tagger: { name: '', email: '' },
-}) {
-  token ||= process.env.GITHUB_TOKEN || lookupGithubToken({ sshPath: '/e/.ssh' })
-  assert(token, `❌ Github access token must be supplied.`)
+  token,
+  tagger })
+
+
+{
+  token || (token = process.env.GITHUB_TOKEN || lookupGithubToken({ sshPath: '/e/.ssh' }));
+  (0, _assert.default)(token, `❌ Github access token must be supplied.`);
 
   const targetProjectConfig = api.project.configuration.configuration,
-    targetProjectRoot = targetProjectConfig.directory.root,
-    targetPackagePath = path.join(targetProjectRoot, 'package.json')
+  targetProjectRoot = targetProjectConfig.directory.root,
+  targetPackagePath = _path.default.join(targetProjectRoot, 'package.json');
 
-  // commit changes
-  const repository = await git.Repository.open(targetProjectRoot)
 
-  // load taggerSignature signature
-  let taggerSignature = tagger ? git.Signature.now(tagger.name, tagger.email) : await git.Signature.default(repository)
-  assert(taggerSignature, `❌ Github username should be passed or found in the git local/system configs.`)
+  const repository = await _nodegit.default.Repository.open(targetProjectRoot);
 
-  // read package.json file
-  let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
 
-  // bump version
-  let updatedVersion = semanticVersioner.inc(packageConfig.version, 'patch') // increment version by release type - release type (major, premajor, minor, preminor, patch, prepatch, or prerelease).
+  let taggerSignature = tagger ? _nodegit.default.Signature.now(tagger.name, tagger.email) : await _nodegit.default.Signature.default(repository);
+  (0, _assert.default)(taggerSignature, `❌ Github username should be passed or found in the git local/system configs.`);
 
-  // update pacakge.json
-  console.log(`• Updating pacakge.json file ${targetPackagePath} with bumped version ${packageConfig.version} --> ${updatedVersion}`)
-  packageConfig.version = updatedVersion
-  await writeJsonFile(targetPackagePath, packageConfig)
 
-  // get gitIgnore file patterns
-  let gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
-  let gitIgnorePattern = parseGitIgnore(filesystem.readFileSync(gitIgnorePath)).map(item => '!' + item)
-  // Create commit of all files.
-  let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
-  let treeObject = await index
-    .addAll(['**'].concat(gitIgnorePattern))
-    .then(() => index.write())
-    .then(() => index.writeTree()) // add files and create a tree object.
-  let parentCommit = await repository.getHeadCommit() // get latest commit
-  await repository
-    .createCommit(
-      'HEAD' /* update the HEAD reference - so that the HEAD will point to the latest git */ || null /* do not update ref */,
-      taggerSignature,
-      taggerSignature,
-      `📦 Bump package.json version.`,
-      treeObject,
-      [parentCommit],
-    )
-    .then(oid => console.log(`• Commit created ${oid} for package.json version bump`))
+  let packageConfig = await _jsonfile.default.readFile(targetPackagePath).catch(error => console.error(error));
 
-  return updatedVersion
+
+  let updatedVersion = _semver.default.inc(packageConfig.version, 'patch');
+
+
+  console.log(`• Updating pacakge.json file ${targetPackagePath} with bumped version ${packageConfig.version} --> ${updatedVersion}`);
+  packageConfig.version = updatedVersion;
+  await (0, _writeJsonFile.default)(targetPackagePath, packageConfig);
+
+
+  let gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' });
+  let gitIgnorePattern = (0, _parseGitignore.default)(_fs.default.readFileSync(gitIgnorePath)).map(item => '!' + item);
+
+  let index = await repository.refreshIndex();
+  let treeObject = await index.
+  addAll(['**'].concat(gitIgnorePattern)).
+  then(() => index.write()).
+  then(() => index.writeTree());
+  let parentCommit = await repository.getHeadCommit();
+  await repository.
+  createCommit(
+  'HEAD' || null,
+  taggerSignature,
+  taggerSignature,
+  `📦 Bump package.json version.`,
+  treeObject,
+  [parentCommit]).
+
+  then(oid => console.log(`• Commit created ${oid} for package.json version bump`));
+
+  return updatedVersion;
 }
 
-// adapter to the scriptManager api.
+
 function adapter(...args) {
-  const { api /* supplied by scriptManager */ } = args[0]
-  args[0].targetProject = api.project // adapter for working with target function interface.
-  updateGithubPackage(...args).catch(error => console.error(error))
+  const { api } = args[0];
+  args[0].targetProject = api.project;
+  updateGithubPackage(...args).catch(error => console.error(error));
 }
-export { adapter as checkVersion }
-/**
- * Update github dependencies in package.json files, using the github api that checks for the latest github release and compares it to local semver version.
- */
+
+
+
+
 async function updateGithubPackage({
-  targetProject, // target project's configuration instance.
-  token, // github token for Graphql API
-  prereleaseType = false, // example prereleaseType='distribution' matches all x.x.x-<...>distribution<...>
-  shouldUpdatePackage = false,
-} = {}) {
-  if (!token) token = process.env.GITHUB_TOKEN || lookupGithubToken()
-  assert(token, `❌ Github access token must be supplied.`)
+  targetProject,
+  token,
+  prereleaseType = false,
+  shouldUpdatePackage = false } =
+{}) {
+  if (!token) token = process.env.GITHUB_TOKEN || lookupGithubToken();
+  (0, _assert.default)(token, `❌ Github access token must be supplied.`);
 
   const targetProjectRoot = targetProject.configuration.rootPath,
-    targetPackagePath = path.join(targetProjectRoot, 'package.json')
+  targetPackagePath = _path.default.join(targetProjectRoot, 'package.json');
 
-  const graphqlClient = createGraphqlClient({ token, endpoint: githubGraphqlEndpoint })
+  const graphqlClient = (0, _createGraphqlClient.createGraphqlClient)({ token, endpoint: _githubGraphql.githubGraphqlEndpoint });
 
-  // read package.json file
-  let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
 
-  let didAnyRepoUpdate = false
+  let packageConfig = await _jsonfile.default.readFile(targetPackagePath).catch(error => console.error(error));
 
-  // loop dependencies
-  let modifiedPackageObject = {}
+  let didAnyRepoUpdate = false;
+
+
+  let modifiedPackageObject = {};
   for (let keyName of dependencyKeyword) {
-    if (!packageConfig[keyName]) continue
-    let dependencyList = packageConfig[keyName]
+    if (!packageConfig[keyName]) continue;
+    let dependencyList = packageConfig[keyName];
 
-    // filter dependencies that are from github only
-    let githubDependency = filterGithubDependency({ dependencyList })
+
+    let githubDependency = filterGithubDependency({ dependencyList });
     for (let [index, repositoryUrl] of Object.entries(githubDependency)) {
-      const parsedUrl = gitUrlParser(repositoryUrl),
-        currentUrlVersion = parsedUrl.hash && parsedUrl.hash.replace('semver:', '') // Specific use case - remove "semver:" from hash. This is used to support github semver versions in npm.
-      if (!currentUrlVersion) continue // skip urls without specific version
-      if (!semanticVersioner.valid(currentUrlVersion) && semanticVersioner.validRange(currentUrlVersion)) {
-        console.log(`Skipping "${repositoryUrl}" with range semver ${currentUrlVersion} `)
-        continue
-      } // skip ranges
-
-      let releaseList = await queryReleaseUsingUrl({ graphqlClient, repositoryUrl })
-      if (!releaseList.length) continue // skip
-      // filter comperable & semver versioned tags only
-      filterComparableRelease({ releaseList: { reference: releaseList } })
-      // filter tags with prerelease (include or exclude)
-      if (prereleaseType) {
-        // keep only tags that include a specific prerelease type.
-        removeMutateArray(releaseList, value => {
-          let prereleaseComponent = semanticVersioner.prerelease(value.tag.name)
-          return prereleaseComponent && prereleaseComponent.includes(prereleaseType) ? false : true
-        })
-      } else {
-        // filter versions that includes prerelease type (x.x.x-<prereleaseTyp>)
-        removeMutateArray(releaseList, value => Boolean(semanticVersioner.prerelease(value.tag.name)))
+      const parsedUrl = (0, _gitUrlParse.default)(repositoryUrl),
+      currentUrlVersion = parsedUrl.hash && parsedUrl.hash.replace('semver:', '');
+      if (!currentUrlVersion) continue;
+      if (!_semver.default.valid(currentUrlVersion) && _semver.default.validRange(currentUrlVersion)) {
+        console.log(`Skipping "${repositoryUrl}" with range semver ${currentUrlVersion} `);
+        continue;
       }
 
-      let latestRelease = pickLatestRelease({ releaseList })
+      let releaseList = await queryReleaseUsingUrl({ graphqlClient, repositoryUrl });
+      if (!releaseList.length) continue;
 
-      // compare semver versions
-      let shouldUpdateVerion = false
+      filterComparableRelease({ releaseList: { reference: releaseList } });
+
+      if (prereleaseType) {
+
+        (0, _lodash.remove)(releaseList, value => {
+          let prereleaseComponent = _semver.default.prerelease(value.tag.name);
+          return prereleaseComponent && prereleaseComponent.includes(prereleaseType) ? false : true;
+        });
+      } else {
+
+        (0, _lodash.remove)(releaseList, value => Boolean(_semver.default.prerelease(value.tag.name)));
+      }
+
+      let latestRelease = pickLatestRelease({ releaseList });
+
+
+      let shouldUpdateVerion = false;
       if (currentUrlVersion && latestRelease) {
-        console.log(`Comparing package.json version %s with latest release %s:`, currentUrlVersion, latestRelease)
-        shouldUpdateVerion = semanticVersioner.gt(latestRelease, currentUrlVersion)
+        console.log(`Comparing package.json version %s with latest release %s:`, currentUrlVersion, latestRelease);
+        shouldUpdateVerion = _semver.default.gt(latestRelease, currentUrlVersion);
       }
 
       if (shouldUpdateVerion) {
-        didAnyRepoUpdate = true
-        githubDependency[index] = updateVersion({ parsedUrl, newVersion: latestRelease })
+        didAnyRepoUpdate = true;
+        githubDependency[index] = updateVersion({ parsedUrl, newVersion: latestRelease });
       } else {
-        console.log(`• Git URI ${repositoryUrl} is up to date. Current "%s" - latest "%s":`, currentUrlVersion, latestRelease)
+        console.log(`• Git URI ${repositoryUrl} is up to date. Current "%s" - latest "%s":`, currentUrlVersion, latestRelease);
       }
     }
 
-    // create a new list with updated versions
-    modifiedPackageObject[keyName] = githubDependency
+
+    modifiedPackageObject[keyName] = githubDependency;
   }
 
   if (didAnyRepoUpdate) {
-    // update pacakge.json
-    let mergedPackageObject = nestedObjectAssign(packageConfig, modifiedPackageObject)
+
+    let mergedPackageObject = (0, _nestedObjectAssign.default)(packageConfig, modifiedPackageObject);
     if (shouldUpdatePackage) {
-      await writeJsonFile(targetPackagePath, mergedPackageObject)
-      console.log(`• Package.json file was updated with the latest Git packages.`)
+      await (0, _writeJsonFile.default)(targetPackagePath, mergedPackageObject);
+      console.log(`• Package.json file was updated with the latest Git packages.`);
     } else {
-      console.log(`• Pacakge object with updated versions:`)
-      console.dir(mergedPackageObject)
+      console.log(`• Pacakge object with updated versions:`);
+      console.dir(mergedPackageObject);
     }
-  } else console.log(`• No repository needs update.`)
+  } else console.log(`• No repository needs update.`);
 }
 
-// Read github token from OS user's folder.
-function lookupGithubToken({ sshPath = path.join(os.homedir(), '.ssh'), tokenFileName = 'github_token' } = {}) {
-  const tokenFile = path.join(sshPath, tokenFileName)
-  return filesystem.readFileSync(tokenFile).toString()
+
+function lookupGithubToken({ sshPath = _path.default.join(_os.default.homedir(), '.ssh'), tokenFileName = 'github_token' } = {}) {
+  const tokenFile = _path.default.join(sshPath, tokenFileName);
+  return _fs.default.readFileSync(tokenFile).toString();
 }
 
-// pick only github uri dependencies
+
 function filterGithubDependency({ dependencyList }) {
-  return pickBy(dependencyList, (value, index) => {
-    let parsedUrl = gitUrlParser(value)
-    return parsedUrl.resource == 'github.com'
-  })
+  return (0, _lodash.pickBy)(dependencyList, (value, index) => {
+    let parsedUrl = (0, _gitUrlParse.default)(value);
+    return parsedUrl.resource == 'github.com';
+  });
 }
 
-// get the releases on github
+
 async function queryReleaseUsingUrl({ graphqlClient, repositoryUrl }) {
-  let parsedUrl = gitUrlParser(repositoryUrl),
-    currentUrlVersion = parsedUrl.hash
+  let parsedUrl = (0, _gitUrlParse.default)(repositoryUrl),
+  currentUrlVersion = parsedUrl.hash;
 
-  let releaseArray = await graphqlClient
-    .query({
-      query: getReleases,
-      variables: {
-        repoURL: repositoryUrl,
-      },
-    })
-    .then(response => {
-      return response.data.resource.releases.edges.map((value, index) => {
-        return value.node
-      })
-    })
-    .catch(error => {
-      throw error
-    })
+  let releaseArray = await graphqlClient.
+  query({
+    query: _githubGraphql.getReleases,
+    variables: {
+      repoURL: repositoryUrl } }).
 
-  return releaseArray
+
+  then(response => {
+    return response.data.resource.releases.edges.map((value, index) => {
+      return value.node;
+    });
+  }).
+  catch(error => {
+    throw error;
+  });
+
+  return releaseArray;
 }
 
 function pickLatestRelease({ releaseList }) {
   releaseList.sort((current, next) => {
-    return semanticVersioner.gt(current.tag.name, next.tag.name) ? -1 /*Sort on lower index*/ : 1
-  })
-  return releaseList[0].tag.name // pick greater release
+    return _semver.default.gt(current.tag.name, next.tag.name) ? -1 : 1;
+  });
+  return releaseList[0].tag.name;
 }
 
-// filter array variable passed as reference.
+
 function filterComparableRelease({ releaseList = { reference: [] } }) {
-  // filter drafts and pre-releases
-  removeMutateArray(releaseList.reference, value => Boolean(value.isPrerelease || value.isDraft))
-  // filter non-semver versioned tags
-  removeMutateArray(releaseList.reference, value => !Boolean(semanticVersioner.valid(value.tag.name)))
-  // filter releases without tags  - draft releases do not have tags, remove any release that doesn't have a tag for any other reason also.
-  removeMutateArray(releaseList.reference, value => !Boolean(value.tag))
+
+  (0, _lodash.remove)(releaseList.reference, value => Boolean(value.isPrerelease || value.isDraft));
+
+  (0, _lodash.remove)(releaseList.reference, value => !Boolean(_semver.default.valid(value.tag.name)));
+
+  (0, _lodash.remove)(releaseList.reference, value => !Boolean(value.tag));
 }
 
 function updateVersion({ parsedUrl, newVersion: latestRelease }) {
-  let semverPrefix = parsedUrl.hash.includes('semver:') ? 'semver:' : '' // check if `semver:` for git url was present
-  // parsedUrl.hash = latestRelease // Important: gitUrlParser.stringify doesn't take care of hashes for some reason.
-  return `${gitUrlParser.stringify(parsedUrl)}#${semverPrefix}${latestRelease}`
+  let semverPrefix = parsedUrl.hash.includes('semver:') ? 'semver:' : '';
+
+  return `${_gitUrlParse.default.stringify(parsedUrl)}#${semverPrefix}${latestRelease}`;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvcGFja2FnZVZlcnNpb24vc2NyaXB0LmpzIl0sIm5hbWVzIjpbImRlcGVuZGVuY3lLZXl3b3JkIiwibG9va3VwQ29uZmlnRmlsZSIsInRhcmdldFByb2plY3RSb290IiwiY29uZmlnTmFtZSIsImNvbmZpZ1Bvc3NpYmxlUGF0aCIsInBhdGgiLCJqb2luIiwiY29uZmlnUGF0aEFycmF5IiwiZmlsdGVyIiwiY29uZmlnUGF0aCIsImZpbGVzeXN0ZW0iLCJleGlzdHNTeW5jIiwibGVuZ3RoIiwiYnVtcFZlcnNpb24iLCJhcGkiLCJ0b2tlbiIsInRhZ2dlciIsInByb2Nlc3MiLCJlbnYiLCJHSVRIVUJfVE9LRU4iLCJsb29rdXBHaXRodWJUb2tlbiIsInNzaFBhdGgiLCJ0YXJnZXRQcm9qZWN0Q29uZmlnIiwicHJvamVjdCIsImNvbmZpZ3VyYXRpb24iLCJkaXJlY3RvcnkiLCJyb290IiwidGFyZ2V0UGFja2FnZVBhdGgiLCJyZXBvc2l0b3J5IiwiZ2l0IiwiUmVwb3NpdG9yeSIsIm9wZW4iLCJ0YWdnZXJTaWduYXR1cmUiLCJTaWduYXR1cmUiLCJub3ciLCJuYW1lIiwiZW1haWwiLCJkZWZhdWx0IiwicGFja2FnZUNvbmZpZyIsIm1vZGlmeUpzb24iLCJyZWFkRmlsZSIsImNhdGNoIiwiZXJyb3IiLCJjb25zb2xlIiwidXBkYXRlZFZlcnNpb24iLCJzZW1hbnRpY1ZlcnNpb25lciIsImluYyIsInZlcnNpb24iLCJsb2ciLCJnaXRJZ25vcmVQYXRoIiwiZ2l0SWdub3JlUGF0dGVybiIsInJlYWRGaWxlU3luYyIsIm1hcCIsIml0ZW0iLCJpbmRleCIsInJlZnJlc2hJbmRleCIsInRyZWVPYmplY3QiLCJhZGRBbGwiLCJjb25jYXQiLCJ0aGVuIiwid3JpdGUiLCJ3cml0ZVRyZWUiLCJwYXJlbnRDb21taXQiLCJnZXRIZWFkQ29tbWl0IiwiY3JlYXRlQ29tbWl0Iiwib2lkIiwiYWRhcHRlciIsImFyZ3MiLCJ0YXJnZXRQcm9qZWN0IiwidXBkYXRlR2l0aHViUGFja2FnZSIsInByZXJlbGVhc2VUeXBlIiwic2hvdWxkVXBkYXRlUGFja2FnZSIsInJvb3RQYXRoIiwiZ3JhcGhxbENsaWVudCIsImVuZHBvaW50IiwiZ2l0aHViR3JhcGhxbEVuZHBvaW50IiwiZGlkQW55UmVwb1VwZGF0ZSIsIm1vZGlmaWVkUGFja2FnZU9iamVjdCIsImtleU5hbWUiLCJkZXBlbmRlbmN5TGlzdCIsImdpdGh1YkRlcGVuZGVuY3kiLCJmaWx0ZXJHaXRodWJEZXBlbmRlbmN5IiwicmVwb3NpdG9yeVVybCIsIk9iamVjdCIsImVudHJpZXMiLCJwYXJzZWRVcmwiLCJjdXJyZW50VXJsVmVyc2lvbiIsImhhc2giLCJyZXBsYWNlIiwidmFsaWQiLCJ2YWxpZFJhbmdlIiwicmVsZWFzZUxpc3QiLCJxdWVyeVJlbGVhc2VVc2luZ1VybCIsImZpbHRlckNvbXBhcmFibGVSZWxlYXNlIiwicmVmZXJlbmNlIiwidmFsdWUiLCJwcmVyZWxlYXNlQ29tcG9uZW50IiwicHJlcmVsZWFzZSIsInRhZyIsImluY2x1ZGVzIiwiQm9vbGVhbiIsImxhdGVzdFJlbGVhc2UiLCJwaWNrTGF0ZXN0UmVsZWFzZSIsInNob3VsZFVwZGF0ZVZlcmlvbiIsImd0IiwidXBkYXRlVmVyc2lvbiIsIm5ld1ZlcnNpb24iLCJtZXJnZWRQYWNrYWdlT2JqZWN0IiwiZGlyIiwib3MiLCJob21lZGlyIiwidG9rZW5GaWxlTmFtZSIsInRva2VuRmlsZSIsInRvU3RyaW5nIiwicmVzb3VyY2UiLCJyZWxlYXNlQXJyYXkiLCJxdWVyeSIsImdldFJlbGVhc2VzIiwidmFyaWFibGVzIiwicmVwb1VSTCIsInJlc3BvbnNlIiwiZGF0YSIsInJlbGVhc2VzIiwiZWRnZXMiLCJub2RlIiwic29ydCIsImN1cnJlbnQiLCJuZXh0IiwiaXNQcmVyZWxlYXNlIiwiaXNEcmFmdCIsInNlbXZlclByZWZpeCIsImdpdFVybFBhcnNlciIsInN0cmluZ2lmeSJdLCJtYXBwaW5ncyI6ImlPQUFBOztBQUVB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SyxJQUFJLENBQUNLLE9BQU8sQ0FBQ0wsS0FBSyxDQUFDRyxHQUFQLENBQTFEO0FBQ0Q7O0FBRUQsU0FBU08sYUFBVCxDQUF1QixFQUFFcEIsU0FBRixFQUFhcUIsVUFBVSxFQUFFTCxhQUF6QixFQUF2QixFQUFpRTtBQUMvRCxNQUFJNkIsWUFBWSxHQUFHN0MsU0FBUyxDQUFDRSxJQUFWLENBQWVZLFFBQWYsQ0FBd0IsU0FBeEIsSUFBcUMsU0FBckMsR0FBaUQsRUFBcEU7O0FBRUEsU0FBUSxHQUFFZ0MscUJBQWFDLFNBQWIsQ0FBdUIvQyxTQUF2QixDQUFrQyxJQUFHNkMsWUFBYSxHQUFFN0IsYUFBYyxFQUE1RTtBQUNEIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcbmltcG9ydCB1dGlsIGZyb20gJ3V0aWwnXG5pbXBvcnQgYXNzZXJ0IGZyb20gJ2Fzc2VydCdcbmltcG9ydCBvcyBmcm9tICdvcydcbmltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xuaW1wb3J0IG1vZGlmeUpzb24gZnJvbSAnanNvbmZpbGUnXG5pbXBvcnQgZ2l0VXJsUGFyc2VyIGZyb20gJ2dpdC11cmwtcGFyc2UnXG5pbXBvcnQgc2VtYW50aWNWZXJzaW9uZXIgZnJvbSAnc2VtdmVyJ1xuaW1wb3J0IHsgcGlja0J5LCByZW1vdmUgYXMgcmVtb3ZlTXV0YXRlQXJyYXkgfSBmcm9tICdsb2Rhc2gnXG5pbXBvcnQgeyBnZXRSZWxlYXNlcywgZ2l0aHViR3JhcGhxbEVuZHBvaW50IH0gZnJvbSAnLi9ncmFwaHFsUXVlcnkvZ2l0aHViLmdyYXBocWwuanMnXG5pbXBvcnQgeyBjcmVhdGVHcmFwaHFsQ2xpZW50IH0gZnJvbSAnLi91dGlsaXR5L2NyZWF0ZUdyYXBocWxDbGllbnQuanMnXG5pbXBvcnQgd3JpdGVKc29uRmlsZSBmcm9tICd3cml0ZS1qc29uLWZpbGUnXG5pbXBvcnQgbmVzdGVkT2JqZWN0QXNzaWduIGZyb20gJ25lc3RlZC1vYmplY3QtYXNzaWduJ1xuaW1wb3J0IHBhcnNlR2l0SWdub3JlIGZyb20gJ3BhcnNlLWdpdGlnbm9yZSdcbmNvbnN0IGRlcGVuZGVuY3lLZXl3b3JkID0gWydkZXBlbmRlbmNpZXMnLCAnZGV2RGVwZW5kZW5jaWVzJywgJ3BlZXJEZXBlbmRlbmNpZXMnXSAvLyBwYWNrYWdlLmpzb24gZGVwZW5kZW5jaWVzIGtleSB2YWx1ZXNcbmltcG9ydCB7IGRlZmF1bHQgYXMgZ2l0LCBDb21taXQsIFJlcG9zaXRvcnksIFJlZmVyZW5jZSwgQnJhbmNoLCBTaWduYXR1cmUsIFJlc2V0LCBTdGFzaCB9IGZyb20gJ25vZGVnaXQnXG5cbi8vIFRPRE86IE1vdmUgbG9va3VwQ09uZmlnRmlsZSB0byBjb25maWd1cmF0aW9uTWFuYWdlbWVudCByZXBvc2l0b3J5LlxuZnVuY3Rpb24gbG9va3VwQ29uZmlnRmlsZSh7IHRhcmdldFByb2plY3RSb290LCBjb25maWdOYW1lIH0pIHtcbiAgbGV0IGNvbmZpZ1Bvc3NpYmxlUGF0aCA9IFtwYXRoLmpvaW4odGFyZ2V0UHJvamVjdFJvb3QsIGNvbmZpZ05hbWUpLCBwYXRoLmpvaW4odGFyZ2V0UHJvamVjdFJvb3QsICdjb25maWd1cmF0aW9uJywgY29uZmlnTmFtZSldXG4gIC8vIGZpbmQgZXhpc3RpbmcgY29uZmlnIGZpbGVcbiAgbGV0IGNvbmZpZ1BhdGhBcnJheSA9IGNvbmZpZ1Bvc3NpYmxlUGF0aC5maWx0ZXIoY29uZmlnUGF0aCA9PiBmaWxlc3lzdGVtLmV4aXN0c1N5bmMoY29uZmlnUGF0aCkpXG4gIGFzc2VydChjb25maWdQYXRoQXJyYXkubGVuZ3RoID4gMCwgYOKAoiAke2NvbmZpZ05hbWV9IGxvb2t1cCBmYWlsZWQsIGZpbGUgbm90IGZvdW5kIGluIHRoZSBjb25maWd1cmF0aW9uIHBvc3NpYmxlIHBhdGhzIC0gJHtjb25maWdQb3NzaWJsZVBhdGh9LmApXG4gIHJldHVybiBjb25maWdQYXRoQXJyYXlbMF1cbn1cblxuLyoqIGluY3JlYXNlIHBhY2thZ2UuanNvbiB2ZXJzaW9uIHRvIHByZXBhcmUgZm9yIG5ldyByZWxlYXNlICovXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gYnVtcFZlcnNpb24oe1xuICBhcGksXG4gIHRva2VuLCAvLyBnaXRodWIgdG9rZW4gZm9yIEdyYXBocWwgQVBJXG4gIHRhZ2dlcixcbn06IHtcbiAgdGFnZ2VyOiB7IG5hbWU6ICcnLCBlbWFpbDogJycgfSxcbn0pIHtcbiAgdG9rZW4gfHw9IHByb2Nlc3MuZW52LkdJVEhVQl9UT0tFTiB8fCBsb29rdXBHaXRodWJUb2tlbih7IHNzaFBhdGg6ICcvZS8uc3NoJyB9KVxuICBhc3NlcnQodG9rZW4sIGDinYwgR2l0aHViIGFjY2VzcyB0b2tlbiBtdXN0IGJlIHN1cHBsaWVkLmApXG5cbiAgY29uc3QgdGFyZ2V0UHJvamVjdENvbmZpZyA9IGFwaS5wcm9qZWN0LmNvbmZpZ3VyYXRpb24uY29uZmlndXJhdGlvbixcbiAgICB0YXJnZXRQcm9qZWN0Um9vdCA9IHRhcmdldFByb2plY3RDb25maWcuZGlyZWN0b3J5LnJvb3QsXG4gICAgdGFyZ2V0UGFja2FnZVBhdGggPSBwYXRoLmpvaW4odGFyZ2V0UHJvamVjdFJvb3QsICdwYWNrYWdlLmpzb24nKVxuXG4gIC8vIGNvbW1pdCBjaGFuZ2VzXG4gIGNvbnN0IHJlcG9zaXRvcnkgPSBhd2FpdCBnaXQuUmVwb3NpdG9yeS5vcGVuKHRhcmdldFByb2plY3RSb290KVxuXG4gIC8vIGxvYWQgdGFnZ2VyU2lnbmF0dXJlIHNpZ25hdHVyZVxuICBsZXQgdGFnZ2VyU2lnbmF0dXJlID0gdGFnZ2VyID8gZ2l0LlNpZ25hdHVyZS5ub3codGFnZ2VyLm5hbWUsIHRhZ2dlci5lbWFpbCkgOiBhd2FpdCBnaXQuU2lnbmF0dXJlLmRlZmF1bHQocmVwb3NpdG9yeSlcbiAgYXNzZXJ0KHRhZ2dlclNpZ25hdHVyZSwgYOKdjCBHaXRodWIgdXNlcm5hbWUgc2hvdWxkIGJlIHBhc3NlZCBvciBmb3VuZCBpbiB0aGUgZ2l0IGxvY2FsL3N5c3RlbSBjb25maWdzLmApXG5cbiAgLy8gcmVhZCBwYWNrYWdlLmpzb24gZmlsZVxuICBsZXQgcGFja2FnZUNvbmZpZyA9IGF3YWl0IG1vZGlmeUpzb24ucmVhZEZpbGUodGFyZ2V0UGFja2FnZVBhdGgpLmNhdGNoKGVycm9yID0+IGNvbnNvbGUuZXJyb3IoZXJyb3IpKVxuXG4gIC8vIGJ1bXAgdmVyc2lvblxuICBsZXQgdXBkYXRlZFZlcnNpb24gPSBzZW1hbnRpY1ZlcnNpb25lci5pbmMocGFja2FnZUNvbmZpZy52ZXJzaW9uLCAncGF0Y2gnKSAvLyBpbmNyZW1lbnQgdmVyc2lvbiBieSByZWxlYXNlIHR5cGUgLSByZWxlYXNlIHR5cGUgKG1ham9yLCBwcmVtYWpvciwgbWlub3IsIHByZW1pbm9yLCBwYXRjaCwgcHJlcGF0Y2gsIG9yIHByZXJlbGVhc2UpLlxuXG4gIC8vIHVwZGF0ZSBwYWNha2dlLmpzb25cbiAgY29uc29sZS5sb2coYOKAoiBVcGRhdGluZyBwYWNha2dlLmpzb24gZmlsZSAke3RhcmdldFBhY2thZ2VQYXRofSB3aXRoIGJ1bXBlZCB2ZXJzaW9uICR7cGFja2FnZUNvbmZpZy52ZXJzaW9ufSAtLT4gJHt1cGRhdGVkVmVyc2lvbn1gKVxuICBwYWNrYWdlQ29uZmlnLnZlcnNpb24gPSB1cGRhdGVkVmVyc2lvblxuICBhd2FpdCB3cml0ZUpzb25GaWxlKHRhcmdldFBhY2thZ2VQYXRoLCBwYWNrYWdlQ29uZmlnKVxuXG4gIC8vIGdldCBnaXRJZ25vcmUgZmlsZSBwYXR0ZXJuc1xuICBsZXQgZ2l0SWdub3JlUGF0aCA9IGxvb2t1cENvbmZpZ0ZpbGUoeyB0YXJnZXRQcm9qZWN0Um9vdCwgY29uZmlnTmFtZTogJy5naXRpZ25vcmUnIH0pXG4gIGxldCBnaXRJZ25vcmVQYXR0ZXJuID0gcGFyc2VHaXRJZ25vcmUoZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoZ2l0SWdub3JlUGF0aCkpLm1hcChpdGVtID0+ICchJyArIGl0ZW0pXG4gIC8vIENyZWF0ZSBjb21taXQgb2YgYWxsIGZpbGVzLlxuICBsZXQgaW5kZXggPSBhd2FpdCByZXBvc2l0b3J5LnJlZnJlc2hJbmRleCgpIC8vIGludmFsaWRhdGVzIGFuZCBncmFicyBuZXcgaW5kZXggZnJvbSByZXBvc2l0b3J5LlxuICBsZXQgdHJlZU9iamVjdCA9IGF3YWl0IGluZGV4XG4gICAgLmFkZEFsbChbJyoqJ10uY29uY2F0KGdpdElnbm9yZVBhdHRlcm4pKVxuICAgIC50aGVuKCgpID0+IGluZGV4LndyaXRlKCkpXG4gICAgLnRoZW4oKCkgPT4gaW5kZXgud3JpdGVUcmVlKCkpIC8vIGFkZCBmaWxlcyBhbmQgY3JlYXRlIGEgdHJlZSBvYmplY3QuXG4gIGxldCBwYXJlbnRDb21taXQgPSBhd2FpdCByZXBvc2l0b3J5LmdldEhlYWRDb21taXQoKSAvLyBnZXQgbGF0ZXN0IGNvbW1pdFxuICBhd2FpdCByZXBvc2l0b3J5XG4gICAgLmNyZWF0ZUNvbW1pdChcbiAgICAgICdIRUFEJyAvKiB1cGRhdGUgdGhlIEhFQUQgcmVmZXJlbmNlIC0gc28gdGhhdCB0aGUgSEVBRCB3aWxsIHBvaW50IHRvIHRoZSBsYXRlc3QgZ2l0ICovIHx8IG51bGwgLyogZG8gbm90IHVwZGF0ZSByZWYgKi8sXG4gICAgICB0YWdnZXJTaWduYXR1cmUsXG4gICAgICB0YWdnZXJTaWduYXR1cmUsXG4gICAgICBg8J+TpiBCdW1wIHBhY2thZ2UuanNvbiB2ZXJzaW9uLmAsXG4gICAgICB0cmVlT2JqZWN0LFxuICAgICAgW3BhcmVudENvbW1pdF0sXG4gICAgKVxuICAgIC50aGVuKG9pZCA9PiBjb25zb2xlLmxvZyhg4oCiIENvbW1pdCBjcmVhdGVkICR7b2lkfSBmb3IgcGFja2FnZS5qc29uIHZlcnNpb24gYnVtcGApKVxuXG4gIHJldHVybiB1cGRhdGVkVmVyc2lvblxufVxuXG4vLyBhZGFwdGVyIHRvIHRoZSBzY3JpcHRNYW5hZ2VyIGFwaS5cbmZ1bmN0aW9uIGFkYXB0ZXIoLi4uYXJncykge1xuICBjb25zdCB7IGFwaSAvKiBzdXBwbGllZCBieSBzY3JpcHRNYW5hZ2VyICovIH0gPSBhcmdzWzBdXG4gIGFyZ3NbMF0udGFyZ2V0UHJvamVjdCA9IGFwaS5wcm9qZWN0IC8vIGFkYXB0ZXIgZm9yIHdvcmtpbmcgd2l0aCB0YXJnZXQgZnVuY3Rpb24gaW50ZXJmYWNlLlxuICB1cGRhdGVHaXRodWJQYWNrYWdlKC4uLmFyZ3MpLmNhdGNoKGVycm9yID0+IGNvbnNvbGUuZXJyb3IoZXJyb3IpKVxufVxuZXhwb3J0IHsgYWRhcHRlciBhcyBjaGVja1ZlcnNpb24gfVxuLyoqXG4gKiBVcGRhdGUgZ2l0aHViIGRlcGVuZGVuY2llcyBpbiBwYWNrYWdlLmpzb24gZmlsZXMsIHVzaW5nIHRoZSBnaXRodWIgYXBpIHRoYXQgY2hlY2tzIGZvciB0aGUgbGF0ZXN0IGdpdGh1YiByZWxlYXNlIGFuZCBjb21wYXJlcyBpdCB0byBsb2NhbCBzZW12ZXIgdmVyc2lvbi5cbiAqL1xuYXN5bmMgZnVuY3Rpb24gdXBkYXRlR2l0aHViUGFja2FnZSh7XG4gIHRhcmdldFByb2plY3QsIC8vIHRhcmdldCBwcm9qZWN0J3MgY29uZmlndXJhdGlvbiBpbnN0YW5jZS5cbiAgdG9rZW4sIC8vIGdpdGh1YiB0b2tlbiBmb3IgR3JhcGhxbCBBUElcbiAgcHJlcmVsZWFzZVR5cGUgPSBmYWxzZSwgLy8gZXhhbXBsZSBwcmVyZWxlYXNlVHlwZT0nZGlzdHJpYnV0aW9uJyBtYXRjaGVzIGFsbCB4LngueC08Li4uPmRpc3RyaWJ1dGlvbjwuLi4+XG4gIHNob3VsZFVwZGF0ZVBhY2thZ2UgPSBmYWxzZSxcbn0gPSB7fSkge1xuICBpZiAoIXRva2VuKSB0b2tlbiA9IHByb2Nlc3MuZW52LkdJVEhVQl9UT0tFTiB8fCBsb29rdXBHaXRodWJUb2tlbigpXG4gIGFzc2VydCh0b2tlbiwgYOKdjCBHaXRodWIgYWNjZXNzIHRva2VuIG11c3QgYmUgc3VwcGxpZWQuYClcblxuICBjb25zdCB0YXJnZXRQcm9qZWN0Um9vdCA9IHRhcmdldFByb2plY3QuY29uZmlndXJhdGlvbi5yb290UGF0aCxcbiAgICB0YXJnZXRQYWNrYWdlUGF0aCA9IHBhdGguam9pbih0YXJnZXRQcm9qZWN0Um9vdCwgJ3BhY2thZ2UuanNvbicpXG5cbiAgY29uc3QgZ3JhcGhxbENsaWVudCA9IGNyZWF0ZUdyYXBocWxDbGllbnQoeyB0b2tlbiwgZW5kcG9pbnQ6IGdpdGh1YkdyYXBocWxFbmRwb2ludCB9KVxuXG4gIC8vIHJlYWQgcGFja2FnZS5qc29uIGZpbGVcbiAgbGV0IHBhY2thZ2VDb25maWcgPSBhd2FpdCBtb2RpZnlKc29uLnJlYWRGaWxlKHRhcmdldFBhY2thZ2VQYXRoKS5jYXRjaChlcnJvciA9PiBjb25zb2xlLmVycm9yKGVycm9yKSlcblxuICBsZXQgZGlkQW55UmVwb1VwZGF0ZSA9IGZhbHNlXG5cbiAgLy8gbG9vcCBkZXBlbmRlbmNpZXNcbiAgbGV0IG1vZGlmaWVkUGFja2FnZU9iamVjdCA9IHt9XG4gIGZvciAobGV0IGtleU5hbWUgb2YgZGVwZW5kZW5jeUtleXdvcmQpIHtcbiAgICBpZiAoIXBhY2thZ2VDb25maWdba2V5TmFtZV0pIGNvbnRpbnVlXG4gICAgbGV0IGRlcGVuZGVuY3lMaXN0ID0gcGFja2FnZUNvbmZpZ1trZXlOYW1lXVxuXG4gICAgLy8gZmlsdGVyIGRlcGVuZGVuY2llcyB0aGF0IGFyZSBmcm9tIGdpdGh1YiBvbmx5XG4gICAgbGV0IGdpdGh1YkRlcGVuZGVuY3kgPSBmaWx0ZXJHaXRodWJEZXBlbmRlbmN5KHsgZGVwZW5kZW5jeUxpc3QgfSlcbiAgICBmb3IgKGxldCBbaW5kZXgsIHJlcG9zaXRvcnlVcmxdIG9mIE9iamVjdC5lbnRyaWVzKGdpdGh1YkRlcGVuZGVuY3kpKSB7XG4gICAgICBjb25zdCBwYXJzZWRVcmwgPSBnaXRVcmxQYXJzZXIocmVwb3NpdG9yeVVybCksXG4gICAgICAgIGN1cnJlbnRVcmxWZXJzaW9uID0gcGFyc2VkVXJsLmhhc2ggJiYgcGFyc2VkVXJsLmhhc2gucmVwbGFjZSgnc2VtdmVyOicsICcnKSAvLyBTcGVjaWZpYyB1c2UgY2FzZSAtIHJlbW92ZSBcInNlbXZlcjpcIiBmcm9tIGhhc2guIFRoaXMgaXMgdXNlZCB0byBzdXBwb3J0IGdpdGh1YiBzZW12ZXIgdmVyc2lvbnMgaW4gbnBtLlxuICAgICAgaWYgKCFjdXJyZW50VXJsVmVyc2lvbikgY29udGludWUgLy8gc2tpcCB1cmxzIHdpdGhvdXQgc3BlY2lmaWMgdmVyc2lvblxuICAgICAgaWYgKCFzZW1hbnRpY1ZlcnNpb25lci52YWxpZChjdXJyZW50VXJsVmVyc2lvbikgJiYgc2VtYW50aWNWZXJzaW9uZXIudmFsaWRSYW5nZShjdXJyZW50VXJsVmVyc2lvbikpIHtcbiAgICAgICAgY29uc29sZS5sb2coYFNraXBwaW5nIFwiJHtyZXBvc2l0b3J5VXJsfVwiIHdpdGggcmFuZ2Ugc2VtdmVyICR7Y3VycmVudFVybFZlcnNpb259IGApXG4gICAgICAgIGNvbnRpbnVlXG4gICAgICB9IC8vIHNraXAgcmFuZ2VzXG5cbiAgICAgIGxldCByZWxlYXNlTGlzdCA9IGF3YWl0IHF1ZXJ5UmVsZWFzZVVzaW5nVXJsKHsgZ3JhcGhxbENsaWVudCwgcmVwb3NpdG9yeVVybCB9KVxuICAgICAgaWYgKCFyZWxlYXNlTGlzdC5sZW5ndGgpIGNvbnRpbnVlIC8vIHNraXBcbiAgICAgIC8vIGZpbHRlciBjb21wZXJhYmxlICYgc2VtdmVyIHZlcnNpb25lZCB0YWdzIG9ubHlcbiAgICAgIGZpbHRlckNvbXBhcmFibGVSZWxlYXNlKHsgcmVsZWFzZUxpc3Q6IHsgcmVmZXJlbmNlOiByZWxlYXNlTGlzdCB9IH0pXG4gICAgICAvLyBmaWx0ZXIgdGFncyB3aXRoIHByZXJlbGVhc2UgKGluY2x1ZGUgb3IgZXhjbHVkZSlcbiAgICAgIGlmIChwcmVyZWxlYXNlVHlwZSkge1xuICAgICAgICAvLyBrZWVwIG9ubHkgdGFncyB0aGF0IGluY2x1ZGUgYSBzcGVjaWZpYyBwcmVyZWxlYXNlIHR5cGUuXG4gICAgICAgIHJlbW92ZU11dGF0ZUFycmF5KHJlbGVhc2VMaXN0LCB2YWx1ZSA9PiB7XG4gICAgICAgICAgbGV0IHByZXJlbGVhc2VDb21wb25lbnQgPSBzZW1hbnRpY1ZlcnNpb25lci5wcmVyZWxlYXNlKHZhbHVlLnRhZy5uYW1lKVxuICAgICAgICAgIHJldHVybiBwcmVyZWxlYXNlQ29tcG9uZW50ICYmIHByZXJlbGVhc2VDb21wb25lbnQuaW5jbHVkZXMocHJlcmVsZWFzZVR5cGUpID8gZmFsc2UgOiB0cnVlXG4gICAgICAgIH0pXG4gICAgICB9IGVsc2Uge1xuICAgICAgICAvLyBmaWx0ZXIgdmVyc2lvbnMgdGhhdCBpbmNsdWRlcyBwcmVyZWxlYXNlIHR5cGUgKHgueC54LTxwcmVyZWxlYXNlVHlwPilcbiAgICAgICAgcmVtb3ZlTXV0YXRlQXJyYXkocmVsZWFzZUxpc3QsIHZhbHVlID0+IEJvb2xlYW4oc2VtYW50aWNWZXJzaW9uZXIucHJlcmVsZWFzZSh2YWx1ZS50YWcubmFtZSkpKVxuICAgICAgfVxuXG4gICAgICBsZXQgbGF0ZXN0UmVsZWFzZSA9IHBpY2tMYXRlc3RSZWxlYXNlKHsgcmVsZWFzZUxpc3QgfSlcblxuICAgICAgLy8gY29tcGFyZSBzZW12ZXIgdmVyc2lvbnNcbiAgICAgIGxldCBzaG91bGRVcGRhdGVWZXJpb24gPSBmYWxzZVxuICAgICAgaWYgKGN1cnJlbnRVcmxWZXJzaW9uICYmIGxhdGVzdFJlbGVhc2UpIHtcbiAgICAgICAgY29uc29sZS5sb2coYENvbXBhcmluZyBwYWNrYWdlLmpzb24gdmVyc2lvbiAlcyB3aXRoIGxhdGVzdCByZWxlYXNlICVzOmAsIGN1cnJlbnRVcmxWZXJzaW9uLCBsYXRlc3RSZWxlYXNlKVxuICAgICAgICBzaG91bGRVcGRhdGVWZXJpb24gPSBzZW1hbnRpY1ZlcnNpb25lci5ndChsYXRlc3RSZWxlYXNlLCBjdXJyZW50VXJsVmVyc2lvbilcbiAgICAgIH1cblxuICAgICAgaWYgKHNob3VsZFVwZGF0ZVZlcmlvbikge1xuICAgICAgICBkaWRBbnlSZXBvVXBkYXRlID0gdHJ1ZVxuICAgICAgICBnaXRodWJEZXBlbmRlbmN5W2luZGV4XSA9IHVwZGF0ZVZlcnNpb24oeyBwYXJzZWRVcmwsIG5ld1ZlcnNpb246IGxhdGVzdFJlbGVhc2UgfSlcbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIGNvbnNvbGUubG9nKGDigKIgR2l0IFVSSSAke3JlcG9zaXRvcnlVcmx9IGlzIHVwIHRvIGRhdGUuIEN1cnJlbnQgXCIlc1wiIC0gbGF0ZXN0IFwiJXNcIjpgLCBjdXJyZW50VXJsVmVyc2lvbiwgbGF0ZXN0UmVsZWFzZSlcbiAgICAgIH1cbiAgICB9XG5cbiAgICAvLyBjcmVhdGUgYSBuZXcgbGlzdCB3aXRoIHVwZGF0ZWQgdmVyc2lvbnNcbiAgICBtb2RpZmllZFBhY2thZ2VPYmplY3Rba2V5TmFtZV0gPSBnaXRodWJEZXBlbmRlbmN5XG4gIH1cblxuICBpZiAoZGlkQW55UmVwb1VwZGF0ZSkge1xuICAgIC8vIHVwZGF0ZSBwYWNha2dlLmpzb25cbiAgICBsZXQgbWVyZ2VkUGFja2FnZU9iamVjdCA9IG5lc3RlZE9iamVjdEFzc2lnbihwYWNrYWdlQ29uZmlnLCBtb2RpZmllZFBhY2thZ2VPYmplY3QpXG4gICAgaWYgKHNob3VsZFVwZGF0ZVBhY2thZ2UpIHtcbiAgICAgIGF3YWl0IHdyaXRlSnNvbkZpbGUodGFyZ2V0UGFja2FnZVBhdGgsIG1lcmdlZFBhY2thZ2VPYmplY3QpXG4gICAgICBjb25zb2xlLmxvZyhg4oCiIFBhY2thZ2UuanNvbiBmaWxlIHdhcyB1cGRhdGVkIHdpdGggdGhlIGxhdGVzdCBHaXQgcGFja2FnZXMuYClcbiAgICB9IGVsc2Uge1xuICAgICAgY29uc29sZS5sb2coYOKAoiBQYWNha2dlIG9iamVjdCB3aXRoIHVwZGF0ZWQgdmVyc2lvbnM6YClcbiAgICAgIGNvbnNvbGUuZGlyKG1lcmdlZFBhY2thZ2VPYmplY3QpXG4gICAgfVxuICB9IGVsc2UgY29uc29sZS5sb2coYOKAoiBObyByZXBvc2l0b3J5IG5lZWRzIHVwZGF0ZS5gKVxufVxuXG4vLyBSZWFkIGdpdGh1YiB0b2tlbiBmcm9tIE9TIHVzZXIncyBmb2xkZXIuXG5mdW5jdGlvbiBsb29rdXBHaXRodWJUb2tlbih7IHNzaFBhdGggPSBwYXRoLmpvaW4ob3MuaG9tZWRpcigpLCAnLnNzaCcpLCB0b2tlbkZpbGVOYW1lID0gJ2dpdGh1Yl90b2tlbicgfSA9IHt9KSB7XG4gIGNvbnN0IHRva2VuRmlsZSA9IHBhdGguam9pbihzc2hQYXRoLCB0b2tlbkZpbGVOYW1lKVxuICByZXR1cm4gZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmModG9rZW5GaWxlKS50b1N0cmluZygpXG59XG5cbi8vIHBpY2sgb25seSBnaXRodWIgdXJpIGRlcGVuZGVuY2llc1xuZnVuY3Rpb24gZmlsdGVyR2l0aHViRGVwZW5kZW5jeSh7IGRlcGVuZGVuY3lMaXN0IH0pIHtcbiAgcmV0dXJuIHBpY2tCeShkZXBlbmRlbmN5TGlzdCwgKHZhbHVlLCBpbmRleCkgPT4ge1xuICAgIGxldCBwYXJzZWRVcmwgPSBnaXRVcmxQYXJzZXIodmFsdWUpXG4gICAgcmV0dXJuIHBhcnNlZFVybC5yZXNvdXJjZSA9PSAnZ2l0aHViLmNvbSdcbiAgfSlcbn1cblxuLy8gZ2V0IHRoZSByZWxlYXNlcyBvbiBnaXRodWJcbmFzeW5jIGZ1bmN0aW9uIHF1ZXJ5UmVsZWFzZVVzaW5nVXJsKHsgZ3JhcGhxbENsaWVudCwgcmVwb3NpdG9yeVVybCB9KSB7XG4gIGxldCBwYXJzZWRVcmwgPSBnaXRVcmxQYXJzZXIocmVwb3NpdG9yeVVybCksXG4gICAgY3VycmVudFVybFZlcnNpb24gPSBwYXJzZWRVcmwuaGFzaFxuXG4gIGxldCByZWxlYXNlQXJyYXkgPSBhd2FpdCBncmFwaHFsQ2xpZW50XG4gICAgLnF1ZXJ5KHtcbiAgICAgIHF1ZXJ5OiBnZXRSZWxlYXNlcyxcbiAgICAgIHZhcmlhYmxlczoge1xuICAgICAgICByZXBvVVJMOiByZXBvc2l0b3J5VXJsLFxuICAgICAgfSxcbiAgICB9KVxuICAgIC50aGVuKHJlc3BvbnNlID0+IHtcbiAgICAgIHJldHVybiByZXNwb25zZS5kYXRhLnJlc291cmNlLnJlbGVhc2VzLmVkZ2VzLm1hcCgodmFsdWUsIGluZGV4KSA9PiB7XG4gICAgICAgIHJldHVybiB2YWx1ZS5ub2RlXG4gICAgICB9KVxuICAgIH0pXG4gICAgLmNhdGNoKGVycm9yID0+IHtcbiAgICAgIHRocm93IGVycm9yXG4gICAgfSlcblxuICByZXR1cm4gcmVsZWFzZUFycmF5XG59XG5cbmZ1bmN0aW9uIHBpY2tMYXRlc3RSZWxlYXNlKHsgcmVsZWFzZUxpc3QgfSkge1xuICByZWxlYXNlTGlzdC5zb3J0KChjdXJyZW50LCBuZXh0KSA9PiB7XG4gICAgcmV0dXJuIHNlbWFudGljVmVyc2lvbmVyLmd0KGN1cnJlbnQudGFnLm5hbWUsIG5leHQudGFnLm5hbWUpID8gLTEgLypTb3J0IG9uIGxvd2VyIGluZGV4Ki8gOiAxXG4gIH0pXG4gIHJldHVybiByZWxlYXNlTGlzdFswXS50YWcubmFtZSAvLyBwaWNrIGdyZWF0ZXIgcmVsZWFzZVxufVxuXG4vLyBmaWx0ZXIgYXJyYXkgdmFyaWFibGUgcGFzc2VkIGFzIHJlZmVyZW5jZS5cbmZ1bmN0aW9uIGZpbHRlckNvbXBhcmFibGVSZWxlYXNlKHsgcmVsZWFzZUxpc3QgPSB7IHJlZmVyZW5jZTogW10gfSB9KSB7XG4gIC8vIGZpbHRlciBkcmFmdHMgYW5kIHByZS1yZWxlYXNlc1xuICByZW1vdmVNdXRhdGVBcnJheShyZWxlYXNlTGlzdC5yZWZlcmVuY2UsIHZhbHVlID0+IEJvb2xlYW4odmFsdWUuaXNQcmVyZWxlYXNlIHx8IHZhbHVlLmlzRHJhZnQpKVxuICAvLyBmaWx0ZXIgbm9uLXNlbXZlciB2ZXJzaW9uZWQgdGFnc1xuICByZW1vdmVNdXRhdGVBcnJheShyZWxlYXNlTGlzdC5yZWZlcmVuY2UsIHZhbHVlID0+ICFCb29sZWFuKHNlbWFudGljVmVyc2lvbmVyLnZhbGlkKHZhbHVlLnRhZy5uYW1lKSkpXG4gIC8vIGZpbHRlciByZWxlYXNlcyB3aXRob3V0IHRhZ3MgIC0gZHJhZnQgcmVsZWFzZXMgZG8gbm90IGhhdmUgdGFncywgcmVtb3ZlIGFueSByZWxlYXNlIHRoYXQgZG9lc24ndCBoYXZlIGEgdGFnIGZvciBhbnkgb3RoZXIgcmVhc29uIGFsc28uXG4gIHJlbW92ZU11dGF0ZUFycmF5KHJlbGVhc2VMaXN0LnJlZmVyZW5jZSwgdmFsdWUgPT4gIUJvb2xlYW4odmFsdWUudGFnKSlcbn1cblxuZnVuY3Rpb24gdXBkYXRlVmVyc2lvbih7IHBhcnNlZFVybCwgbmV3VmVyc2lvbjogbGF0ZXN0UmVsZWFzZSB9KSB7XG4gIGxldCBzZW12ZXJQcmVmaXggPSBwYXJzZWRVcmwuaGFzaC5pbmNsdWRlcygnc2VtdmVyOicpID8gJ3NlbXZlcjonIDogJycgLy8gY2hlY2sgaWYgYHNlbXZlcjpgIGZvciBnaXQgdXJsIHdhcyBwcmVzZW50XG4gIC8vIHBhcnNlZFVybC5oYXNoID0gbGF0ZXN0UmVsZWFzZSAvLyBJbXBvcnRhbnQ6IGdpdFVybFBhcnNlci5zdHJpbmdpZnkgZG9lc24ndCB0YWtlIGNhcmUgb2YgaGFzaGVzIGZvciBzb21lIHJlYXNvbi5cbiAgcmV0dXJuIGAke2dpdFVybFBhcnNlci5zdHJpbmdpZnkocGFyc2VkVXJsKX0jJHtzZW12ZXJQcmVmaXh9JHtsYXRlc3RSZWxlYXNlfWBcbn1cbiJdfQ==
