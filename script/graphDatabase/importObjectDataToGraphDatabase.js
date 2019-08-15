@@ -1,86 +1,86 @@
 #!/usr/bin/env node
-// This was used as a temporary file used to transfering object data to graph structure in the database.
+"use strict";
 
-const neo4jGraphDatabase = require('neo4j-driver').v1
-let neo4jGraphDBDriver = neo4jGraphDatabase.driver('bolt://localhost', neo4jGraphDatabase.auth.basic('neo4j', 'test'))
-const classification = ''
-let nodeArray = []
+const neo4jGraphDatabase = require('neo4j-driver').v1;
+let neo4jGraphDBDriver = neo4jGraphDatabase.driver('bolt://localhost', neo4jGraphDatabase.auth.basic('neo4j', 'test'));
+const classification = '';
+let nodeArray = [];
 
-;(async () => {
-  let session = await neo4jGraphDBDriver.session()
+(async () => {
+  let session = await neo4jGraphDBDriver.session();
 
-  // for (let node of nodeArray) {
-  //   let query = `key: '${node.key}', name: '${node.label.name}', classification: '${classification}' `
-  //   if (node.callback) query += `, callback: ${JSON.stringify(JSON.stringify(node.callback))}`
-  //   let result = await session.run(`
-  //     match (p:Process { key: '${node.dataItemKey}', classification: '${classification}' })
-  //     create (s:Stage { ${query} }), (s)-[:EXECUTE]->(p)
-  //     RETURN p
-  //   `)
 
-  //   if (node.port)
-  //     for (let port of node.port) {
-  //       let result = await session.run(`
-  //         MATCH (stage:Stage { key: '${node.key}', classification: '${classification}' })
-  //         CREATE (port:Port { key: '${port.key}', traverseNodeImplementation: '${port.executionType}' }),
-  //         (stage)-[:HAS_PORT { order: ${port.order}}]->(port)
-  //         RETURN port
-  //       `)
-  //       {
-  //         for (let record of result.records) {
-  //           let createdNode = record.toObject()
-  //           console.log(createdNode.port)
-  //         }
-  //       }
-  //     }
 
-  //   for (let record of result.records) {
-  //     let createdNode = record.toObject()
-  //     process.stdout.write(`${node.key} --> ${createdNode.p.properties.key}\n`)
-  //     // console.log(createdNode.p.properties.processDataImplementation)
-  //   }
-  // }
 
-  //--------------------------------------------------------------------------------------------------
 
-  // // TODO: don't forget the additional node graph
-  // for (let node of nodeArray) {
-  //   if (node.connection) {
-  //     // node.children = node.children.filter(v => v.insertionPosition.insertionPathPointer)
-  //     for (let index in node.connection) {
-  //       let child = node.connection[index]
-  //       // console.log(child)
-  //       let result = await session.run(`
-  //       match (s:Stage { key: '${node.key}', classification: '${classification}' })-[:HAS_PORT]->(port:Port) where port.key = '${child.insertionPosition.port}'
-  //       match (snext:Stage { key: '${child.nestedUnit}', classification: '${classification}' })
-  //       create (port)-[:NEXT { order: ${index || 1}}]->(snext)
-  //       RETURN port, snext
-  //     `)
 
-  //       for (let record of result.records) {
-  //         let createdNode = record.toObject()
-  //         process.stdout.write(`${createdNode.port.properties.key} --> ${createdNode.snext.properties.key}\n`)
-  //       }
-  //     }
-  //   }
-  // }
 
-  session.close()
-  neo4jGraphDBDriver.close()
-})()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  session.close();
+  neo4jGraphDBDriver.close();
+})();
 
 async function createConnection() {
   for (let node of nodeArray) {
     if (node.children)
-      for (let child of node.children) {
-        let result = await session.run(`
+    for (let child of node.children) {
+      let result = await session.run(`
           MATCH (snext:Stage { key: '${child.nestedUnit}'})
           MATCH (s:Stage {key:'${node.key}'})-[:HAS_PORT]->(p:Port { key: '${child.insertionPosition.insertionPoint}'})
           CREATE (p)-[l:NEXT { order: ${child.insertionPosition.order} }]->(snext)
           RETURN l
-        `)
-        console.log(result)
-      }
+        `);
+      console.log(result);
+    }
   }
 }
 
@@ -90,19 +90,19 @@ async function createStageAndPort() {
       match (p:Process) where p.key = '${node.unitKey}'
       create (s:Stage { key: '${node.key}', name: '${node.label.name}' })-[:EXECUTE]->(p)
       return s
-    `)
+    `);
     for (let record of result.records) {
-      let createdNode = record.toObject().s
+      let createdNode = record.toObject().s;
       if (node.insertionPoint)
-        for (let port of node.insertionPoint) {
-          let result = await session.run(`
+      for (let port of node.insertionPoint) {
+        let result = await session.run(`
             MATCH (stage:Stage { key: '${node.key}' })
             CREATE (port:Port { key: '${port.key}', traverseNodeImplementation: '${port.executionType}' }), 
             (stage)-[:HAS_PORT { order: ${port.order}}]->(port)
             RETURN port
-          `)
-          console.log(result.port)
-        }
+          `);
+        console.log(result.port);
+      }
     }
   }
 }
@@ -112,27 +112,28 @@ async function createFileResource() {
     let result = await session.run(`
       create (n:FileResource { key: '${node.key}', name: '${node.label.name}', algorithm: ${JSON.stringify(JSON.stringify(node.algorithm))} })
       return n
-    `)
+    `);
     for (let record of result.records) {
-      let createdNode = record.toObject()
-      console.log(createdNode)
+      let createdNode = record.toObject();
+      console.log(createdNode);
     }
   }
 }
 
 async function createProcess() {
   for (let node of nodeArray) {
-    let query = `key: '${node.key}', name: '${node.name}'`
-    if (node.fieldName) query += `, fieldName: '${node.fieldName}'`
-    if (node.args) query += `, args: ${JSON.stringify(JSON.stringify(node.args))}`
+    let query = `key: '${node.key}', name: '${node.name}'`;
+    if (node.fieldName) query += `, fieldName: '${node.fieldName}'`;
+    if (node.args) query += `, args: ${JSON.stringify(JSON.stringify(node.args))}`;
     let result = await session.run(`
       match (r:FileResource) where r.key = '${node.fileKey}'
       create (p:Process { ${query} }), (p)-[:RESOURCE]->(r)
       return p
-    `)
+    `);
     for (let record of result.records) {
-      let createdNode = record.toObject()
-      console.log(createdNode)
+      let createdNode = record.toObject();
+      console.log(createdNode);
     }
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NjcmlwdC9ncmFwaERhdGFiYXNlL2ltcG9ydE9iamVjdERhdGFUb0dyYXBoRGF0YWJhc2UuanMiXSwibmFtZXMiOlsibmVvNGpHcmFwaERhdGFiYXNlIiwicmVxdWlyZSIsInYxIiwibmVvNGpHcmFwaERCRHJpdmVyIiwiZHJpdmVyIiwiYXV0aCIsImJhc2ljIiwiY2xhc3NpZmljYXRpb24iLCJub2RlQXJyYXkiLCJzZXNzaW9uIiwiY2xvc2UiLCJjcmVhdGVDb25uZWN0aW9uIiwibm9kZSIsImNoaWxkcmVuIiwiY2hpbGQiLCJyZXN1bHQiLCJydW4iLCJuZXN0ZWRVbml0Iiwia2V5IiwiaW5zZXJ0aW9uUG9zaXRpb24iLCJpbnNlcnRpb25Qb2ludCIsIm9yZGVyIiwiY29uc29sZSIsImxvZyIsImNyZWF0ZVN0YWdlQW5kUG9ydCIsInVuaXRLZXkiLCJsYWJlbCIsIm5hbWUiLCJyZWNvcmQiLCJyZWNvcmRzIiwiY3JlYXRlZE5vZGUiLCJ0b09iamVjdCIsInMiLCJwb3J0IiwiZXhlY3V0aW9uVHlwZSIsImNyZWF0ZUZpbGVSZXNvdXJjZSIsIkpTT04iLCJzdHJpbmdpZnkiLCJhbGdvcml0aG0iLCJjcmVhdGVQcm9jZXNzIiwicXVlcnkiLCJmaWVsZE5hbWUiLCJhcmdzIiwiZmlsZUtleSJdLCJtYXBwaW5ncyI6IkFBQUE7OztBQUdBLE1BQU1BLGtCQUFrQixHQUFHQyxPQUFPLENBQUMsY0FBRCxDQUFQLENBQXdCQyxFQUFuRDtBQUNBLElBQUlDLGtCQUFrQixHQUFHSCxrQkFBa0IsQ0FBQ0ksTUFBbkIsQ0FBMEIsa0JBQTFCLEVBQThDSixrQkFBa0IsQ0FBQ0ssSUFBbkIsQ0FBd0JDLEtBQXhCLENBQThCLE9BQTlCLEVBQXVDLE1BQXZDLENBQTlDLENBQXpCO0FBQ0EsTUFBTUMsY0FBYyxHQUFHLEVBQXZCO0FBQ0EsSUFBSUMsU0FBUyxHQUFHLEVBQWhCOztBQUVDLENBQUMsWUFBWTtBQUNaLE1BQUlDLE9BQU8sR0FBRyxNQUFNTixrQkFB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QUFDOEIsSUFBVCxFQUFlRixLQUFLLElBQUssV0FBVUosSUFBSSxDQUFDQyxTQUFMLENBQWVELElBQUksQ0FBQ0MsU0FBTCxDQUFlekIsSUFBSSxDQUFDOEIsSUFBcEIsQ0FBZixDQUEwQyxFQUE5RDtBQUNmLFFBQUkzQixNQUFNLEdBQUcsTUFBTU4sT0FBTyxDQUFDTyxHQUFSLENBQWE7OENBQ1VKLElBQUksQ0FBQytCLE9BQVE7NEJBQy9CSCxLQUFNOztLQUZYLENBQW5CO0FBS0EsU0FBSyxJQUFJWixNQUFULElBQW1CYixNQUFNLENBQUNjLE9BQTFCLEVBQW1DO0FBQ2pDLFVBQUlDLFdBQVcsR0FBR0YsTUFBTSxDQUFDRyxRQUFQLEVBQWxCO0FBQ0FULE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZTyxXQUFaO0FBQ0Q7QUFDRjtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiIyEvdXNyL2Jpbi9lbnYgbm9kZVxuLy8gVGhpcyB3YXMgdXNlZCBhcyBhIHRlbXBvcmFyeSBmaWxlIHVzZWQgdG8gdHJhbnNmZXJpbmcgb2JqZWN0IGRhdGEgdG8gZ3JhcGggc3RydWN0dXJlIGluIHRoZSBkYXRhYmFzZS5cblxuY29uc3QgbmVvNGpHcmFwaERhdGFiYXNlID0gcmVxdWlyZSgnbmVvNGotZHJpdmVyJykudjFcbmxldCBuZW80akdyYXBoREJEcml2ZXIgPSBuZW80akdyYXBoRGF0YWJhc2UuZHJpdmVyKCdib2x0Oi8vbG9jYWxob3N0JywgbmVvNGpHcmFwaERhdGFiYXNlLmF1dGguYmFzaWMoJ25lbzRqJywgJ3Rlc3QnKSlcbmNvbnN0IGNsYXNzaWZpY2F0aW9uID0gJydcbmxldCBub2RlQXJyYXkgPSBbXVxuXG47KGFzeW5jICgpID0+IHtcbiAgbGV0IHNlc3Npb24gPSBhd2FpdCBuZW80akdyYXBoREJEcml2ZXIuc2Vzc2lvbigpXG5cbiAgLy8gZm9yIChsZXQgbm9kZSBvZiBub2RlQXJyYXkpIHtcbiAgLy8gICBsZXQgcXVlcnkgPSBga2V5OiAnJHtub2RlLmtleX0nLCBuYW1lOiAnJHtub2RlLmxhYmVsLm5hbWV9JywgY2xhc3NpZmljYXRpb246ICcke2NsYXNzaWZpY2F0aW9ufScgYFxuICAvLyAgIGlmIChub2RlLmNhbGxiYWNrKSBxdWVyeSArPSBgLCBjYWxsYmFjazogJHtKU09OLnN0cmluZ2lmeShKU09OLnN0cmluZ2lmeShub2RlLmNhbGxiYWNrKSl9YFxuICAvLyAgIGxldCByZXN1bHQgPSBhd2FpdCBzZXNzaW9uLnJ1bihgXG4gIC8vICAgICBtYXRjaCAocDpQcm9jZXNzIHsga2V5OiAnJHtub2RlLmRhdGFJdGVtS2V5fScsIGNsYXNzaWZpY2F0aW9uOiAnJHtjbGFzc2lmaWNhdGlvbn0nIH0pXG4gIC8vICAgICBjcmVhdGUgKHM6U3RhZ2UgeyAke3F1ZXJ5fSB9KSwgKHMpLVs6RVhFQ1VURV0tPihwKVxuICAvLyAgICAgUkVUVVJOIHBcbiAgLy8gICBgKVxuXG4gIC8vICAgaWYgKG5vZGUucG9ydClcbiAgLy8gICAgIGZvciAobGV0IHBvcnQgb2Ygbm9kZS5wb3J0KSB7XG4gIC8vICAgICAgIGxldCByZXN1bHQgPSBhd2FpdCBzZXNzaW9uLnJ1bihgXG4gIC8vICAgICAgICAgTUFUQ0ggKHN0YWdlOlN0YWdlIHsga2V5OiAnJHtub2RlLmtleX0nLCBjbGFzc2lmaWNhdGlvbjogJyR7Y2xhc3NpZmljYXRpb259JyB9KVxuICAvLyAgICAgICAgIENSRUFURSAocG9ydDpQb3J0IHsga2V5OiAnJHtwb3J0LmtleX0nLCB0cmF2ZXJzZU5vZGVJbXBsZW1lbnRhdGlvbjogJyR7cG9ydC5leGVjdXRpb25UeXBlfScgfSksXG4gIC8vICAgICAgICAgKHN0YWdlKS1bOkhBU19QT1JUIHsgb3JkZXI6ICR7cG9ydC5vcmRlcn19XS0+KHBvcnQpXG4gIC8vICAgICAgICAgUkVUVVJOIHBvcnRcbiAgLy8gICAgICAgYClcbiAgLy8gICAgICAge1xuICAvLyAgICAgICAgIGZvciAobGV0IHJlY29yZCBvZiByZXN1bHQucmVjb3Jkcykge1xuICAvLyAgICAgICAgICAgbGV0IGNyZWF0ZWROb2RlID0gcmVjb3JkLnRvT2JqZWN0KClcbiAgLy8gICAgICAgICAgIGNvbnNvbGUubG9nKGNyZWF0ZWROb2RlLnBvcnQpXG4gIC8vICAgICAgICAgfVxuICAvLyAgICAgICB9XG4gIC8vICAgICB9XG5cbiAgLy8gICBmb3IgKGxldCByZWNvcmQgb2YgcmVzdWx0LnJlY29yZHMpIHtcbiAgLy8gICAgIGxldCBjcmVhdGVkTm9kZSA9IHJlY29yZC50b09iamVjdCgpXG4gIC8vICAgICBwcm9jZXNzLnN0ZG91dC53cml0ZShgJHtub2RlLmtleX0gLS0+ICR7Y3JlYXRlZE5vZGUucC5wcm9wZXJ0aWVzLmtleX1cXG5gKVxuICAvLyAgICAgLy8gY29uc29sZS5sb2coY3JlYXRlZE5vZGUucC5wcm9wZXJ0aWVzLnByb2Nlc3NEYXRhSW1wbGVtZW50YXRpb24pXG4gIC8vICAgfVxuICAvLyB9XG5cbiAgLy8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuXG4gIC8vIC8vIFRPRE86IGRvbid0IGZvcmdldCB0aGUgYWRkaXRpb25hbCBub2RlIGdyYXBoXG4gIC8vIGZvciAobGV0IG5vZGUgb2Ygbm9kZUFycmF5KSB7XG4gIC8vICAgaWYgKG5vZGUuY29ubmVjdGlvbikge1xuICAvLyAgICAgLy8gbm9kZS5jaGlsZHJlbiA9IG5vZGUuY2hpbGRyZW4uZmlsdGVyKHYgPT4gdi5pbnNlcnRpb25Qb3NpdGlvbi5pbnNlcnRpb25QYXRoUG9pbnRlcilcbiAgLy8gICAgIGZvciAobGV0IGluZGV4IGluIG5vZGUuY29ubmVjdGlvbikge1xuICAvLyAgICAgICBsZXQgY2hpbGQgPSBub2RlLmNvbm5lY3Rpb25baW5kZXhdXG4gIC8vICAgICAgIC8vIGNvbnNvbGUubG9nKGNoaWxkKVxuICAvLyAgICAgICBsZXQgcmVzdWx0ID0gYXdhaXQgc2Vzc2lvbi5ydW4oYFxuICAvLyAgICAgICBtYXRjaCAoczpTdGFnZSB7IGtleTogJyR7bm9kZS5rZXl9JywgY2xhc3NpZmljYXRpb246ICcke2NsYXNzaWZpY2F0aW9ufScgfSktWzpIQVNfUE9SVF0tPihwb3J0OlBvcnQpIHdoZXJlIHBvcnQua2V5ID0gJyR7Y2hpbGQuaW5zZXJ0aW9uUG9zaXRpb24ucG9ydH0nXG4gIC8vICAgICAgIG1hdGNoIChzbmV4dDpTdGFnZSB7IGtleTogJyR7Y2hpbGQubmVzdGVkVW5pdH0nLCBjbGFzc2lmaWNhdGlvbjogJyR7Y2xhc3NpZmljYXRpb259JyB9KVxuICAvLyAgICAgICBjcmVhdGUgKHBvcnQpLVs6TkVYVCB7IG9yZGVyOiAke2luZGV4IHx8IDF9fV0tPihzbmV4dClcbiAgLy8gICAgICAgUkVUVVJOIHBvcnQsIHNuZXh0XG4gIC8vICAgICBgKVxuXG4gIC8vICAgICAgIGZvciAobGV0IHJlY29yZCBvZiByZXN1bHQucmVjb3Jkcykge1xuICAvLyAgICAgICAgIGxldCBjcmVhdGVkTm9kZSA9IHJlY29yZC50b09iamVjdCgpXG4gIC8vICAgICAgICAgcHJvY2Vzcy5zdGRvdXQud3JpdGUoYCR7Y3JlYXRlZE5vZGUucG9ydC5wcm9wZXJ0aWVzLmtleX0gLS0+ICR7Y3JlYXRlZE5vZGUuc25leHQucHJvcGVydGllcy5rZXl9XFxuYClcbiAgLy8gICAgICAgfVxuICAvLyAgICAgfVxuICAvLyAgIH1cbiAgLy8gfVxuXG4gIHNlc3Npb24uY2xvc2UoKVxuICBuZW80akdyYXBoREJEcml2ZXIuY2xvc2UoKVxufSkoKVxuXG5hc3luYyBmdW5jdGlvbiBjcmVhdGVDb25uZWN0aW9uKCkge1xuICBmb3IgKGxldCBub2RlIG9mIG5vZGVBcnJheSkge1xuICAgIGlmIChub2RlLmNoaWxkcmVuKVxuICAgICAgZm9yIChsZXQgY2hpbGQgb2Ygbm9kZS5jaGlsZHJlbikge1xuICAgICAgICBsZXQgcmVzdWx0ID0gYXdhaXQgc2Vzc2lvbi5ydW4oYFxuICAgICAgICAgIE1BVENIIChzbmV4dDpTdGFnZSB7IGtleTogJyR7Y2hpbGQubmVzdGVkVW5pdH0nfSlcbiAgICAgICAgICBNQVRDSCAoczpTdGFnZSB7a2V5Oicke25vZGUua2V5fSd9KS1bOkhBU19QT1JUXS0+KHA6UG9ydCB7IGtleTogJyR7Y2hpbGQuaW5zZXJ0aW9uUG9zaXRpb24uaW5zZXJ0aW9uUG9pbnR9J30pXG4gICAgICAgICAgQ1JFQVRFIChwKS1bbDpORVhUIHsgb3JkZXI6ICR7Y2hpbGQuaW5zZXJ0aW9uUG9zaXRpb24ub3JkZXJ9IH1dLT4oc25leHQpXG4gICAgICAgICAgUkVUVVJOIGxcbiAgICAgICAgYClcbiAgICAgICAgY29uc29sZS5sb2cocmVzdWx0KVxuICAgICAgfVxuICB9XG59XG5cbmFzeW5jIGZ1bmN0aW9uIGNyZWF0ZVN0YWdlQW5kUG9ydCgpIHtcbiAgZm9yIChsZXQgbm9kZSBvZiBub2RlQXJyYXkpIHtcbiAgICBsZXQgcmVzdWx0ID0gYXdhaXQgc2Vzc2lvbi5ydW4oYFxuICAgICAgbWF0Y2ggKHA6UHJvY2Vzcykgd2hlcmUgcC5rZXkgPSAnJHtub2RlLnVuaXRLZXl9J1xuICAgICAgY3JlYXRlIChzOlN0YWdlIHsga2V5OiAnJHtub2RlLmtleX0nLCBuYW1lOiAnJHtub2RlLmxhYmVsLm5hbWV9JyB9KS1bOkVYRUNVVEVdLT4ocClcbiAgICAgIHJldHVybiBzXG4gICAgYClcbiAgICBmb3IgKGxldCByZWNvcmQgb2YgcmVzdWx0LnJlY29yZHMpIHtcbiAgICAgIGxldCBjcmVhdGVkTm9kZSA9IHJlY29yZC50b09iamVjdCgpLnNcbiAgICAgIGlmIChub2RlLmluc2VydGlvblBvaW50KVxuICAgICAgICBmb3IgKGxldCBwb3J0IG9mIG5vZGUuaW5zZXJ0aW9uUG9pbnQpIHtcbiAgICAgICAgICBsZXQgcmVzdWx0ID0gYXdhaXQgc2Vzc2lvbi5ydW4oYFxuICAgICAgICAgICAgTUFUQ0ggKHN0YWdlOlN0YWdlIHsga2V5OiAnJHtub2RlLmtleX0nIH0pXG4gICAgICAgICAgICBDUkVBVEUgKHBvcnQ6UG9ydCB7IGtleTogJyR7cG9ydC5rZXl9JywgdHJhdmVyc2VOb2RlSW1wbGVtZW50YXRpb246ICcke3BvcnQuZXhlY3V0aW9uVHlwZX0nIH0pLCBcbiAgICAgICAgICAgIChzdGFnZSktWzpIQVNfUE9SVCB7IG9yZGVyOiAke3BvcnQub3JkZXJ9fV0tPihwb3J0KVxuICAgICAgICAgICAgUkVUVVJOIHBvcnRcbiAgICAgICAgICBgKVxuICAgICAgICAgIGNvbnNvbGUubG9nKHJlc3VsdC5wb3J0KVxuICAgICAgICB9XG4gICAgfVxuICB9XG59XG5cbmFzeW5jIGZ1bmN0aW9uIGNyZWF0ZUZpbGVSZXNvdXJjZSgpIHtcbiAgZm9yIChsZXQgbm9kZSBvZiBub2RlQXJyYXkpIHtcbiAgICBsZXQgcmVzdWx0ID0gYXdhaXQgc2Vzc2lvbi5ydW4oYFxuICAgICAgY3JlYXRlIChuOkZpbGVSZXNvdXJjZSB7IGtleTogJyR7bm9kZS5rZXl9JywgbmFtZTogJyR7bm9kZS5sYWJlbC5uYW1lfScsIGFsZ29yaXRobTogJHtKU09OLnN0cmluZ2lmeShKU09OLnN0cmluZ2lmeShub2RlLmFsZ29yaXRobSkpfSB9KVxuICAgICAgcmV0dXJuIG5cbiAgICBgKVxuICAgIGZvciAobGV0IHJlY29yZCBvZiByZXN1bHQucmVjb3Jkcykge1xuICAgICAgbGV0IGNyZWF0ZWROb2RlID0gcmVjb3JkLnRvT2JqZWN0KClcbiAgICAgIGNvbnNvbGUubG9nKGNyZWF0ZWROb2RlKVxuICAgIH1cbiAgfVxufVxuXG5hc3luYyBmdW5jdGlvbiBjcmVhdGVQcm9jZXNzKCkge1xuICBmb3IgKGxldCBub2RlIG9mIG5vZGVBcnJheSkge1xuICAgIGxldCBxdWVyeSA9IGBrZXk6ICcke25vZGUua2V5fScsIG5hbWU6ICcke25vZGUubmFtZX0nYFxuICAgIGlmIChub2RlLmZpZWxkTmFtZSkgcXVlcnkgKz0gYCwgZmllbGROYW1lOiAnJHtub2RlLmZpZWxkTmFtZX0nYFxuICAgIGlmIChub2RlLmFyZ3MpIHF1ZXJ5ICs9IGAsIGFyZ3M6ICR7SlNPTi5zdHJpbmdpZnkoSlNPTi5zdHJpbmdpZnkobm9kZS5hcmdzKSl9YFxuICAgIGxldCByZXN1bHQgPSBhd2FpdCBzZXNzaW9uLnJ1bihgXG4gICAgICBtYXRjaCAocjpGaWxlUmVzb3VyY2UpIHdoZXJlIHIua2V5ID0gJyR7bm9kZS5maWxlS2V5fSdcbiAgICAgIGNyZWF0ZSAocDpQcm9jZXNzIHsgJHtxdWVyeX0gfSksIChwKS1bOlJFU09VUkNFXS0+KHIpXG4gICAgICByZXR1cm4gcFxuICAgIGApXG4gICAgZm9yIChsZXQgcmVjb3JkIG9mIHJlc3VsdC5yZWNvcmRzKSB7XG4gICAgICBsZXQgY3JlYXRlZE5vZGUgPSByZWNvcmQudG9PYmplY3QoKVxuICAgICAgY29uc29sZS5sb2coY3JlYXRlZE5vZGUpXG4gICAgfVxuICB9XG59XG4iXX0=

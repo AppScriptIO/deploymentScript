@@ -1,9 +1,10 @@
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
-const { sync: binaryExist } = require('command-exists')
-const assert = require('assert')
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.install = install;const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
+const { sync: binaryExist } = require('command-exists');
+const assert = require('assert');
 
-export function install() {
-  assert(binaryExist('yarn'), `• jspm installation is dependent on 'yarn' binary existance.`)
-  if (binaryExist('jspm')) console.log('✔ jspm is installed.')
-  else childProcess.execSync(`yarn global add jspm`, childProcessOption)
+function install() {
+  assert(binaryExist('yarn'), `• jspm installation is dependent on 'yarn' binary existance.`);
+  if (binaryExist('jspm')) console.log('✔ jspm is installed.');else
+  childProcess.execSync(`yarn global add jspm`, childProcessOption);
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9wcm92aXNpb25PUy9pbnN0YWxsVW5peFBhY2thZ2UvaW5zdGFsbEpTUE0uanMiXSwibmFtZXMiOlsiY2hpbGRQcm9jZXNzT3B0aW9uIiwiY3dkIiwiX19kaXJuYW1lIiwic2hlbGwiLCJzdGRpbyIsInN5bmMiLCJiaW5hcnlFeGlzdCIsInJlcXVpcmUiLCJhc3NlcnQiLCJpbnN0YWxsIiwiY29uc29sZSIsImxvZyIsImNoaWxkUHJvY2VzcyIsImV4ZWNTeW5jIl0sIm1hcHBpbmdzIjoicUdBQUEsTUFBTUEsa0JBQWtCLEdBQUcsRUFBRUMsR0FBRyxFQUFFQyxTQUFQLEVBQWtCQyxLQUFLLEVBQUUsSUFBekIsRUFBK0JDLEtBQUssRUFBRSxDQUFDLENBQUQsRUFBSSxDQUFKLEVBQU8sQ0FBUCxDQUF0QyxFQUEzQjtBQUNBLE1BQU0sRUFBRUMsSUFBSSxFQUFFQyxXQUFSLEtBQXdCQyxPQUFPLENBQUMsZ0JBQUQsQ0FBckM7QUFDQSxNQUFNQyxNQUFNLEdBQUdELE9BQU8sQ0FBQyxRQUFELENBQXRCOztBQUVPLFNBQVNFLE9BQVQsR0FBbUI7QUFDeEJELEVBQUFBLE1BQU0sQ0FBQ0YsV0FBVyxDQUFDLE1BQUQsQ0FBWixFQUF1Qiw4REFBdkIsQ0FBTjtBQUNBLE1BQUlBLFdBQVcsQ0FBQyxNQUFELENBQWYsRUFBeUJJLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLHNCQUFaLEVBQXpCO0FBQ0tDLEVBQUFBLFlBQVksQ0FBQ0MsUUFBYixDQUF1QixzQkFBdkIsRUFBOENiLGtCQUE5QztBQUNOIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzT3B0aW9uID0geyBjd2Q6IF9fZGlybmFtZSwgc2hlbGw6IHRydWUsIHN0ZGlvOiBbMCwgMSwgMl0gfVxuY29uc3QgeyBzeW5jOiBiaW5hcnlFeGlzdCB9ID0gcmVxdWlyZSgnY29tbWFuZC1leGlzdHMnKVxuY29uc3QgYXNzZXJ0ID0gcmVxdWlyZSgnYXNzZXJ0JylcblxuZXhwb3J0IGZ1bmN0aW9uIGluc3RhbGwoKSB7XG4gIGFzc2VydChiaW5hcnlFeGlzdCgneWFybicpLCBg4oCiIGpzcG0gaW5zdGFsbGF0aW9uIGlzIGRlcGVuZGVudCBvbiAneWFybicgYmluYXJ5IGV4aXN0YW5jZS5gKVxuICBpZiAoYmluYXJ5RXhpc3QoJ2pzcG0nKSkgY29uc29sZS5sb2coJ+KclCBqc3BtIGlzIGluc3RhbGxlZC4nKVxuICBlbHNlIGNoaWxkUHJvY2Vzcy5leGVjU3luYyhgeWFybiBnbG9iYWwgYWRkIGpzcG1gLCBjaGlsZFByb2Nlc3NPcHRpb24pXG59XG4iXX0=
