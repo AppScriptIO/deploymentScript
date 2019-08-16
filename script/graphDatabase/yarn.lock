@@ -34,9 +34,9 @@
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
     lodash "^4.17.11"
 
-"@dependency/graph@https://github.com/AppScriptIO/graph#semver:^1.x.x":
-  version "1.2.1"
-  resolved "https://github.com/AppScriptIO/graph#e8c68db5e7162feb65f5482e2aad825c60d5a4df"
+"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
+  version "1.2.6"
+  resolved "https://github.com/AppScriptIO/graphTraversal#60b22c8078c2bd514865b55c8f7220ad9a28ee81"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"

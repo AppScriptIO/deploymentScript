@@ -571,10 +571,10 @@ nodegit-promise@~4.0.0:
   dependencies:
     asap "~2.0.3"
 
-nodegit@next:
-  version "0.25.0-alpha.16"
-  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.25.0-alpha.16.tgz#95c2a65a8c4303ec6d4fc7d6e465eab8f43bca6d"
-  integrity sha512-xBAjbQpqUGHifxSRq72diiXQ9VHlQx5qCFutLWGIgsGIR4WlqZ1nbp9TmbM975EU03KCs0oVyArDi3Njtknb9Q==
+nodegit@^0.25.0:
+  version "0.25.1"
+  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.25.1.tgz#70b9d89e62cbc1153237a10a196e3228a669895b"
+  integrity sha512-j2kEd4jTraimRPKDX31DsLcfY9fWpcYG8zT0tiLVtN5jMm9fDFgn3WOQ+Nk+3NcBqxr4p5N5pZqNrCS0nGdTbg==
   dependencies:
     fs-extra "^7.0.0"
     json5 "^2.1.0"

@@ -3,10 +3,16 @@
 	"main": "x",
 	"version": "1.1.17",
 	"scripts": {
+		"preinstall": "yarn workspaces run install # always install workspaces, even as a when this module is used as a dependency",
 		"deprecated_preinstall": "yarn install --ignore-scripts && (cd ./script && yarn install) # This is a workaround non publishable yarn workspaces. # install workspaces when used as a dependency # NOTES: --ignore-scripts doesn't work because nodegit depends on scripst to be installed correctly. # and using --modules-folder to the same node_modules causes issues. ",
-		"preinstall": "(cd ./source && yarn install --modules-folder \"../node_modules\") && (cd ./script && yarn install --modules-folder \"../node_modules\")",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
 	},
+	"workspaces": [
+		"./script/*",
+		"./script/JSProject/*",
+		"./source"
+	],
+	"private": true,
 	"dependencies": {
 		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
 		"@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
