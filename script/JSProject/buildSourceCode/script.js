@@ -1,23 +1,24 @@
-import filesystem from 'fs'
-import path from 'path'
-import { build } from '@dependency/buildTool'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.webappProject = webappProject;exports.moduleProject = moduleProject;
 
-// build process for webapps relying on appscript module.
-export async function webappProject(...args) {
-  // adapter for working with target function interface of `scriptManager`.
-  const { api /* supplied by scriptManager */ } = args[0]
-  args[0].targetProject = api.project
-  args[0].entryNodeKey ||= '58c15cc8-6f40-4d0b-815a-0b8594aeb972' // graph tasks traversal entrypoint
-  args[0].taskContextName = 'webappProjectTask'
-  await build(...args).catch(console.error)
+var _buildTool = require("@dependency/buildTool");
+
+
+async function webappProject(...args) {var _args$;
+
+  const { api } = args[0];
+  args[0].targetProject = api.project;
+  (_args$ = args[0]).entryNodeKey || (_args$.entryNodeKey = '58c15cc8-6f40-4d0b-815a-0b8594aeb972');
+  args[0].taskContextName = 'webappProjectTask';
+  await (0, _buildTool.build)(...args).catch(console.error);
 }
 
-// build process for Javascript module repositories
-export async function moduleProject(...args) {
-  // adapter for working with target function interface of `scriptManager`.
-  const { api /* supplied by scriptManager */ } = args[0]
-  args[0].targetProject = api.project
-  args[0].entryNodeKey ||= '171d18f8-9d25-4483-aeb9-a29c9fbed6ac' // graph tasks traversal entrypoint
-  args[0].taskContextName = 'moduleProjectTask'
-  await build(...args).catch(console.error)
+
+async function moduleProject(...args) {var _args$2;
+
+  const { api } = args[0];
+  args[0].targetProject = api.project;
+  (_args$2 = args[0]).entryNodeKey || (_args$2.entryNodeKey = '171d18f8-9d25-4483-aeb9-a29c9fbed6ac');
+  args[0].taskContextName = 'moduleProjectTask';
+  await (0, _buildTool.build)(...args).catch(console.error);
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvYnVpbGRTb3VyY2VDb2RlL3NjcmlwdC5qcyJdLCJuYW1lcyI6WyJ3ZWJhcHBQcm9qZWN0IiwiYXJncyIsImFwaSIsInRhcmdldFByb2plY3QiLCJwcm9qZWN0IiwiZW50cnlOb2RlS2V5IiwidGFza0NvbnRleHROYW1lIiwiY2F0Y2giLCJjb25zb2xlIiwiZXJyb3IiLCJtb2R1bGVQcm9qZWN0Il0sIm1hcHBpbmdzIjoiOztBQUVBOzs7QUFHTyxlQUFlQSxhQUFmLENBQTZCLEdBQUdDLElBQWhDLEVBQXNDOztBQUUzQyxRQUFNLEVBQUVDLEdBQUYsS0FBMENELElBQUksQ0FBQyxDQUFELENBQXBEO0FBQ0FBLEVBQUFBLElBQUksQ0FBQyxDQUFELENBQUosQ0FBUUUsYUFBUixHQUF3QkQsR0FBRyxDQUFDRSxPQUE1QjtBQUNBLFlBQUFILElBQUksQ0FBQyxDQUFELENBQUosRUFBUUksWUFBUixZQUFRQSxZQUFSLEdBQXlCLHNDQUF6QjtBQUNBSixFQUFBQSxJQUFJLENBQUMsQ0FBRCxDQUFKLENBQVFLLGVBQVIsR0FBMEIsbUJBQTFCO0FBQ0EsUUFBTSxzQkFBTSxHQUFHTCxJQUFULEVBQWVNLEtBQWYsQ0FBcUJDLE9BQU8sQ0FBQ0MsS0FBN0IsQ0FBTjtBQUNEOzs7QUFHTSxlQUFlQyxhQUFmLENBQTZCLEdBQUdULElBQWhDLEVBQXNDOztBQUUzQyxRQUFNLEVBQUVDLEdBQUYsS0FBMENELElBQUksQ0FBQyxDQUFELENBQXBEO0FBQ0FBLEVBQUFBLElBQUksQ0FBQyxDQUFELENBQUosQ0FBUUUsYUFBUixHQUF3QkQsR0FBRyxDQUFDRSxPQUE1QjtBQUNBLGFBQUFILElBQUksQ0FBQyxDQUFELENBQUosRUFBUUksWUFBUixhQUFRQSxZQUFSLEdBQXlCLHNDQUF6QjtBQUNBSixFQUFBQSxJQUFJLENBQUMsQ0FBRCxDQUFKLENBQVFLLGVBQVIsR0FBMEIsbUJBQTFCO0FBQ0EsUUFBTSxzQkFBTSxHQUFHTCxJQUFULEVBQWVNLEtBQWYsQ0FBcUJDLE9BQU8sQ0FBQ0MsS0FBN0IsQ0FBTjtBQUNEIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGZpbGVzeXN0ZW0gZnJvbSAnZnMnXHJcbmltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXHJcbmltcG9ydCB7IGJ1aWxkIH0gZnJvbSAnQGRlcGVuZGVuY3kvYnVpbGRUb29sJ1xyXG5cclxuLy8gYnVpbGQgcHJvY2VzcyBmb3Igd2ViYXBwcyByZWx5aW5nIG9uIGFwcHNjcmlwdCBtb2R1bGUuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiB3ZWJhcHBQcm9qZWN0KC4uLmFyZ3MpIHtcclxuICAvLyBhZGFwdGVyIGZvciB3b3JraW5nIHdpdGggdGFyZ2V0IGZ1bmN0aW9uIGludGVyZmFjZSBvZiBgc2NyaXB0TWFuYWdlcmAuXHJcbiAgY29uc3QgeyBhcGkgLyogc3VwcGxpZWQgYnkgc2NyaXB0TWFuYWdlciAqLyB9ID0gYXJnc1swXVxyXG4gIGFyZ3NbMF0udGFyZ2V0UHJvamVjdCA9IGFwaS5wcm9qZWN0XHJcbiAgYXJnc1swXS5lbnRyeU5vZGVLZXkgfHw9ICc1OGMxNWNjOC02ZjQwLTRkMGItODE1YS0wYjg1OTRhZWI5NzInIC8vIGdyYXBoIHRhc2tzIHRyYXZlcnNhbCBlbnRyeXBvaW50XHJcbiAgYXJnc1swXS50YXNrQ29udGV4dE5hbWUgPSAnd2ViYXBwUHJvamVjdFRhc2snXHJcbiAgYXdhaXQgYnVpbGQoLi4uYXJncykuY2F0Y2goY29uc29sZS5lcnJvcilcclxufVxyXG5cclxuLy8gYnVpbGQgcHJvY2VzcyBmb3IgSmF2YXNjcmlwdCBtb2R1bGUgcmVwb3NpdG9yaWVzXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBtb2R1bGVQcm9qZWN0KC4uLmFyZ3MpIHtcclxuICAvLyBhZGFwdGVyIGZvciB3b3JraW5nIHdpdGggdGFyZ2V0IGZ1bmN0aW9uIGludGVyZmFjZSBvZiBgc2NyaXB0TWFuYWdlcmAuXHJcbiAgY29uc3QgeyBhcGkgLyogc3VwcGxpZWQgYnkgc2NyaXB0TWFuYWdlciAqLyB9ID0gYXJnc1swXVxyXG4gIGFyZ3NbMF0udGFyZ2V0UHJvamVjdCA9IGFwaS5wcm9qZWN0XHJcbiAgYXJnc1swXS5lbnRyeU5vZGVLZXkgfHw9ICcxNzFkMThmOC05ZDI1LTQ0ODMtYWViOS1hMjljOWZiZWQ2YWMnIC8vIGdyYXBoIHRhc2tzIHRyYXZlcnNhbCBlbnRyeXBvaW50XHJcbiAgYXJnc1swXS50YXNrQ29udGV4dE5hbWUgPSAnbW9kdWxlUHJvamVjdFRhc2snXHJcbiAgYXdhaXQgYnVpbGQoLi4uYXJncykuY2F0Y2goY29uc29sZS5lcnJvcilcclxufVxyXG4iXX0=
