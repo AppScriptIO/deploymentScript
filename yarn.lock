@@ -969,8 +969,8 @@
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/deploymentScript@https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x":
-  version "1.1.17"
-  resolved "https://github.com/AppScriptIO/deploymentScript#a9cc1319b484791cd5ddf550c39b483c6404897e"
+  version "1.1.18"
+  resolved "https://github.com/AppScriptIO/deploymentScript#0ea8359b46a5d0cc36319c05518bb76880b66895"
   dependencies:
     "@dependency/buildTool" "https://github.com/AppScriptIO/buildTool#semver:^1.x.x"
     "@dependency/javascriptTestRunner" "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x"
@@ -988,8 +988,8 @@
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.6"
-  resolved "https://github.com/AppScriptIO/graphTraversal#60b22c8078c2bd514865b55c8f7220ad9a28ee81"
+  version "1.2.7"
+  resolved "https://github.com/AppScriptIO/graphTraversal#df6398a067a18917e56aa3651ac359be6a109fcc"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
@@ -1115,6 +1115,7 @@
 
 "@dependency/nodejsLiveReload@https://github.com/AppScriptIO/nodejsLiveReload#semver:^1.x.x":
   version "1.0.3"
+  uid "269ef8dc4c9ba82f4b4df441f46a30de150586f2"
   resolved "https://github.com/AppScriptIO/nodejsLiveReload#269ef8dc4c9ba82f4b4df441f46a30de150586f2"
   dependencies:
     browser-sync "*"
@@ -3642,9 +3643,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.191:
-  version "1.3.229"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.229.tgz#accc9a08dd07d0a4d6c76937821bc94eb2e49eae"
-  integrity sha512-N6pUbSuKFBeUifxBZp9hODS1N9jFobJYW47QT2VvZIr+G5AWnHK/iG3ON9RPRGH7lHDQ6KUDVhzpNkj4ZiznoA==
+  version "1.3.230"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.230.tgz#2d0618cb6f724391d5fd0926dde84d6c67cbcda9"
+  integrity sha512-r0RljY5DZi9RX4v8mjHxJkDWnQe+nsrkGlHtrDF2uvZcvAkw+iglvlQi1794gZhwRtJoDOomMJlDHL2LfXSCZA==
 
 emitter-component@^1.1.1:
   version "1.1.1"
