@@ -1,15 +1,16 @@
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
-const { sync: binaryExist } = require('command-exists')
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.install = install;const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
+const { sync: binaryExist } = require('command-exists');
 
-export function install() {
-  if (binaryExist('yarn')) console.log('✔ yarn is installed.')
-  else
-    childProcess.execSync(
-      `
+function install() {
+  if (binaryExist('yarn')) console.log('✔ yarn is installed.');else
+
+  childProcess.execSync(
+  `
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \\
     sudo apt-get -y update && sudo apt-get install -y yarn
   `,
-      childProcessOption,
-    )
+  childProcessOption);
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9wcm92aXNpb25PUy9pbnN0YWxsVW5peFBhY2thZ2UvaW5zdGFsbFlhcm4uanMiXSwibmFtZXMiOlsiY2hpbGRQcm9jZXNzT3B0aW9uIiwiY3dkIiwiX19kaXJuYW1lIiwic2hlbGwiLCJzdGRpbyIsInN5bmMiLCJiaW5hcnlFeGlzdCIsInJlcXVpcmUiLCJpbnN0YWxsIiwiY29uc29sZSIsImxvZyIsImNoaWxkUHJvY2VzcyIsImV4ZWNTeW5jIl0sIm1hcHBpbmdzIjoicUdBQUEsTUFBTUEsa0JBQWtCLEdBQUcsRUFBRUMsR0FBRyxFQUFFQyxTQUFQLEVBQWtCQyxLQUFLLEVBQUUsSUFBekIsRUFBK0JDLEtBQUssRUFBRSxDQUFDLENBQUQsRUFBSSxDQUFKLEVBQU8sQ0FBUCxDQUF0QyxFQUEzQjtBQUNBLE1BQU0sRUFBRUMsSUFBSSxFQUFFQyxXQUFSLEtBQXdCQyxPQUFPLENBQUMsZ0JBQUQsQ0FBckM7O0FBRU8sU0FBU0MsT0FBVCxHQUFtQjtBQUN4QixNQUFJRixXQUFXLENBQUMsTUFBRCxDQUFmLEVBQXlCRyxPQUFPLENBQUNDLEdBQVIsQ0FBWSxzQkFBWixFQUF6Qjs7QUFFRUMsRUFBQUEsWUFBWSxDQUFDQyxRQUFiO0FBQ0c7Ozs7R0FESDtBQU1FWixFQUFBQSxrQkFORjs7QUFRSCIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IGNoaWxkUHJvY2Vzc09wdGlvbiA9IHsgY3dkOiBfX2Rpcm5hbWUsIHNoZWxsOiB0cnVlLCBzdGRpbzogWzAsIDEsIDJdIH1cbmNvbnN0IHsgc3luYzogYmluYXJ5RXhpc3QgfSA9IHJlcXVpcmUoJ2NvbW1hbmQtZXhpc3RzJylcblxuZXhwb3J0IGZ1bmN0aW9uIGluc3RhbGwoKSB7XG4gIGlmIChiaW5hcnlFeGlzdCgneWFybicpKSBjb25zb2xlLmxvZygn4pyUIHlhcm4gaXMgaW5zdGFsbGVkLicpXG4gIGVsc2VcbiAgICBjaGlsZFByb2Nlc3MuZXhlY1N5bmMoXG4gICAgICBgXG4gICAgY3VybCAtc1MgaHR0cHM6Ly9kbC55YXJucGtnLmNvbS9kZWJpYW4vcHVia2V5LmdwZyB8IHN1ZG8gYXB0LWtleSBhZGQgLSAmJiBcXFxcXG4gICAgZWNobyBcImRlYiBodHRwczovL2RsLnlhcm5wa2cuY29tL2RlYmlhbi8gc3RhYmxlIG1haW5cIiB8IHN1ZG8gdGVlIC9ldGMvYXB0L3NvdXJjZXMubGlzdC5kL3lhcm4ubGlzdCAmJiBcXFxcXG4gICAgc3VkbyBhcHQtZ2V0IC15IHVwZGF0ZSAmJiBzdWRvIGFwdC1nZXQgaW5zdGFsbCAteSB5YXJuXG4gIGAsXG4gICAgICBjaGlsZFByb2Nlc3NPcHRpb24sXG4gICAgKVxufVxuIl19
