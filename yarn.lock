@@ -3,8 +3,8 @@
 
 
 "@babel/babel-plugin-functionSentProxyImplementation@https://github.com/AppScriptIO/babel-plugin-functionSentProxyImplementation#semver:^1.x.x":
-  version "1.0.0"
-  resolved "https://github.com/AppScriptIO/babel-plugin-functionSentProxyImplementation#9e2e17af2b8dd2e49804a7dfb3ed6427a41bc8a6"
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/babel-plugin-functionSentProxyImplementation#886f69852b590dc651c3767bec8be0ccadc8405c"
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-syntax-function-sent" "^7.2.0"
@@ -901,16 +901,16 @@
     to-fast-properties "^2.0.0"
 
 "@dependency/JSModuleTypeCheck@https://github.com/AppScriptIO/JSModuleTypeCheck#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/JSModuleTypeCheck#2f5790ac0445f30d59d57542295c3120086e710d"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/JSModuleTypeCheck#09585099a7d382b9a90baa55eb80ba261152168f"
 
 "@dependency/addModuleResolutionPath@https://github.com/AppScriptIO/addModuleResolutionPath#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/addModuleResolutionPath#9f062f7412b3767a559973cf6c1e103b978e89a3"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
 "@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
-  version "1.0.6"
-  resolved "https://github.com/AppScriptIO/buildTool#b537bb7d112d1e7df9c7b2b0f3b2f7d8dec4db8c"
+  version "1.0.7"
+  resolved "https://github.com/AppScriptIO/buildTool#4fa071c305ab1121e88fb8706ca57fc310f1c957"
   dependencies:
     "@dependency/fragmentIndentationObjectStream" "https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x"
     "@dependency/graphTraversal" "https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x"
@@ -947,49 +947,49 @@
     vinyl-fs "^3.0.3"
 
 "@dependency/classMixin@https://github.com/AppScriptIO/classMixin#semver:^1.x.x":
-  version "1.0.0"
-  resolved "https://github.com/AppScriptIO/classMixin#1cce4f6421f52054d9464b103710a6f551ef80e6"
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/classMixin#6e25be33f65b81d6a0b27cebea7a970e74168a8d"
   dependencies:
     mixwith "*"
 
 "@dependency/commonPattern@https://github.com/AppScriptIO/commonPattern#semver:^1.x.x":
-  version "1.0.0"
-  resolved "https://github.com/AppScriptIO/commonPattern#1dc3019d76b09ddfa8c1a031452f5675e098b04e"
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/commonPattern#4f085f3a5b8242a7c8c7057aa779619a777443ed"
   dependencies:
-    promise-events "^0.1.4"
+    promise-events "^0.1.6"
 
 "@dependency/configurationManagement@https://github.com/AppScriptIO/configurationManagement#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/configurationManagement#2ca905b62240756177bcf49ccbe2661def3ac46f"
+  version "1.0.4"
+  resolved "https://github.com/AppScriptIO/configurationManagement#4b9ba191b7f9d1fbcfad46978d6c0e865852a4fe"
 
 "@dependency/databaseUtility@https://github.com/AppScriptIO/databaseUtility#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/databaseUtility#c9fd0f04f7da2f195a3c0d97be8cdd1deebfea14"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/databaseUtility#581076729dea717e757c11da17b4514a3f102bac"
   dependencies:
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/deploymentScript@https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x":
-  version "1.1.15"
-  resolved "https://github.com/AppScriptIO/deploymentScript#d229c2c42b14247db495657663bf8175d4d5148b"
+  version "1.1.16"
+  resolved "https://github.com/AppScriptIO/deploymentScript#08c17871dcf1a3d5cee072e5b4effa1f5f143c6a"
   dependencies:
     "@dependency/buildTool" "https://github.com/AppScriptIO/buildTool#semver:^1.x.x"
     "@dependency/javascriptTestRunner" "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x"
     "@dependency/nodejsLiveReload" "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"
 
 "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
-  version "1.0.7"
-  resolved "https://github.com/AppScriptIO/entity#f0c645913c981735da05e2774df6c7be35c41acf"
+  version "1.0.8"
+  resolved "https://github.com/AppScriptIO/entity#a0286c78200087befa3787fdb926440b0b654cf6"
   dependencies:
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
     lodash "^4.17.11"
 
 "@dependency/fragmentIndentationObjectStream@https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#10ad6baa61e53f6da6951614c05c00ee059924fb"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.4"
-  resolved "https://github.com/AppScriptIO/graphTraversal#a51614511cdbd1b5b6e9e47df508f4d46ae8a44b"
+  version "1.2.6"
+  resolved "https://github.com/AppScriptIO/graphTraversal#60b22c8078c2bd514865b55c8f7220ad9a28ee81"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
@@ -1005,12 +1005,12 @@
     uuid "^3.3.2"
 
 "@dependency/installNodeJSModule@https://github.com/AppScriptIO/installNodeJSModule#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/installNodeJSModule#bd89671de6a050b5bfcf9326e07bd08a6de5a34c"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/installNodeJSModule#e019e8000b79962ba8201506c862baf4241a74f5"
 
 "@dependency/javascriptStaticAnalysis@https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/javascriptStaticAnalysis#c4a221c4edeba9a6780ea230ef0016692994b8e6"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/javascriptStaticAnalysis#ddf7d2dfebb347b8cb47f67d1992620c22c20b64"
   dependencies:
     "@dependency/addModuleResolutionPath" "https://github.com/AppScriptIO/addModuleResolutionPath#semver:^1.x.x"
     "@typescript-eslint/eslint-plugin" "^1.4.2"
@@ -1024,8 +1024,8 @@
     typescript "^3.3.3333"
 
 "@dependency/javascriptTestRunner@git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x":
-  version "1.1.4"
-  resolved "git+https://github.com/AppScriptIO/javascriptTestRunner.git#0d40deb5930fd81f40ddeb4b4a5ad8eb6cff1290"
+  version "1.1.5"
+  resolved "git+https://github.com/AppScriptIO/javascriptTestRunner.git#af7d11df22b83791dbf1335bd077b7195c128032"
   dependencies:
     "@dependency/javascriptTranspilation" "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x"
     "@dependency/nodejsLiveReload" "https://github.com/AppScriptIO/nodejsLiveReload#semver:^1.x.x"
@@ -1037,8 +1037,8 @@
     sinon "*"
 
 "@dependency/javascriptTranspilation@https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x":
-  version "1.2.4"
-  resolved "https://github.com/AppScriptIO/javascriptTranspilation#612fa722b7eabb78de5415734a013603ca626f5a"
+  version "1.2.5"
+  resolved "https://github.com/AppScriptIO/javascriptTranspilation#0f1ee2358fd5850ba8ce5dc913fd30dc0574b316"
   dependencies:
     "@babel/babel-plugin-functionSentProxyImplementation" "https://github.com/AppScriptIO/babel-plugin-functionSentProxyImplementation#semver:^1.x.x"
     "@babel/cli" "*"
@@ -1083,64 +1083,64 @@
     pirates "^4.0.1"
 
 "@dependency/listDirectoryContent@https://github.com/AppScriptIO/listDirectoryContent#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/listDirectoryContent#139ebe23c421a5505a8617ad670d5e31fefad20b"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/listDirectoryContent#d6c71ec86993e95892ff2f94bde12d089843dbb8"
 
 "@dependency/moduleContext@https://github.com/AppScriptIO/moduleContext#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/moduleContext#5e734a4f4638011dca9dde27ac29e0c6e4f2d432"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/moduleContext#cd861fad6aab37978daa4ecbf35d1064970af029"
 
 "@dependency/moduleScopePattern@https://github.com/AppScriptIO/moduleScopePattern#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/moduleScopePattern#22e60164923d751ac6f565038a405004f9fe5c25"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/moduleScopePattern#82c3ee40de9a3e8bb5fe137b1337e27863266e90"
   dependencies:
     "@dependency/recursiveCreateDirectory" "https://github.com/AppScriptIO/recursiveCreateDirectory#semver:^1.x.x"
     del "^3.0.0"
 
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
-  version "1.0.8"
-  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#509d5043b8abee1db6e07d92ddcfa6d079f0a695"
+  version "1.0.9"
+  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#a769c94170954ef8745f6ad3544d2ee3e7968065"
 
 "@dependency/namedCurry@https://github.com/AppScriptIO/namedCurry#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/namedCurry#f0c22dccaa1a20751b5330db48b6699f5a949f37"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/namedCurry#6b68af527dcf4ca139ada497e7206b31d5acc6ff"
 
 "@dependency/nodejsLiveReload@git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x":
-  version "1.0.2"
-  resolved "git+https://github.com/AppScriptIO/nodejsLiveReload.git#946171f6c271e3d568a9034b7dce9e4f563e074d"
+  version "1.0.3"
+  resolved "git+https://github.com/AppScriptIO/nodejsLiveReload.git#269ef8dc4c9ba82f4b4df441f46a30de150586f2"
   dependencies:
     browser-sync "*"
     chokidar "*"
     core-js "*"
 
 "@dependency/nodejsLiveReload@https://github.com/AppScriptIO/nodejsLiveReload#semver:^1.x.x":
-  version "1.0.2"
-  uid "946171f6c271e3d568a9034b7dce9e4f563e074d"
-  resolved "https://github.com/AppScriptIO/nodejsLiveReload#946171f6c271e3d568a9034b7dce9e4f563e074d"
+  version "1.0.3"
+  uid "269ef8dc4c9ba82f4b4df441f46a30de150586f2"
+  resolved "https://github.com/AppScriptIO/nodejsLiveReload#269ef8dc4c9ba82f4b4df441f46a30de150586f2"
   dependencies:
     browser-sync "*"
     chokidar "*"
     core-js "*"
 
 "@dependency/parseKeyValuePairSeparatedBySymbol@https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#e87a1c2ccd5356f6ac1401f91e8057b3de7dbd0b"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#b7b1dd65546740f36c2d29d87c4563e8643c0654"
 
 "@dependency/promiseProperRace@https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/promiseProperRace#cdd4f335ea5d5ab63538d43f61c71624940429d2"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/promiseProperRace#72091832f41fdc59f68e834cd4e1fb5ef2f09e31"
 
 "@dependency/prototypeChainDebug@https://github.com/AppScriptIO/prototypeChainDebug#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/prototypeChainDebug#312d229b2512ea2ad3a16eadeddd40e62c6defd3"
+  version "1.0.3"
+  resolved "https://github.com/AppScriptIO/prototypeChainDebug#ede1fb2caf2ff3c8ba45d48bf54c1157c2975b4b"
 
 "@dependency/recursiveCreateDirectory@https://github.com/AppScriptIO/recursiveCreateDirectory#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/recursiveCreateDirectory#edbe2c27da292f4ead1109634e0fe0e6c1815d06"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/recursiveCreateDirectory#56c4d3e62b7e4158040963e6ba07bc1211e883a3"
 
 "@dependency/scriptExecution@https://github.com/AppScriptIO/scriptExecution#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/scriptExecution#9358ba555c16121795d3d5fa10231b0de18ac4ed"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/scriptExecution#84bf9d9036b632a9efa0a038b7e1c1e374e17624"
   dependencies:
     "@dependency/JSModuleTypeCheck" "https://github.com/AppScriptIO/JSModuleTypeCheck#semver:^1.x.x"
     "@dependency/configurationManagement" "https://github.com/AppScriptIO/configurationManagement#semver:^1.x.x"
@@ -1148,8 +1148,8 @@
     "@dependency/listDirectoryContent" "https://github.com/AppScriptIO/listDirectoryContent#semver:^1.x.x"
 
 "@dependency/scriptManager@https://github.com/AppScriptIO/scriptManager#semver:^1.x.x":
-  version "1.0.8"
-  resolved "https://github.com/AppScriptIO/scriptManager#669470cced073e058594440b41e48687756f29a7"
+  version "1.0.9"
+  resolved "https://github.com/AppScriptIO/scriptManager#d9a73c23e859ba30854c4a7b657756fac860cc46"
   dependencies:
     "@dependency/JSModuleTypeCheck" "https://github.com/AppScriptIO/JSModuleTypeCheck#semver:^1.x.x"
     "@dependency/addModuleResolutionPath" "https://github.com/AppScriptIO/addModuleResolutionPath#semver:^1.x.x"
@@ -1998,14 +1998,14 @@ babel-messages@^6.23.0:
     babel-runtime "^6.22.0"
 
 babel-minify@*:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/babel-minify/-/babel-minify-0.5.0.tgz#8e537b80bedeae6e3dd5a6ece9f9b712648de5db"
-  integrity sha512-fgoyQCWmqly7CT1rk4FL90qT+4ixzjZ7Q+vuO9dmNO1AUGCjPhk3IemKQhMpLnb0oQn5rZAMZm9072gE0rSrPw==
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/babel-minify/-/babel-minify-0.5.1.tgz#dcb8bfe22fcf4bb911dac97ba2987464ee59eeed"
+  integrity sha512-ftEYu5OCDXEqaX/eINIaekPgkCaVPJNwFHzXKKARnRLggK8g4a9dEOflLKDgRNYOwhcLVoicUchZG6FYyOpqSA==
   dependencies:
     "@babel/core" "^7.1.0"
-    babel-preset-minify "^0.5.0"
+    babel-preset-minify "^0.5.1"
     fs-readdir-recursive "^1.1.0"
-    lodash.pick "^4.4.0"
+    lodash "^4.17.11"
     mkdirp "^0.5.1"
     util.promisify "^1.0.0"
     yargs-parser "^10.0.0"
@@ -2038,15 +2038,15 @@ babel-plugin-minify-constant-folding@^0.5.0:
   dependencies:
     babel-helper-evaluate-path "^0.5.0"
 
-babel-plugin-minify-dead-code-elimination@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-minify-dead-code-elimination/-/babel-plugin-minify-dead-code-elimination-0.5.0.tgz#d23ef5445238ad06e8addf5c1cf6aec835bcda87"
-  integrity sha512-XQteBGXlgEoAKc/BhO6oafUdT4LBa7ARi55mxoyhLHNuA+RlzRmeMAfc31pb/UqU01wBzRc36YqHQzopnkd/6Q==
+babel-plugin-minify-dead-code-elimination@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-minify-dead-code-elimination/-/babel-plugin-minify-dead-code-elimination-0.5.1.tgz#1a0c68e44be30de4976ca69ffc535e08be13683f"
+  integrity sha512-x8OJOZIrRmQBcSqxBcLbMIK8uPmTvNWPXH2bh5MDCW1latEqYiRMuUkPImKcfpo59pTUB2FT7HfcgtG8ZlR5Qg==
   dependencies:
     babel-helper-evaluate-path "^0.5.0"
     babel-helper-mark-eval-scopes "^0.4.3"
     babel-helper-remove-or-void "^0.4.3"
-    lodash.some "^4.6.0"
+    lodash "^4.17.11"
 
 babel-plugin-minify-flip-comparisons@^0.4.3:
   version "0.4.3"
@@ -2055,11 +2055,12 @@ babel-plugin-minify-flip-comparisons@^0.4.3:
   dependencies:
     babel-helper-is-void-0 "^0.4.3"
 
-babel-plugin-minify-guarded-expressions@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/babel-plugin-minify-guarded-expressions/-/babel-plugin-minify-guarded-expressions-0.4.3.tgz#cc709b4453fd21b1f302877444c89f88427ce397"
-  integrity sha1-zHCbRFP9IbHzAod0RMifiEJ845c=
+babel-plugin-minify-guarded-expressions@^0.4.3, babel-plugin-minify-guarded-expressions@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/babel-plugin-minify-guarded-expressions/-/babel-plugin-minify-guarded-expressions-0.4.4.tgz#818960f64cc08aee9d6c75bec6da974c4d621135"
+  integrity sha512-RMv0tM72YuPPfLT9QLr3ix9nwUIq+sHT6z8Iu3sLbqldzC1Dls8DPCywzUIzkTx9Zh1hWX4q/m9BPoPed9GOfA==
   dependencies:
+    babel-helper-evaluate-path "^0.5.0"
     babel-helper-flip-expressions "^0.4.3"
 
 babel-plugin-minify-infinity@^0.4.3:
@@ -2084,11 +2085,12 @@ babel-plugin-minify-replace@^0.5.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-minify-replace/-/babel-plugin-minify-replace-0.5.0.tgz#d3e2c9946c9096c070efc96761ce288ec5c3f71c"
   integrity sha512-aXZiaqWDNUbyNNNpWs/8NyST+oU7QTpK7J9zFEFSA0eOmtUNMU3fczlTTTlnCxHmq/jYNFEmkkSG3DDBtW3Y4Q==
 
-babel-plugin-minify-simplify@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-minify-simplify/-/babel-plugin-minify-simplify-0.5.0.tgz#1f090018afb90d8b54d3d027fd8a4927f243da6f"
-  integrity sha512-TM01J/YcKZ8XIQd1Z3nF2AdWHoDsarjtZ5fWPDksYZNsoOjQ2UO2EWm824Ym6sp127m44gPlLFiO5KFxU8pA5Q==
+babel-plugin-minify-simplify@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-minify-simplify/-/babel-plugin-minify-simplify-0.5.1.tgz#f21613c8b95af3450a2ca71502fdbd91793c8d6a"
+  integrity sha512-OSYDSnoCxP2cYDMk9gxNAed6uJDiDz65zgL6h8d3tm8qXIagWGMLWhqysT6DY3Vs7Fgq7YUDcjOomhVUb+xX6A==
   dependencies:
+    babel-helper-evaluate-path "^0.5.0"
     babel-helper-flip-expressions "^0.4.3"
     babel-helper-is-nodes-equiv "^0.0.1"
     babel-helper-to-multiple-sequence-expressions "^0.5.0"
@@ -2176,21 +2178,21 @@ babel-plugin-transform-undefined-to-void@^6.9.4:
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-undefined-to-void/-/babel-plugin-transform-undefined-to-void-6.9.4.tgz#be241ca81404030678b748717322b89d0c8fe280"
   integrity sha1-viQcqBQEAwZ4t0hxcyK4nQyP4oA=
 
-babel-preset-minify@*, babel-preset-minify@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/babel-preset-minify/-/babel-preset-minify-0.5.0.tgz#e25bb8d3590087af02b650967159a77c19bfb96b"
-  integrity sha512-xj1s9Mon+RFubH569vrGCayA9Fm2GMsCgDRm1Jb8SgctOB7KFcrVc2o8K3YHUyMz+SWP8aea75BoS8YfsXXuiA==
+babel-preset-minify@*, babel-preset-minify@^0.5.0, babel-preset-minify@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-minify/-/babel-preset-minify-0.5.1.tgz#25f5d0bce36ec818be80338d0e594106e21eaa9f"
+  integrity sha512-1IajDumYOAPYImkHbrKeiN5AKKP9iOmRoO2IPbIuVp0j2iuCcj0n7P260z38siKMZZ+85d3mJZdtW8IgOv+Tzg==
   dependencies:
     babel-plugin-minify-builtins "^0.5.0"
     babel-plugin-minify-constant-folding "^0.5.0"
-    babel-plugin-minify-dead-code-elimination "^0.5.0"
+    babel-plugin-minify-dead-code-elimination "^0.5.1"
     babel-plugin-minify-flip-comparisons "^0.4.3"
-    babel-plugin-minify-guarded-expressions "^0.4.3"
+    babel-plugin-minify-guarded-expressions "^0.4.4"
     babel-plugin-minify-infinity "^0.4.3"
     babel-plugin-minify-mangle-names "^0.5.0"
     babel-plugin-minify-numeric-literals "^0.4.3"
     babel-plugin-minify-replace "^0.5.0"
-    babel-plugin-minify-simplify "^0.5.0"
+    babel-plugin-minify-simplify "^0.5.1"
     babel-plugin-minify-type-constructors "^0.4.3"
     babel-plugin-transform-inline-consecutive-adds "^0.4.3"
     babel-plugin-transform-member-expression-literals "^6.9.4"
@@ -2203,7 +2205,7 @@ babel-preset-minify@*, babel-preset-minify@^0.5.0:
     babel-plugin-transform-remove-undefined "^0.5.0"
     babel-plugin-transform-simplify-comparison-operators "^6.9.4"
     babel-plugin-transform-undefined-to-void "^6.9.4"
-    lodash.isplainobject "^4.0.6"
+    lodash "^4.17.11"
 
 babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
@@ -3465,9 +3467,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.191:
-  version "1.3.227"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.227.tgz#8dccc63b6456b7b63007b965f79920b99e86ddc0"
-  integrity sha512-LQJmt0QcUzC/mLjG+ha5QhXgNQ2T2BOxRecuaU/hd92RnZt6G3ZGONsAe7Xvo9SoBvre/POElMoyK77mXjrr3w==
+  version "1.3.229"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.229.tgz#accc9a08dd07d0a4d6c76937821bc94eb2e49eae"
+  integrity sha512-N6pUbSuKFBeUifxBZp9hODS1N9jFobJYW47QT2VvZIr+G5AWnHK/iG3ON9RPRGH7lHDQ6KUDVhzpNkj4ZiznoA==
 
 emitter-component@^1.1.1:
   version "1.1.1"
@@ -5951,11 +5953,6 @@ lodash.isobject@~2.4.1:
   dependencies:
     lodash._objecttypes "~2.4.1"
 
-lodash.isplainobject@^4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
-  integrity sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=
-
 lodash.isstring@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/lodash.isstring/-/lodash.isstring-2.4.1.tgz#3a4a42ee344b5bc09aeaa87ef1dc3097789d0792"
@@ -5989,11 +5986,6 @@ lodash.padend@^4.6.1:
   resolved "https://registry.yarnpkg.com/lodash.padend/-/lodash.padend-4.6.1.tgz#53ccba047d06e158d311f45da625f4e49e6f166e"
   integrity sha1-U8y6BH0G4VjTEfRdpiX05J5vFm4=
 
-lodash.pick@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
-  integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
-
 lodash.property@~2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/lodash.property/-/lodash.property-2.4.1.tgz#4049c0549daf5a7102bc5e93eeaebb379deb132f"
@@ -6003,11 +5995,6 @@ lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
   integrity sha1-k2pOMJ7zMKdkXtQUWYbIWuWyCAU=
-
-lodash.some@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.some/-/lodash.some-4.6.0.tgz#1bb9f314ef6b8baded13b549169b2a945eb68e4d"
-  integrity sha1-G7nzFO9ri63tE7VJFpsqlF62jk0=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -7434,7 +7421,7 @@ progress@^2.0.0:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-promise-events@^0.1.4:
+promise-events@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/promise-events/-/promise-events-0.1.6.tgz#e02deb6d35de64f65de7dfd5b167864569c49e13"
   integrity sha512-DD49dV22rZRttJbX7tpYU4I+kJoe6M1qShRV0EiaLnp6waHhdx9oDbgcspUZl0cOtyT/YnKZqJVUsf05pqFCrQ==
@@ -8635,9 +8622,9 @@ table-layout@^0.4.3:
     wordwrapjs "^3.0.0"
 
 table@^5.2.3:
-  version "5.4.5"
-  resolved "https://registry.yarnpkg.com/table/-/table-5.4.5.tgz#c8f4ea2d8fee08c0027fac27b0ec0a4fe01dfa42"
-  integrity sha512-oGa2Hl7CQjfoaogtrOHEJroOcYILTx7BZWLGsJIlzoWmB2zmguhNfPJZsWPKYek/MgCxfco54gEi31d1uN2hFA==
+  version "5.4.6"
+  resolved "https://registry.yarnpkg.com/table/-/table-5.4.6.tgz#1292d19500ce3f86053b05f0e8e7e4a3bb21079e"
+  integrity sha512-wmEc8m4fjnob4gt5riFRtTu/6+4rSe12TpAELNSqHMfF3IqnA+CH37USM6/YR3qRZv7e56kAEAtd6nKZaxe0Ug==
   dependencies:
     ajv "^6.10.2"
     lodash "^4.17.14"
