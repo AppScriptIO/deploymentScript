@@ -1,7 +1,7 @@
 {
 	"name": "@dependency/deploymentScript",
 	"main": "x",
-	"version": "1.1.16",
+	"version": "1.1.17",
 	"scripts": {
 		"preinstall": "yarn install --ignore-scripts && (cd ./script && yarn install) # This is a workaround non publishable yarn workspaces. # install workspaces when used as a dependency # NOTES: --ignore-scripts doesn't work because nodegit depends on scripst to be installed correctly. # and using --modules-folder to the same node_modules causes issues. ",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
