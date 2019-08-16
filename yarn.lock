@@ -969,8 +969,8 @@
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/deploymentScript@https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x":
-  version "1.1.18"
-  resolved "https://github.com/AppScriptIO/deploymentScript#0ea8359b46a5d0cc36319c05518bb76880b66895"
+  version "1.1.19"
+  resolved "https://github.com/AppScriptIO/deploymentScript#22556c434f89ed77efab64f1202c7c7cf5f1f736"
   dependencies:
     "@dependency/buildTool" "https://github.com/AppScriptIO/buildTool#semver:^1.x.x"
     "@dependency/javascriptTestRunner" "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x"

@@ -10,33 +10,33 @@
     regenerator-runtime "^0.13.2"
 
 "@dependency/classMixin@https://github.com/AppScriptIO/classMixin#semver:^1.x.x":
-  version "1.0.0"
-  resolved "https://github.com/AppScriptIO/classMixin#1cce4f6421f52054d9464b103710a6f551ef80e6"
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/classMixin#6e25be33f65b81d6a0b27cebea7a970e74168a8d"
   dependencies:
     mixwith "*"
 
 "@dependency/commonPattern@https://github.com/AppScriptIO/commonPattern#semver:^1.x.x":
-  version "1.0.0"
-  resolved "https://github.com/AppScriptIO/commonPattern#1dc3019d76b09ddfa8c1a031452f5675e098b04e"
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/commonPattern#4f085f3a5b8242a7c8c7057aa779619a777443ed"
   dependencies:
-    promise-events "^0.1.4"
+    promise-events "^0.1.6"
 
 "@dependency/databaseUtility@https://github.com/AppScriptIO/databaseUtility#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/databaseUtility#c9fd0f04f7da2f195a3c0d97be8cdd1deebfea14"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/databaseUtility#581076729dea717e757c11da17b4514a3f102bac"
   dependencies:
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
-  version "1.0.7"
-  resolved "https://github.com/AppScriptIO/entity#f0c645913c981735da05e2774df6c7be35c41acf"
+  version "1.0.8"
+  resolved "https://github.com/AppScriptIO/entity#a0286c78200087befa3787fdb926440b0b654cf6"
   dependencies:
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
     lodash "^4.17.11"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.6"
-  resolved "https://github.com/AppScriptIO/graphTraversal#60b22c8078c2bd514865b55c8f7220ad9a28ee81"
+  version "1.2.7"
+  resolved "https://github.com/AppScriptIO/graphTraversal#df6398a067a18917e56aa3651ac359be6a109fcc"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
@@ -52,24 +52,24 @@
     uuid "^3.3.2"
 
 "@dependency/moduleContext@https://github.com/AppScriptIO/moduleContext#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/moduleContext#5e734a4f4638011dca9dde27ac29e0c6e4f2d432"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/moduleContext#cd861fad6aab37978daa4ecbf35d1064970af029"
 
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
-  version "1.0.8"
-  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#509d5043b8abee1db6e07d92ddcfa6d079f0a695"
+  version "1.0.9"
+  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#a769c94170954ef8745f6ad3544d2ee3e7968065"
 
 "@dependency/namedCurry@https://github.com/AppScriptIO/namedCurry#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/namedCurry#f0c22dccaa1a20751b5330db48b6699f5a949f37"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/namedCurry#6b68af527dcf4ca139ada497e7206b31d5acc6ff"
 
 "@dependency/promiseProperRace@https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/promiseProperRace#cdd4f335ea5d5ab63538d43f61c71624940429d2"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/promiseProperRace#72091832f41fdc59f68e834cd4e1fb5ef2f09e31"
 
 "@dependency/prototypeChainDebug@https://github.com/AppScriptIO/prototypeChainDebug#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/prototypeChainDebug#312d229b2512ea2ad3a16eadeddd40e62c6defd3"
+  version "1.0.3"
+  resolved "https://github.com/AppScriptIO/prototypeChainDebug#ede1fb2caf2ff3c8ba45d48bf54c1157c2975b4b"
 
 "bluebird@>= 2.3.2 < 3":
   version "2.11.0"
@@ -100,10 +100,10 @@ neo4j-driver@^1.7.5:
     text-encoding-utf-8 "^1.0.2"
     uri-js "^4.2.2"
 
-promise-events@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/promise-events/-/promise-events-0.1.4.tgz#3c88fae97e448da68f7fcf19d4ee308d6e432d5b"
-  integrity sha1-PIj66X5EjaaPf88Z1O4wjW5DLVs=
+promise-events@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/promise-events/-/promise-events-0.1.6.tgz#e02deb6d35de64f65de7dfd5b167864569c49e13"
+  integrity sha512-DD49dV22rZRttJbX7tpYU4I+kJoe6M1qShRV0EiaLnp6waHhdx9oDbgcspUZl0cOtyT/YnKZqJVUsf05pqFCrQ==
 
 punycode@^2.1.0:
   version "2.1.1"
