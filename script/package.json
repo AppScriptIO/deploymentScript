@@ -1,10 +1,11 @@
 {
-	"name": "@script/workspace",
-	"main": "x",
-	"version": "0.0.0",
-	"workspaces": [
-		"./*",
-		"./JSProject/*"
-	],
-	"private": true
+  "name": "@dependency/deploymentScript",
+  "main": "x",
+  "version": "1.0.0",
+  "scripts": {},
+  "workspaces": [
+    "./script/*",
+    "./script/JSProject/*"
+  ],
+  "private": true
 }
