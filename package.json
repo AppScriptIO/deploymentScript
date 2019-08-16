@@ -1,7 +1,7 @@
 {
 	"name": "@dependency/deploymentScript",
 	"main": "x",
-	"version": "1.1.19",
+	"version": "1.1.20",
 	"scripts": {
 		"upgrade": "yarn workspaces run upgrade",
 		"preinstall": "yarn workspaces run install # always install workspaces, even as a when this module is used as a dependency",
