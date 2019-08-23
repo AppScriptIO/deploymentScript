@@ -10,17 +10,17 @@ import { boltCypherModelAdapterFunction } from '@dependency/graphTraversal/sourc
 import { file } from 'babel-types'
 const uuidv4 = require('uuid/v4')
 
-let concreteDatabaseBehavior = new Database.clientInterface({
-  implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction() },
-  defaultImplementation: 'boltCypherModelAdapter',
-})
-let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
-let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
+export async function loadGraphDataFromFile({ api /**scriptManager api*/, shouldClearDatabase = false, graphDataFilePath, url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
+  let concreteDatabaseBehavior = new Database.clientInterface({
+    implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url }) },
+    defaultImplementation: 'boltCypherModelAdapter',
+  })
+  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
+  let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
 
-export async function loadGraphDataFromFile({ api /**scriptManager api*/, shouldClearDatabase = false, graphDataFilePath } = {}) {
   assert(graphDataFilePath, `• graphDataFilePath must be passed to script - ${graphDataFilePath}`)
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
-  if (shouldClearDatabase) await clearDatabase()
+  if (shouldClearDatabase) await clearDatabase({ concereteDatabase })
   let absolutePath = path.isAbsolute(graphDataFilePath) ? graphDataFilePath : path.join(targetProjectRootPath, graphDataFilePath)
   let graphData = require(absolutePath)
   assert(Array.isArray(graphData.node) && Array.isArray(graphData.edge), `• Unsupported graph data strcuture- ${graphData.edge} - ${graphData.node}`)
@@ -29,7 +29,14 @@ export async function loadGraphDataFromFile({ api /**scriptManager api*/, should
 }
 
 // Relies on the interface for concrete database plugins of graphTraversal module.
-export async function exportGraphData({ api, targetPath = './test/asset/', fileName = 'graphData.exported.json' } = {}) {
+export async function exportGraphData({ api, targetPath = './test/asset/', fileName = 'graphData.exported.json', url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
+  let concreteDatabaseBehavior = new Database.clientInterface({
+    implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url }) },
+    defaultImplementation: 'boltCypherModelAdapter',
+  })
+  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
+  let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
+
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
   let graphData = { node: await concereteDatabase.getAllNode(), edge: await concereteDatabase.getAllEdge() } |> JSON.stringify
@@ -68,7 +75,7 @@ export async function fixJSONData({ api, targetPath = './resource/', fileName = 
   console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
 }
 
-async function clearDatabase() {
+async function clearDatabase({ concereteDatabase }) {
   // Delete all nodes in the in-memory database
   const graphDBDriver = concereteDatabase.driverInstance
   let session = await graphDBDriver.session()
