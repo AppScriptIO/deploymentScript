@@ -20,7 +20,7 @@ export async function loadGraphDataFromFile({ api /**scriptManager api*/, should
 
   assert(graphDataFilePath, `• graphDataFilePath must be passed to script - ${graphDataFilePath}`)
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
-  if (shouldClearDatabase) await clearDatabase({ concereteDatabase })
+  if (shouldClearDatabase) await clearDatabase({ concereteDatabase, url })
   let absolutePath = path.isAbsolute(graphDataFilePath) ? graphDataFilePath : path.join(targetProjectRootPath, graphDataFilePath)
   let graphData = require(absolutePath)
   assert(Array.isArray(graphData.node) && Array.isArray(graphData.edge), `• Unsupported graph data strcuture- ${graphData.edge} - ${graphData.node}`)
@@ -48,9 +48,9 @@ export async function exportGraphData({ api, targetPath = './test/asset/', fileN
 /** This function rewrites the json file - any modifications should be added in the function.
  * `yarn run scriptManager shouldCompileScript=true graphDatabase/exportGraphData ".fixJSONData({ })"`
  */
-export async function fixJSONData({ api, targetPath = './resource/', fileName = 'fixed.exported.json' } = {}) {
+export async function fixJSONData({ api, targetPath = './resource/', exportedFileName = 'fixed.exported.json', targetFileName = 'taskSequence.graphData.json' } = {}) {
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
-  let graphData = require(path.join(targetProjectRootPath, targetPath, 'taskSequence.graphData.json'))
+  let graphData = require(path.join(targetProjectRootPath, targetPath, targetFileName))
 
   // modify data
   graphData.node = graphData.node.map(item => {
@@ -70,15 +70,29 @@ export async function fixJSONData({ api, targetPath = './resource/', fileName = 
     return item
   })
 
-  const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
-  await filesystem.writeFile(path.join(exportPath, fileName), graphData |> JSON.stringify, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
-  console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
+  graphData.edge = graphData.edge.map(edge => {
+    return edge
+  })
+
+  const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath, exportedFileName))
+  await filesystem.writeFile(exportPath, graphData |> JSON.stringify, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
+  console.log(`• Created json file - ${exportPath}`)
 }
 
-async function clearDatabase({ concereteDatabase }) {
+export async function clearDatabase({ concereteDatabase, url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) {
+  if (!concereteDatabase) {
+    let concreteDatabaseBehavior = new Database.clientInterface({
+      implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url }) },
+      defaultImplementation: 'boltCypherModelAdapter',
+    })
+    let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
+    concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
+  }
+
   // Delete all nodes in the in-memory database
   const graphDBDriver = concereteDatabase.driverInstance
   let session = await graphDBDriver.session()
   await session.run(`match (n) detach delete n`)
+  console.log('• Database data cleared.')
   session.close()
 }
