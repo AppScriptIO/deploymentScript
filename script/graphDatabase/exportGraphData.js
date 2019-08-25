@@ -10,6 +10,15 @@ import { boltCypherModelAdapterFunction } from '@dependency/graphTraversal/sourc
 import { file } from 'babel-types'
 const uuidv4 = require('uuid/v4')
 
+// remove duplicate objects from array using the identity property to check equality
+function removeArrayDuplicateEdgeObject(array) {
+  let unique = []
+  array.forEach(item => {
+    if (!unique.some(i => i.identity == item.identity)) unique.push(item)
+  })
+  return unique
+}
+
 export async function loadGraphDataFromFile({ api /**scriptManager api*/, shouldClearDatabase = false, graphDataFilePath, url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
     implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url }) },
@@ -29,7 +38,7 @@ export async function loadGraphDataFromFile({ api /**scriptManager api*/, should
 }
 
 // Relies on the interface for concrete database plugins of graphTraversal module.
-export async function exportGraphData({ api, targetPath = './test/asset/', fileName = 'graphData.exported.json', url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
+export async function exportAllGraphData({ api, targetPath = './test/asset/', fileName = 'graphData.exported.json', url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
     implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url }) },
     defaultImplementation: 'boltCypherModelAdapter',
@@ -40,6 +49,44 @@ export async function exportGraphData({ api, targetPath = './test/asset/', fileN
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
   let graphData = { node: await concereteDatabase.getAllNode(), edge: await concereteDatabase.getAllEdge() } |> JSON.stringify
+  await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
+  console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
+  concereteDatabase.driverInstance.close()
+}
+
+export async function exportSpecificGraphData({ api, targetPath = './test/asset/', fileName = 'specific.exported.json', url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
+  let concreteDatabaseBehavior = new Database.clientInterface({
+    implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url }) },
+    defaultImplementation: 'boltCypherModelAdapter',
+  })
+  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
+  let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
+
+  const targetProjectRootPath = api.project.configuration.configuration.directory.root
+  const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
+
+  // provide list of node keys to export (nodes will be exported with their connections related to the specific nodes only)
+  let nodeKeyArray = [
+    // list of node keys to export.
+  ]
+  let nodeArray = [],
+    edgeArray = []
+
+  // get nodes
+  for (let key of nodeKeyArray) nodeArray.push(await concereteDatabase.getNodeByKey({ key }))
+
+  // get the connections between the nodes
+  for (let node of nodeArray) {
+    let queryResultArray = await concereteDatabase.getNodeConnection({ nodeID: node.identity })
+    queryResultArray = queryResultArray.map(result => result.connection) // get the connections only without the destination and source nodes
+    edgeArray = [...edgeArray, ...queryResultArray]
+  }
+  // filter edges of the specific nodes only
+  edgeArray = edgeArray.filter(edge => nodeArray.some(node => node.identity == edge.start) && nodeArray.some(node => node.identity == edge.end))
+  // filter duplicates
+  edgeArray = removeArrayDuplicateEdgeObject(edgeArray)
+
+  let graphData = { node: nodeArray, edge: edgeArray } |> JSON.stringify
   await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
   console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
   concereteDatabase.driverInstance.close()
