@@ -3,7 +3,7 @@
 
 # required preinstall packages: 
 - https://packages.debian.org/source/sid/libgit2 https://github.com/libgit2/libgit2
-  (do not use development version `libgit2-dev`, use the stable one insted.)
+  (do not use development version `libgit2-dev`, use the stable one instead.)
 
 - https://packages.debian.org/source/jessie/openssl
  
