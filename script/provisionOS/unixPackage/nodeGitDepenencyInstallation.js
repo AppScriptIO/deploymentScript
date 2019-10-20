@@ -1,3 +1,4 @@
+const childProcess = require('child_process')
 const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
 
 /* 
@@ -16,19 +17,28 @@ https://stackoverflow.com/questions/37634883/installing-libgit2-and-pygit2-on-de
     DEBIAN_FRONTEND=noninteractive sudo apt-get update -qq && DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq openssl libssl-dev libgit2-27 libssh2-1-dev  libffi-dev  zlib1g-dev python-cffi python-dev  python-pip build-essential cmake  gcc  pkg-config  git libhttp-parser-dev python-setuptools wget
 ```
 */
-export function install() {
-    // for Ubuntu 19+ or Debian 10+ (i.e. package `libgit2-27 must exist)
-    childProcess.execSync([
-        'CHECK="$(dpkg -l | grep libgit2-27 2>/dev/null)"',
-        `if [ -z "$CHECK" ]; then 
-            echo 'Machine global peer dependency "nodegit" is required. Checking for libgit2...\n'; 
-            if ! [ $(id -u) = 0 ]; then 
-                echo "Must be root to run script"; 
-            fi && 
-            DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl; 
-        else 
-            echo 'nodegit is installed.'; 
-        fi`
-    ].join(' && \\\n'), childProcessOption)
-}
+module.exports = {
+  install: function install() {
+    // for Ubuntu 19+ or Debian 10+ (i.e. package `libgit2-27` must exist)
+    let packagesInstalled = childProcess
+      .execSync(`list="$(dpkg -l)" && echo $list`, { cwd: __dirname, encoding: 'utf8' } /** to allow catching returned result */)
+      .replace(/\n$/, '')
+      .trim() // remove new line and white space to prevent comparison issues
 
+    // try `dpkg -l | grep libgit2` to check version
+    if (packagesInstalled.includes('libgit2')) console.log(`nodegit's dependency 'libgit2' is installed.`)
+    else
+      childProcess.execSync(
+        [
+          `echo 'Machine global peer dependency "nodegit" is required. Checking for libgit2...\n'`,
+          // This section causes issues when first installation takes place during WSL provisioning, as yarn doesn't yet exist in the root user commands.
+          // The script will ask for sudo password instead.
+          // `if ! [ $(id -u) = 0 ]; then
+          //     echo "Must be root to run script";
+          // fi`,
+          `DEBIAN_FRONTEND=noninteractive sudo apt-get install -yqq libgit2-27 openssl`,
+        ].join(' && \\\n'),
+        childProcessOption,
+      )
+  },
+}

@@ -8,6 +8,6 @@
   },
   "devDependencies": {},
   "scripts": {
-    "preinstall": "cd ../../../ && yarn run scriptManager ./provisionOS/unixPackage/nodeGitDepenencyInstallation.js \".install()\""
+    "preinstall": "cd ../../../ && yarn run scriptManager provisionOS/unixPackage/nodeGitDepenencyInstallation.js \".install()\""
   }
 }

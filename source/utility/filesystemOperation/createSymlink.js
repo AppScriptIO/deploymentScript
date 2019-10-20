@@ -1,9 +1,13 @@
 const filesystem = require('fs')
+const path = require('path')
 
 export function createSymlink(symlinkTarget) {
   for (const target of symlinkTarget) {
     try {
       let destinationStat = filesystem.existsSync(target.destination) && filesystem.lstatSync(target.destination)
+      
+      filesystem.mkdirSync(path.dirname(target.destination), { recursive: true }) // make directory recursive
+      
       if (destinationStat) {
         if (destinationStat.isSymbolicLink()) filesystem.unlinkSync(target.destination)
         // delete existing symlink or file

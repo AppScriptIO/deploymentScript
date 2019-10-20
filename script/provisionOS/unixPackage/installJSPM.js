@@ -1,6 +1,7 @@
+const childProcess = require('child_process')
+const assert = require('assert')
 const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
 const { sync: binaryExist } = require('command-exists')
-const assert = require('assert')
 
 export function install() {
   assert(binaryExist('yarn'), `• jspm installation is dependent on 'yarn' binary existance.`)

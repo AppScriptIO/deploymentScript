@@ -1,3 +1,4 @@
+const childProcess = require('child_process')
 const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
 const { sync: binaryExist } = require('command-exists')
 
