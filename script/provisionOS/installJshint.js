@@ -5,5 +5,5 @@ const { sync: binaryExist } = require('command-exists')
 // Installed globally for usage with VSCode extension
 export function npmInstall() {
   if (binaryExist('jshint')) console.log('✔ jshint (npm package) is installed.')
-  else childProcess.execSync('npm install -g jshint', childProcessOption)
+  else childProcess.execSync('yarn install -g jshint', childProcessOption)
 }
