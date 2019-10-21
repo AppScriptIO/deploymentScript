@@ -108,7 +108,7 @@ export async function createGithubBranchedRelease({
     .catch(error => console.error)
 
   // run build
-  if (buildCallback) await buildCallback().then(() => console.log('Project built successfully !'))
+  if (buildCallback) await buildCallback().then(() => console.log('Project built successfully !')).catch(error => console.error(error))
 
   /** Make distribution folder as root directory in the branch */
   // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
