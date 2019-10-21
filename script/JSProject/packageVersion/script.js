@@ -62,6 +62,7 @@ export async function bumpVersion({
   let gitIgnorePattern = parseGitIgnore(filesystem.readFileSync(gitIgnorePath)).map(item => path.join('!' + item))
 
   // Create commit of all files.
+  console.log(`Adding changed files to index...`)
   let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
   let changedFileList = index.entries().map(item => item.path) // get list of all changes of files.
   let treeObject = await index

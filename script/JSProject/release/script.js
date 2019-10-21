@@ -23,7 +23,7 @@ function lookupConfigFile({ targetProjectRoot, configName }) {
   return configPathArray[0]
 }
 
-//? TODO: Releases could be created for source code and for distribution code
+//? TODO: Releases could be created for source code in addition to distribution code release.
 
 /**
  * ○ Push new version to github tags.
