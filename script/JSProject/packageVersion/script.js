@@ -55,34 +55,20 @@ export async function bumpVersion({
   // update pacakge.json
   console.log(`• Updating pacakge.json file ${targetPackagePath} with bumped version ${packageConfig.version} --> ${updatedVersion}`)
   packageConfig.version = updatedVersion
-  // await writeJsonFile(targetPackagePath, packageConfig)
+  await writeJsonFile(targetPackagePath, packageConfig)
 
   // get gitIgnore file patterns
   let gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
-  let gitIgnorePatternNested = parseGitIgnore(filesystem.readFileSync(gitIgnorePath)).map(item => [
-    // path.join('!**', item),
-    // path.join('**', '!' + item),
-    // path.join('**', '!' + item, '*'),
-    // path.join('!' + item, '*'),
-    path.join('!' + item),
-  ])
-  let gitIgnorePattern = [].concat.apply([], gitIgnorePatternNested)
+  let gitIgnorePattern = parseGitIgnore(filesystem.readFileSync(gitIgnorePath)).map(item => path.join('!' + item))
+
   // Create commit of all files.
   let index = await repository.refreshIndex() // invalidates and grabs new index from repository.
-  console.log(gitIgnorePattern)
-  console.log('enteries count: ' + index.entryCount())
+  let changedFileList = index.entries().map(item => item.path) // get list of all changes of files.
   let treeObject = await index
-    .addAll(
-      index
-        .entries()
-        .map(item => item.path)
-        .concat(gitIgnorePattern),
-    )
+    // Note: `addAll(['**', ...gitIgnorePattern])` for some reason stopped working, there for exact file changes list is used instead of a file path pattern.
+    .addAll([].concat(changedFileList, gitIgnorePattern))
     .then(() => index.write())
     .then(() => index.writeTree()) // add files and create a tree object.
-  console.log(treeObject)
-  console.log('enteries count: ' + index.entryCount())
-  // process.exit()
 
   let parentCommit = await repository.getHeadCommit() // get latest commit
   await repository
