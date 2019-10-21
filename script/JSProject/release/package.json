@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "nodegit": "^0.25.0"
+    "nodegit": "^0.25.*"
   },
   "devDependencies": {},
   "scripts": {

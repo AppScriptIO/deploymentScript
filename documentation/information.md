@@ -4,6 +4,8 @@
  - [**scriptManager**](https://github.com/AppScriptIO/scriptManager) tool is used to call them from the commandline, in which it accepts JS code as commanline arguments, loads the JS modules, and evaluate the JS code argument on the loaded module. 
 - The target projects must install this library (`deploymentScript`) and also the `scriptManager` module in order to execute the scripts.
 
+# Note about workspaces: 
+`yarn workspaces` commands take into consideration the root node_modules of the repository, where if same packeges are found with different versions, a node_modules folder is created inside the workspace folder with the different package version.
 
 # Publishing circular dependencies: 
 - circular dependencies are dependencies that depend on each other for the JS Build and release scripts. 
@@ -17,6 +19,8 @@ The manual way to deal with such cases is to:
 - Upgrading and re-upgrading the dependencies once each released, one by one.
 - build the packages with a shell scripts equivalent. or build with js module tool and release with shell.
 
-___
+Note: To deal with circular dependencies that refuse to install because of previous version code bug, this package uses it's own code to build itself, rather than using a previous version of itself, that may contain bugs which will complicate the next release creation.
+
+__
 
 ### 🔑 License: [MIT](/.github/LICENSE)

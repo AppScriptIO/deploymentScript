@@ -1,5 +1,5 @@
 {
-    "name": "@dependency/versionGithub",
+    "name": "@dependency/packageVersion",
     "main": "./script.js",
     "version": "0.0.0",
     "scripts": {
@@ -18,7 +18,7 @@
         "lodash": "^4.17.11",
         "nested-object-assign": "^1.0.3",
         "node-fetch": "^2.3.0",
-        "nodegit": "^0.25.0",
+        "nodegit": "^0.25.*",
         "parse-gitignore": "^1.0.1",
         "semver": "^5.6.0",
         "write-json-file": "^3.1.0"
