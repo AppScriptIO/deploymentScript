@@ -1,6 +1,7 @@
 const path = require('path')
 const resolvedModule = {
-  get deploymentScript() { // the path to this current repository rather than a dependency of previous version.
+  get deploymentScript() {
+    // the path to this current repository rather than a dependency of previous version.
     return path.join(__dirname, '../')
   },
 }
@@ -10,6 +11,10 @@ module.exports = {
     {
       type: 'directory',
       path: path.join(resolvedModule.deploymentScript, 'script'),
+    },
+    {
+      type: 'directory',
+      path: path.join(__dirname, '../node_modules'),
     },
   ],
 }

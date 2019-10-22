@@ -907,9 +907,10 @@
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
 "@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
-  version "1.0.7"
-  resolved "https://github.com/AppScriptIO/buildTool#4fa071c305ab1121e88fb8706ca57fc310f1c957"
+  version "1.0.9"
+  resolved "https://github.com/AppScriptIO/buildTool#6a39453232da96d579e6f3bc499fa6d4ec372063"
   dependencies:
+    "@dependency/deploymentProvisioning" "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x"
     "@dependency/fragmentIndentationObjectStream" "https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x"
     "@dependency/graphTraversal" "https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x"
     "@dependency/javascriptTranspilation" "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x"
@@ -965,6 +966,21 @@
   resolved "https://github.com/AppScriptIO/databaseUtility#581076729dea717e757c11da17b4514a3f102bac"
   dependencies:
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
+
+"@dependency/deploymentProvisioning@https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x":
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/deploymentProvisioning#9051e407f327d341abce80ceb7ba5748d8e0c2d7"
+  dependencies:
+    any-promise "^1.3.0"
+    command-exists "^1.2.8"
+    gulp-plumber "^1.2.1"
+    gulp-size "^3.0.0"
+    is-wsl "*"
+    mkdirp "^0.5.1"
+    rsync "^0.6.1"
+    shelljs "^0.8.3"
+    vinyl-fs "^3.0.3"
+    which "*"
 
 "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
   version "1.0.8"
@@ -3645,9 +3661,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.284:
-  version "1.3.289"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.289.tgz#1f85add5d7086ce95d9361348c26aa9de5779906"
-  integrity sha512-39GEOWgTxtMDk/WjIQLg4W/l1s4FZdiMCqUBLjd92tAXsBPDFLwuwCba5OGhuTdVYm6E128TZIqSnMpeocUlCQ==
+  version "1.3.292"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.292.tgz#7812fc5138619342f1dd5823df6e9cbb7d2820e9"
+  integrity sha512-hqkem5ANpt6mxVXmhAmlbdG8iicuyM/jEYgmP1tiHPeOLyZoTyGUzrDmJS/xyrrZy9frkW1uQcubicu7f6DS5g==
 
 emitter-component@^1.1.1:
   version "1.1.1"
@@ -6993,9 +7009,9 @@ node-pre-gyp@^0.13.0:
     tar "^4"
 
 node-releases@^1.1.36:
-  version "1.1.36"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.36.tgz#44b7cb8254138e87bdbfa47761d0f825e20900b4"
-  integrity sha512-ggXhX6QGyJSjj3r+6ml2LqqC28XOWmKtpb+a15/Zpr9V3yoNazxJNlcQDS9bYaid5FReEWHEgToH1mwoUceWwg==
+  version "1.1.37"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.37.tgz#af787db03833a7cda5d197cbb8262d5527270bd8"
+  integrity sha512-0EOsAEdn6S2vQdDGBWBpmClm5BCkXVkVOURdnhfg7//rxI2XbleRdKig87WuBrk+0PHZ4OhO58fRm9mzWW4jNw==
   dependencies:
     semver "^6.3.0"
 

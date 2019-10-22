@@ -118,7 +118,7 @@ export async function createGithubBranchedRelease({
   let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
     gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
   if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
-  copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
+  copyFile.copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
 
   // get top directories that are ignored
   let direntList = getAllDirent(targetProjectRoot) // get all files and directories on top level

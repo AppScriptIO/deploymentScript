@@ -2,13 +2,13 @@
   "name": "@script/githubRelease",
   "main": "./script.js",
   "version": "1.0.0",
+  "scripts": {
+    "preinstall": "cd ../../../ && yarn run scriptManager @dependency/deploymentProvisioning \".nodeGitDepenencyInstallation.install()\""
+  },
   "dependencies": {
     "@dependency/deploymentProvisioning": "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x",
     "fs-extra": "^8.1.0",
     "nodegit": "^0.25.*"
   },
-  "devDependencies": {},
-  "scripts": {
-    "preinstall": "cd ../../../ && yarn run scriptManager provisionOS/unixPackage/nodeGitDepenencyInstallation.js \".install()\""
-  }
+  "devDependencies": {}
 }
