@@ -907,8 +907,8 @@
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
 "@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
-  version "1.0.11"
-  resolved "https://github.com/AppScriptIO/buildTool#f792774b2a1858dd4d18bbee2fa3587e935a863b"
+  version "1.0.12"
+  resolved "https://github.com/AppScriptIO/buildTool#933b41c77b6f770aa50f4a6ad5ac0928c2ecebae"
   dependencies:
     "@dependency/deploymentProvisioning" "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x"
     "@dependency/fragmentIndentationObjectStream" "https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x"
