@@ -1,29 +1,30 @@
-const nodejsLiveReload = require('@dependency/nodejsLiveReload')
+"use strict";const nodejsLiveReload = require('@dependency/nodejsLiveReload');
 
-module.exports = function(...args) {
-  const { api /* supplied by scriptManager */ } = args[0]
+module.exports = function (...args) {
+  const { api } = args[0];
 
   const watchFileList_clientSide = [
-    // TODO: there is an issue when specifying multiple paths, for some reason it doesn't watch all files when separately configured, while watching all files without distinction is possible. Maybe an issue with glob strings
-    // not working when separated.
-    // '/project/application/source/clientSide/**/*.css',
-    // '/project/application/source/clientSide/**/*.html',
-    // '/project/application/source/clientSide/**/*.js',
 
-    // the following works.
-    '/project/application/source/clientSide/**/*',
-    '!/project/application/source/clientSide/**/node_modules/**/*',
-    '!/project/application/source/clientSide/**/component.package/**/*',
-    '!/project/application/source/clientSide/**/js.package.yarn/**/*',
-  ] // equals to '!/project/application/source/{node_modules,node_modules/**/*}'
+
+
+
+
+
+
+  '/project/application/source/clientSide/**/*',
+  '!/project/application/source/clientSide/**/node_modules/**/*',
+  '!/project/application/source/clientSide/**/component.package/**/*',
+  '!/project/application/source/clientSide/**/js.package.yarn/**/*'];
+
   const watchFileList_serverSide = [
-    '/project/application/source/serverSide/**/*.js',
-    // '/project/application/source/serverSide/**/*.css',
-    // '/project/application/source/serverSide/**/*.html',
-    // '/project/application/source/serverSide/node_modules/appscript{/**/*.js,!/node_modules/**/*}',
-    '!/project/application/source/serverSide/node_modules{,/**/*,!/appscript/**/*}',
-    // '!/project/application/source/serverSide/node_modules/appscript/node_modules{,/**/*}',
-  ] // equals to '!/app/{node_modules,node_modules/**/*}'
+  '/project/application/source/serverSide/**/*.js',
 
-  nodejsLiveReload.runWebappServer()
-}
+
+
+  '!/project/application/source/serverSide/node_modules{,/**/*,!/appscript/**/*}'];
+
+
+
+  nodejsLiveReload.runWebappServer();
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvcnVuL3J1bldlYmFwcFNlcnZlcld0aWhSZWxvYWQuanMiXSwibmFtZXMiOlsibm9kZWpzTGl2ZVJlbG9hZCIsInJlcXVpcmUiLCJtb2R1bGUiLCJleHBvcnRzIiwiYXJncyIsImFwaSIsIndhdGNoRmlsZUxpc3RfY2xpZW50U2lkZSIsIndhdGNoRmlsZUxpc3Rfc2VydmVyU2lkZSIsInJ1bldlYmFwcFNlcnZlciJdLCJtYXBwaW5ncyI6ImFBQUEsTUFBTUEsZ0JBQWdCLEdBQUdDLE9BQU8sQ0FBQyw4QkFBRCxDQUFoQzs7QUFFQUMsTUFBTSxDQUFDQyxPQUFQLEdBQWlCLFVBQVMsR0FBR0MsSUFBWixFQUFrQjtBQUNqQyxRQUFNLEVBQUVDLEdBQUYsS0FBMENELElBQUksQ0FBQyxDQUFELENBQXBEOztBQUVBLFFBQU1FLHdCQUF3QixHQUFHOzs7Ozs7OztBQVEvQiwrQ0FSK0I7QUFTL0IsZ0VBVCtCO0FBVS9CLHFFQVYrQjtBQVcvQixtRUFYK0IsQ0FBakM7O0FBYUEsUUFBTUMsd0JBQXdCLEdBQUc7QUFDL0Isa0RBRCtCOzs7O0FBSy9CLGlGQUwrQixDQUFqQzs7OztBQVNBUCxFQUFBQSxnQkFBZ0IsQ0FBQ1EsZUFBakI7QUFDRCxDQTFCRCIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IG5vZGVqc0xpdmVSZWxvYWQgPSByZXF1aXJlKCdAZGVwZW5kZW5jeS9ub2RlanNMaXZlUmVsb2FkJylcclxuXHJcbm1vZHVsZS5leHBvcnRzID0gZnVuY3Rpb24oLi4uYXJncykge1xyXG4gIGNvbnN0IHsgYXBpIC8qIHN1cHBsaWVkIGJ5IHNjcmlwdE1hbmFnZXIgKi8gfSA9IGFyZ3NbMF1cclxuXHJcbiAgY29uc3Qgd2F0Y2hGaWxlTGlzdF9jbGllbnRTaWRlID0gW1xyXG4gICAgLy8gVE9ETzogdGhlcmUgaXMgYW4gaXNzdWUgd2hlbiBzcGVjaWZ5aW5nIG11bHRpcGxlIHBhdGhzLCBmb3Igc29tZSByZWFzb24gaXQgZG9lc24ndCB3YXRjaCBhbGwgZmlsZXMgd2hlbiBzZXBhcmF0ZWx5IGNvbmZpZ3VyZWQsIHdoaWxlIHdhdGNoaW5nIGFsbCBmaWxlcyB3aXRob3V0IGRpc3RpbmN0aW9uIGlzIHBvc3NpYmxlLiBNYXliZSBhbiBpc3N1ZSB3aXRoIGdsb2Igc3RyaW5nc1xyXG4gICAgLy8gbm90IHdvcmtpbmcgd2hlbiBzZXBhcmF0ZWQuXHJcbiAgICAvLyAnL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL2NsaWVudFNpZGUvKiovKi5jc3MnLFxyXG4gICAgLy8gJy9wcm9qZWN0L2FwcGxpY2F0aW9uL3NvdXJjZS9jbGllbnRTaWRlLyoqLyouaHRtbCcsXHJcbiAgICAvLyAnL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL2NsaWVudFNpZGUvKiovKi5qcycsXHJcblxyXG4gICAgLy8gdGhlIGZvbGxvd2luZyB3b3Jrcy5cclxuICAgICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvY2xpZW50U2lkZS8qKi8qJyxcclxuICAgICchL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL2NsaWVudFNpZGUvKiovbm9kZV9tb2R1bGVzLyoqLyonLFxyXG4gICAgJyEvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvY2xpZW50U2lkZS8qKi9jb21wb25lbnQucGFja2FnZS8qKi8qJyxcclxuICAgICchL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL2NsaWVudFNpZGUvKiovanMucGFja2FnZS55YXJuLyoqLyonLFxyXG4gIF0gLy8gZXF1YWxzIHRvICchL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL3tub2RlX21vZHVsZXMsbm9kZV9tb2R1bGVzLyoqLyp9J1xyXG4gIGNvbnN0IHdhdGNoRmlsZUxpc3Rfc2VydmVyU2lkZSA9IFtcclxuICAgICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uvc2VydmVyU2lkZS8qKi8qLmpzJyxcclxuICAgIC8vICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uvc2VydmVyU2lkZS8qKi8qLmNzcycsXHJcbiAgICAvLyAnL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL3NlcnZlclNpZGUvKiovKi5odG1sJyxcclxuICAgIC8vICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uvc2VydmVyU2lkZS9ub2RlX21vZHVsZXMvYXBwc2NyaXB0ey8qKi8qLmpzLCEvbm9kZV9tb2R1bGVzLyoqLyp9JyxcclxuICAgICchL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL3NlcnZlclNpZGUvbm9kZV9tb2R1bGVzeywvKiovKiwhL2FwcHNjcmlwdC8qKi8qfScsXHJcbiAgICAvLyAnIS9wcm9qZWN0L2FwcGxpY2F0aW9uL3NvdXJjZS9zZXJ2ZXJTaWRlL25vZGVfbW9kdWxlcy9hcHBzY3JpcHQvbm9kZV9tb2R1bGVzeywvKiovKn0nLFxyXG4gIF0gLy8gZXF1YWxzIHRvICchL2FwcC97bm9kZV9tb2R1bGVzLG5vZGVfbW9kdWxlcy8qKi8qfSdcclxuXHJcbiAgbm9kZWpzTGl2ZVJlbG9hZC5ydW5XZWJhcHBTZXJ2ZXIoKVxyXG59XHJcbiJdfQ==

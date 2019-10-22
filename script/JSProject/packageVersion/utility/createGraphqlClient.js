@@ -1,56 +1,57 @@
-import util from 'util'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { HttpLink } from 'apollo-link-http'
-import { ApolloClient } from 'apollo-client'
-import { onError } from 'apollo-link-error'
-import { ApolloLink } from 'apollo-link'
-import nodeFetch from 'node-fetch'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.createGraphqlClient = createGraphqlClient;
+var _apolloCacheInmemory = require("apollo-cache-inmemory");
+var _apolloLinkHttp = require("apollo-link-http");
+var _apolloClient = require("apollo-client");
+var _apolloLinkError = require("apollo-link-error");
+var _apolloLink = require("apollo-link");
+var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 
-export function createGraphqlClient({ endpoint, token }) {
-  // reference: https://www.apollographql.com/docs/react/api/apollo-client.html#apollo-client
+function createGraphqlClient({ endpoint, token }) {
+
   const defaultOptions = {
     watchQuery: {
       fetchPolicy: 'no-cache',
-      errorPolicy: 'ignore',
-    },
+      errorPolicy: 'ignore' },
+
     query: {
       fetchPolicy: 'no-cache',
-      errorPolicy: 'all',
-    },
-  }
+      errorPolicy: 'all' } };
 
-  // https://github.com/apollographql/apollo-client/blob/master/docs/source/features/error-handling.md#usage
-  const errorMiddleware = onError(({ graphQLErrors, networkError }) => {
-    let formatedErrorMessage = []
+
+
+
+  const errorMiddleware = (0, _apolloLinkError.onError)(({ graphQLErrors, networkError }) => {
+    let formatedErrorMessage = [];
     if (graphQLErrors) {
       formatedErrorMessage = graphQLErrors.map(({ message, locations, path }) => {
-        return `Message: ${message}, Location: ${locations}, Path: ${path} \n`
-      })
-      console.error(`❌  GraphQl 'errors' property:`)
-      console.dir(formatedErrorMessage)
-      throw new Error(`[GraphQL error]: An error received from the response of the GraphQL API.`)
+        return `Message: ${message}, Location: ${locations}, Path: ${path} \n`;
+      });
+      console.error(`❌  GraphQl 'errors' property:`);
+      console.dir(formatedErrorMessage);
+      throw new Error(`[GraphQL error]: An error received from the response of the GraphQL API.`);
     }
 
-    if (networkError) throw new Error(`[Network error]: ${networkError}`)
-  })
+    if (networkError) throw new Error(`[Network error]: ${networkError}`);
+  });
 
-  const httpMiddleware = new HttpLink({
-    fetch: nodeFetch,
+  const httpMiddleware = new _apolloLinkHttp.HttpLink({
+    fetch: _nodeFetch.default,
     uri: endpoint,
     headers: {
-      Authorization: `bearer ${token}`,
-    },
-  })
+      Authorization: `bearer ${token}` } });
 
-  // combine apollo `links` to allow for error handling that includes GraphQL response errors.
-  const combinedLink = ApolloLink.from([
-    errorMiddleware,
-    httpMiddleware, // As defined by apollo - this is considered a terminated link that should be concatenated at last.
-  ])
 
-  return new ApolloClient({
+
+
+  const combinedLink = _apolloLink.ApolloLink.from([
+  errorMiddleware,
+  httpMiddleware]);
+
+
+  return new _apolloClient.ApolloClient({
     link: combinedLink,
-    cache: new InMemoryCache(),
-    defaultOptions,
-  })
+    cache: new _apolloCacheInmemory.InMemoryCache(),
+    defaultOptions });
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvcGFja2FnZVZlcnNpb24vdXRpbGl0eS9jcmVhdGVHcmFwaHFsQ2xpZW50LmpzIl0sIm5hbWVzIjpbImNyZWF0ZUdyYXBocWxDbGllbnQiLCJlbmRwb2ludCIsInRva2VuIiwiZGVmYXVsdE9wdGlvbnMiLCJ3YXRjaFF1ZXJ5IiwiZmV0Y2hQb2xpY3kiLCJlcnJvclBvbGljeSIsInF1ZXJ5IiwiZXJyb3JNaWRkbGV3YXJlIiwiZ3JhcGhRTEVycm9ycyIsIm5ldHdvcmtFcnJvciIsImZvcm1hdGVkRXJyb3JNZXNzYWdlIiwibWFwIiwibWVzc2FnZSIsImxvY2F0aW9ucyIsInBhdGgiLCJjb25zb2xlIiwiZXJyb3IiLCJkaXIiLCJFcnJvciIsImh0dHBNaWRkbGV3YXJlIiwiSHR0cExpbmsiLCJmZXRjaCIsIm5vZGVGZXRjaCIsInVyaSIsImhlYWRlcnMiLCJBdXRob3JpemF0aW9uIiwiY29tYmluZWRMaW5rIiwiQXBvbGxvTGluayIsImZyb20iLCJBcG9sbG9DbGllbnQiLCJsaW5rIiwiY2FjaGUiLCJJbk1lbW9yeUNhY2hlIl0sIm1hcHBpbmdzIjoiO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVPLFNBQVNBLG1CQUFULENBQTZCLEVBQUVDLFFBQUYsRUFBWUMsS0FBWixFQUE3QixFQUFrRDs7QUFFdkQsUUFBTUMsY0FBYyxHQUFHO0FBQ3JCQyxJQUFBQSxVQUFVLEVBQUU7QUFDVkMsTUFBQUEsV0FBVyxFQUFFLFVBREg7QUFFVkMsTUFBQUEsV0FBVyxFQUFFLFFBRkgsRUFEUzs7QUFLckJDLElBQUFBLEtBQUssRUFBRTtBQUNMRixNQUFBQSxXQUFXLEVBQUUsVUFEUjtBQUVMQyxNQUFBQSxXQUFXLEVBQUUsS0FGUixFQUxjLEVBQXZCOzs7OztBQVlBLFFBQU1FLGVBQWUsR0FBRyw4QkFBUSxDQUFDLEVBQUVDLGFBQUYsRUFBaUJDLFlBQWpCLEVBQUQsS0FBcUM7QUFDbkUsUUFBSUMsb0JBQW9CLEdBQUcsRUFBM0I7QUFDQSxRQUFJRixhQUFKLEVBQW1CO0FBQ2pCRSxNQUFBQSxvQkFBb0IsR0FBR0YsYUFBYSxDQUFDRyxHQUFkLENBQWtCLENBQUMsRUFBRUMsT0FBRixFQUFXQyxTQUFYLEVBQXNCQyxJQUF0QixFQUFELEtBQWtDO0FBQ3pFLGVBQVEsWUFBV0YsT0FBUSxlQUFjQyxTQUFVLFdBQVVDLElBQUssS0FBbEU7QUFDRCxPQUZzQixDQUF2QjtBQUdBQyxNQUFBQSxPQUFPLENBQUNDLEtBQVIsQ0FBZSwrQkFBZjtBQUNBRCxNQUFBQSxPQUFPLENBQUNFLEdBQVIsQ0FBWVAsb0JBQVo7QUFDQSxZQUFNLElBQUlRLEtBQUosQ0FBVywwRUFBWCxDQUFOO0FBQ0Q7O0FBRUQsUUFBSVQsWUFBSixFQUFrQixNQUFNLElBQUlTLEtBQUosQ0FBVyxvQkFBbUJULFlBQWEsRUFBM0MsQ0FBTjtBQUNuQixHQVp1QixDQUF4Qjs7QUFjQSxRQUFNVSxjQUFjLEdBQUcsSUFBSUMsd0JBQUosQ0FBYTtBQUNsQ0MsSUFBQUEsS0FBSyxFQUFFQyxrQkFEMkI7QUFFbENDLElBQUFBLEdBQUcsRUFBRXZCLFFBRjZCO0FBR2xDd0IsSUFBQUEsT0FBTyxFQUFFO0FBQ1BDLE1BQUFBLGFBQWEsRUFBRyxVQUFTeEIsS0FBTSxFQUR4QixFQUh5QixFQUFiLENBQXZCOzs7OztBQVNBLFFBQU15QixZQUFZLEdBQUdDLHVCQUFXQyxJQUFYLENBQWdCO0FBQ25DckIsRUFBQUEsZUFEbUM7QUFFbkNZLEVBQUFBLGNBRm1DLENBQWhCLENBQXJCOzs7QUFLQSxTQUFPLElBQUlVLDBCQUFKLENBQWlCO0FBQ3RCQyxJQUFBQSxJQUFJLEVBQUVKLFlBRGdCO0FBRXRCSyxJQUFBQSxLQUFLLEVBQUUsSUFBSUMsa0NBQUosRUFGZTtBQUd0QjlCLElBQUFBLGNBSHNCLEVBQWpCLENBQVA7O0FBS0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgdXRpbCBmcm9tICd1dGlsJ1xyXG5pbXBvcnQgeyBJbk1lbW9yeUNhY2hlIH0gZnJvbSAnYXBvbGxvLWNhY2hlLWlubWVtb3J5J1xyXG5pbXBvcnQgeyBIdHRwTGluayB9IGZyb20gJ2Fwb2xsby1saW5rLWh0dHAnXHJcbmltcG9ydCB7IEFwb2xsb0NsaWVudCB9IGZyb20gJ2Fwb2xsby1jbGllbnQnXHJcbmltcG9ydCB7IG9uRXJyb3IgfSBmcm9tICdhcG9sbG8tbGluay1lcnJvcidcclxuaW1wb3J0IHsgQXBvbGxvTGluayB9IGZyb20gJ2Fwb2xsby1saW5rJ1xyXG5pbXBvcnQgbm9kZUZldGNoIGZyb20gJ25vZGUtZmV0Y2gnXHJcblxyXG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlR3JhcGhxbENsaWVudCh7IGVuZHBvaW50LCB0b2tlbiB9KSB7XHJcbiAgLy8gcmVmZXJlbmNlOiBodHRwczovL3d3dy5hcG9sbG9ncmFwaHFsLmNvbS9kb2NzL3JlYWN0L2FwaS9hcG9sbG8tY2xpZW50Lmh0bWwjYXBvbGxvLWNsaWVudFxyXG4gIGNvbnN0IGRlZmF1bHRPcHRpb25zID0ge1xyXG4gICAgd2F0Y2hRdWVyeToge1xyXG4gICAgICBmZXRjaFBvbGljeTogJ25vLWNhY2hlJyxcclxuICAgICAgZXJyb3JQb2xpY3k6ICdpZ25vcmUnLFxyXG4gICAgfSxcclxuICAgIHF1ZXJ5OiB7XHJcbiAgICAgIGZldGNoUG9saWN5OiAnbm8tY2FjaGUnLFxyXG4gICAgICBlcnJvclBvbGljeTogJ2FsbCcsXHJcbiAgICB9LFxyXG4gIH1cclxuXHJcbiAgLy8gaHR0cHM6Ly9naXRodWIuY29tL2Fwb2xsb2dyYXBocWwvYXBvbGxvLWNsaWVudC9ibG9iL21hc3Rlci9kb2NzL3NvdXJjZS9mZWF0dXJlcy9lcnJvci1oYW5kbGluZy5tZCN1c2FnZVxyXG4gIGNvbnN0IGVycm9yTWlkZGxld2FyZSA9IG9uRXJyb3IoKHsgZ3JhcGhRTEVycm9ycywgbmV0d29ya0Vycm9yIH0pID0+IHtcclxuICAgIGxldCBmb3JtYXRlZEVycm9yTWVzc2FnZSA9IFtdXHJcbiAgICBpZiAoZ3JhcGhRTEVycm9ycykge1xyXG4gICAgICBmb3JtYXRlZEVycm9yTWVzc2FnZSA9IGdyYXBoUUxFcnJvcnMubWFwKCh7IG1lc3NhZ2UsIGxvY2F0aW9ucywgcGF0aCB9KSA9PiB7XHJcbiAgICAgICAgcmV0dXJuIGBNZXNzYWdlOiAke21lc3NhZ2V9LCBMb2NhdGlvbjogJHtsb2NhdGlvbnN9LCBQYXRoOiAke3BhdGh9IFxcbmBcclxuICAgICAgfSlcclxuICAgICAgY29uc29sZS5lcnJvcihg4p2MICBHcmFwaFFsICdlcnJvcnMnIHByb3BlcnR5OmApXHJcbiAgICAgIGNvbnNvbGUuZGlyKGZvcm1hdGVkRXJyb3JNZXNzYWdlKVxyXG4gICAgICB0aHJvdyBuZXcgRXJyb3IoYFtHcmFwaFFMIGVycm9yXTogQW4gZXJyb3IgcmVjZWl2ZWQgZnJvbSB0aGUgcmVzcG9uc2Ugb2YgdGhlIEdyYXBoUUwgQVBJLmApXHJcbiAgICB9XHJcblxyXG4gICAgaWYgKG5ldHdvcmtFcnJvcikgdGhyb3cgbmV3IEVycm9yKGBbTmV0d29yayBlcnJvcl06ICR7bmV0d29ya0Vycm9yfWApXHJcbiAgfSlcclxuXHJcbiAgY29uc3QgaHR0cE1pZGRsZXdhcmUgPSBuZXcgSHR0cExpbmsoe1xyXG4gICAgZmV0Y2g6IG5vZGVGZXRjaCxcclxuICAgIHVyaTogZW5kcG9pbnQsXHJcbiAgICBoZWFkZXJzOiB7XHJcbiAgICAgIEF1dGhvcml6YXRpb246IGBiZWFyZXIgJHt0b2tlbn1gLFxyXG4gICAgfSxcclxuICB9KVxyXG5cclxuICAvLyBjb21iaW5lIGFwb2xsbyBgbGlua3NgIHRvIGFsbG93IGZvciBlcnJvciBoYW5kbGluZyB0aGF0IGluY2x1ZGVzIEdyYXBoUUwgcmVzcG9uc2UgZXJyb3JzLlxyXG4gIGNvbnN0IGNvbWJpbmVkTGluayA9IEFwb2xsb0xpbmsuZnJvbShbXHJcbiAgICBlcnJvck1pZGRsZXdhcmUsXHJcbiAgICBodHRwTWlkZGxld2FyZSwgLy8gQXMgZGVmaW5lZCBieSBhcG9sbG8gLSB0aGlzIGlzIGNvbnNpZGVyZWQgYSB0ZXJtaW5hdGVkIGxpbmsgdGhhdCBzaG91bGQgYmUgY29uY2F0ZW5hdGVkIGF0IGxhc3QuXHJcbiAgXSlcclxuXHJcbiAgcmV0dXJuIG5ldyBBcG9sbG9DbGllbnQoe1xyXG4gICAgbGluazogY29tYmluZWRMaW5rLFxyXG4gICAgY2FjaGU6IG5ldyBJbk1lbW9yeUNhY2hlKCksXHJcbiAgICBkZWZhdWx0T3B0aW9ucyxcclxuICB9KVxyXG59XHJcbiJdfQ==
