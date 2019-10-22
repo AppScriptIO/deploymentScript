@@ -6,7 +6,7 @@ export async function moduleProject({ api, tagName }) {
   let version = await bumpVersion({ api })
   await createGithubBranchedRelease({
     api,
-    tagName: version,
+    tagName: tagName || version,
     buildCallback: () => buildModuleProject({ api }),
   })
 }

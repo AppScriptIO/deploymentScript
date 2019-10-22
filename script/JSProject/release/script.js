@@ -4,7 +4,7 @@ import assert from 'assert'
 import childProcess from 'child_process'
 import filesystemExtra from 'fs-extra'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
-import { copyFile } from '../../../source/utility/filesystemOperation/copyFile.js'
+import { copyFile } from '@dependency/deploymentProvisioning'
 const getDirectory = source => filesystem.readdirSync(source, { withFileTypes: true }).filter(dirent => dirent.isDirectory())
 const getAllDirent = source => filesystem.readdirSync(source, { withFileTypes: true })
 /** Filter array with async function
@@ -108,7 +108,10 @@ export async function createGithubBranchedRelease({
     .catch(error => console.error)
 
   // run build
-  if (buildCallback) await buildCallback().then(() => console.log('Project built successfully !')).catch(error => console.error(error))
+  if (buildCallback)
+    await buildCallback()
+      .then(() => console.log('Project built successfully !'))
+      .catch(error => console.error(error))
 
   /** Make distribution folder as root directory in the branch */
   // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
