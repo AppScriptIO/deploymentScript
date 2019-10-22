@@ -1,21 +1,22 @@
-import { createGithubBranchedRelease } from './release'
-import { moduleProject as buildModuleProject, webappProject as buildWebappProject } from './buildSourceCode'
-import { bumpVersion } from './packageVersion'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.moduleProject = moduleProject;exports.webappProject = webappProject;var _release = require("./release");
+var _buildSourceCode = require("./buildSourceCode");
+var _packageVersion = require("./packageVersion");
 
-export async function moduleProject({ api, tagName }) {
-  let version = await bumpVersion({ api })
-  await createGithubBranchedRelease({
+async function moduleProject({ api, tagName }) {
+  let version = await (0, _packageVersion.bumpVersion)({ api });
+  await (0, _release.createGithubBranchedRelease)({
     api,
     tagName: tagName || version,
-    buildCallback: () => buildModuleProject({ api }),
-  })
+    buildCallback: () => (0, _buildSourceCode.moduleProject)({ api }) });
+
 }
 
-export async function webappProject({ api, tagName }) {
-  let version = await bumpVersion({ api })
-  await createGithubBranchedRelease({
+async function webappProject({ api, tagName }) {
+  let version = await (0, _packageVersion.bumpVersion)({ api });
+  await (0, _release.createGithubBranchedRelease)({
     api,
     tagName: version,
-    buildCallback: () => buildWebappProject({ api }),
-  })
+    buildCallback: () => (0, _buildSourceCode.webappProject)({ api }) });
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvYnVpbGRBbmRSZWxlYXNlLmpzIl0sIm5hbWVzIjpbIm1vZHVsZVByb2plY3QiLCJhcGkiLCJ0YWdOYW1lIiwidmVyc2lvbiIsImJ1aWxkQ2FsbGJhY2siLCJ3ZWJhcHBQcm9qZWN0Il0sIm1hcHBpbmdzIjoidUpBQUE7QUFDQTtBQUNBOztBQUVPLGVBQWVBLGFBQWYsQ0FBNkIsRUFBRUMsR0FBRixFQUFPQyxPQUFQLEVBQTdCLEVBQStDO0FBQ3BELE1BQUlDLE9BQU8sR0FBRyxNQUFNLGlDQUFZLEVBQUVGLEdBQUYsRUFBWixDQUFwQjtBQUNBLFFBQU0sMENBQTRCO0FBQ2hDQSxJQUFBQSxHQURnQztBQUVoQ0MsSUFBQUEsT0FBTyxFQUFFQSxPQUFPLElBQUlDLE9BRlk7QUFHaENDLElBQUFBLGFBQWEsRUFBRSxNQUFNLG9DQUFtQixFQUFFSCxHQUFGLEVBQW5CLENBSFcsRUFBNUIsQ0FBTjs7QUFLRDs7QUFFTSxlQUFlSSxhQUFmLENBQTZCLEVBQUVKLEdBQUYsRUFBT0MsT0FBUCxFQUE3QixFQUErQztBQUNwRCxNQUFJQyxPQUFPLEdBQUcsTUFBTSxpQ0FBWSxFQUFFRixHQUFGLEVBQVosQ0FBcEI7QUFDQSxRQUFNLDBDQUE0QjtBQUNoQ0EsSUFBQUEsR0FEZ0M7QUFFaENDLElBQUFBLE9BQU8sRUFBRUMsT0FGdUI7QUFHaENDLElBQUFBLGFBQWEsRUFBRSxNQUFNLG9DQUFtQixFQUFFSCxHQUFGLEVBQW5CLENBSFcsRUFBNUIsQ0FBTjs7QUFLRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGNyZWF0ZUdpdGh1YkJyYW5jaGVkUmVsZWFzZSB9IGZyb20gJy4vcmVsZWFzZSdcclxuaW1wb3J0IHsgbW9kdWxlUHJvamVjdCBhcyBidWlsZE1vZHVsZVByb2plY3QsIHdlYmFwcFByb2plY3QgYXMgYnVpbGRXZWJhcHBQcm9qZWN0IH0gZnJvbSAnLi9idWlsZFNvdXJjZUNvZGUnXHJcbmltcG9ydCB7IGJ1bXBWZXJzaW9uIH0gZnJvbSAnLi9wYWNrYWdlVmVyc2lvbidcclxuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBtb2R1bGVQcm9qZWN0KHsgYXBpLCB0YWdOYW1lIH0pIHtcclxuICBsZXQgdmVyc2lvbiA9IGF3YWl0IGJ1bXBWZXJzaW9uKHsgYXBpIH0pXHJcbiAgYXdhaXQgY3JlYXRlR2l0aHViQnJhbmNoZWRSZWxlYXNlKHtcclxuICAgIGFwaSxcclxuICAgIHRhZ05hbWU6IHRhZ05hbWUgfHwgdmVyc2lvbixcclxuICAgIGJ1aWxkQ2FsbGJhY2s6ICgpID0+IGJ1aWxkTW9kdWxlUHJvamVjdCh7IGFwaSB9KSxcclxuICB9KVxyXG59XHJcblxyXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gd2ViYXBwUHJvamVjdCh7IGFwaSwgdGFnTmFtZSB9KSB7XHJcbiAgbGV0IHZlcnNpb24gPSBhd2FpdCBidW1wVmVyc2lvbih7IGFwaSB9KVxyXG4gIGF3YWl0IGNyZWF0ZUdpdGh1YkJyYW5jaGVkUmVsZWFzZSh7XHJcbiAgICBhcGksXHJcbiAgICB0YWdOYW1lOiB2ZXJzaW9uLFxyXG4gICAgYnVpbGRDYWxsYmFjazogKCkgPT4gYnVpbGRXZWJhcHBQcm9qZWN0KHsgYXBpIH0pLFxyXG4gIH0pXHJcbn1cclxuIl19
