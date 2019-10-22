@@ -3,8 +3,8 @@
 
 
 "@dependency/deploymentProvisioning@https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/deploymentProvisioning#9051e407f327d341abce80ceb7ba5748d8e0c2d7"
+  version "1.0.5"
+  resolved "https://github.com/AppScriptIO/deploymentProvisioning#fe804e37e131bcef728bc1ce92e6e552a7d19f25"
   dependencies:
     any-promise "^1.3.0"
     command-exists "^1.2.8"
