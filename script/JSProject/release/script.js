@@ -63,6 +63,7 @@ export async function createGithubBranchedRelease({
     targetProjectGitUrl = targetProject.configuration.configuration?.build.repositoryURL
 
   // read git repository
+  console.log(`• Openning repository: ${targetProjectRoot}`)
   const repository = await git.Repository.open(targetProjectRoot)
   brachToPointTo = await git.Branch.lookup(repository, brachToPointTo, 1) // convert to branch reference
 
@@ -72,6 +73,7 @@ export async function createGithubBranchedRelease({
 
   // get latest commit from branch
   let getLatestCommit = await repository.getReferenceCommit(brachToPointTo)
+  console.log(`• Getting latest commit: ${getLatestCommit}`)
   // set commit reference
   if (commitToPointTo) {
     commitToPointTo = await git.Commit.lookup(repository, commitToPointTo) // get commit from supplied commit id parameter
@@ -81,6 +83,7 @@ export async function createGithubBranchedRelease({
   let branchReferenceList = await repository.getReferences().then(referenceList => referenceList.filter(reference => reference.type() == git.Reference.TYPE.DIRECT))
 
   // check if `temporaryBranchName` branch, that is used, exists.
+  console.log(`• Checking/Creating temporary branch: ${temporaryBranchName}`)
   let doesTemporaryBranchExist = branchReferenceList.some(branch => branch.toString().includes(temporaryBranchName))
   let temporaryBranch // Branch reference
   if (!doesTemporaryBranchExist) {
@@ -91,9 +94,11 @@ export async function createGithubBranchedRelease({
 
   // check if there are untracked or staged files
   let statuseList = await repository.getStatus()
-  if (statuseList.length > 0)
+  if (statuseList.length > 0) {
     // stash changes that are still not committed
+    console.log(`• Checkout stash of changes unrelated to release.`)
     await git.Stash.save(repository, taggerSignature, 'checkout stash before release', git.Stash.FLAGS.INCLUDE_UNTRACKED)
+  }
 
   // checkout temporary
   await repository.checkoutBranch(await temporaryBranch.name()).then(async () => console.log(`Checked branch ${await temporaryBranch.name()}`))
@@ -108,10 +113,12 @@ export async function createGithubBranchedRelease({
     .catch(error => console.error)
 
   // run build
-  if (buildCallback)
+  if (buildCallback) {
+    console.log(`• Building project...`)
     await buildCallback()
       .then(() => console.log('Project built successfully !'))
       .catch(error => console.error(error))
+  }
 
   /** Make distribution folder as root directory in the branch */
   // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
