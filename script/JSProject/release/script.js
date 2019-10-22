@@ -4,7 +4,7 @@ import assert from 'assert'
 import childProcess from 'child_process'
 import filesystemExtra from 'fs-extra'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
-import { copyFile } from '@dependency/deploymentProvisioning'
+import * as provision from '@dependency/deploymentProvisioning'
 const getDirectory = source => filesystem.readdirSync(source, { withFileTypes: true }).filter(dirent => dirent.isDirectory())
 const getAllDirent = source => filesystem.readdirSync(source, { withFileTypes: true })
 /** Filter array with async function
@@ -118,7 +118,7 @@ export async function createGithubBranchedRelease({
   let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
     gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
   if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
-  copyFile.copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
+  provision.copy.copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
 
   // get top directories that are ignored
   let direntList = getAllDirent(targetProjectRoot) // get all files and directories on top level
