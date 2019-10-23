@@ -1,24 +1,25 @@
-import { createGithubBranchedRelease } from './release'
-import { moduleProject as buildModuleProject, webappProject as buildWebappProject } from './buildSourceCode'
-import { bumpVersion } from './packageVersion'
-import { runDockerContainer } from '../graphDatabase/memgraphContainer.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.moduleProject = moduleProject;exports.webappProject = webappProject;var _release = require("./release");
+var _buildSourceCode = require("./buildSourceCode");
+var _packageVersion = require("./packageVersion");
+var _memgraphContainer = require("../graphDatabase/memgraphContainer.js");
 
-export async function moduleProject({ api, tagName }) {
-  runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
-  let version = await bumpVersion({ api })
-  await createGithubBranchedRelease({
+async function moduleProject({ api, tagName }) {
+  (0, _memgraphContainer.runDockerContainer)();
+  let version = await (0, _packageVersion.bumpVersion)({ api });
+  await (0, _release.createGithubBranchedRelease)({
     api,
     tagName: tagName || version,
-    buildCallback: () => buildModuleProject({ api }),
-  })
+    buildCallback: () => (0, _buildSourceCode.moduleProject)({ api }) });
+
 }
 
-export async function webappProject({ api, tagName }) {
-  runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
-  let version = await bumpVersion({ api })
-  await createGithubBranchedRelease({
+async function webappProject({ api, tagName }) {
+  (0, _memgraphContainer.runDockerContainer)();
+  let version = await (0, _packageVersion.bumpVersion)({ api });
+  await (0, _release.createGithubBranchedRelease)({
     api,
     tagName: version,
-    buildCallback: () => buildWebappProject({ api }),
-  })
+    buildCallback: () => (0, _buildSourceCode.webappProject)({ api }) });
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NjcmlwdC9KU1Byb2plY3QvYnVpbGRBbmRSZWxlYXNlLmpzIl0sIm5hbWVzIjpbIm1vZHVsZVByb2plY3QiLCJhcGkiLCJ0YWdOYW1lIiwidmVyc2lvbiIsImJ1aWxkQ2FsbGJhY2siLCJ3ZWJhcHBQcm9qZWN0Il0sIm1hcHBpbmdzIjoidUpBQUE7QUFDQTtBQUNBO0FBQ0E7O0FBRU8sZUFBZUEsYUFBZixDQUE2QixFQUFFQyxHQUFGLEVBQU9DLE9BQVAsRUFBN0IsRUFBK0M7QUFDcEQ7QUFDQSxNQUFJQyxPQUFPLEdBQUcsTUFBTSxpQ0FBWSxFQUFFRixHQUFGLEVBQVosQ0FBcEI7QUFDQSxRQUFNLDBDQUE0QjtBQUNoQ0EsSUFBQUEsR0FEZ0M7QUFFaENDLElBQUFBLE9BQU8sRUFBRUEsT0FBTyxJQUFJQyxPQUZZO0FBR2hDQyxJQUFBQSxhQUFhLEVBQUUsTUFBTSxvQ0FBbUIsRUFBRUgsR0FBRixFQUFuQixDQUhXLEVBQTVCLENBQU47O0FBS0Q7O0FBRU0sZUFBZUksYUFBZixDQUE2QixFQUFFSixHQUFGLEVBQU9DLE9BQVAsRUFBN0IsRUFBK0M7QUFDcEQ7QUFDQSxNQUFJQyxPQUFPLEdBQUcsTUFBTSxpQ0FBWSxFQUFFRixHQUFGLEVBQVosQ0FBcEI7QUFDQSxRQUFNLDBDQUE0QjtBQUNoQ0EsSUFBQUEsR0FEZ0M7QUFFaENDLElBQUFBLE9BQU8sRUFBRUMsT0FGdUI7QUFHaENDLElBQUFBLGFBQWEsRUFBRSxNQUFNLG9DQUFtQixFQUFFSCxHQUFGLEVBQW5CLENBSFcsRUFBNUIsQ0FBTjs7QUFLRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGNyZWF0ZUdpdGh1YkJyYW5jaGVkUmVsZWFzZSB9IGZyb20gJy4vcmVsZWFzZSdcclxuaW1wb3J0IHsgbW9kdWxlUHJvamVjdCBhcyBidWlsZE1vZHVsZVByb2plY3QsIHdlYmFwcFByb2plY3QgYXMgYnVpbGRXZWJhcHBQcm9qZWN0IH0gZnJvbSAnLi9idWlsZFNvdXJjZUNvZGUnXHJcbmltcG9ydCB7IGJ1bXBWZXJzaW9uIH0gZnJvbSAnLi9wYWNrYWdlVmVyc2lvbidcclxuaW1wb3J0IHsgcnVuRG9ja2VyQ29udGFpbmVyIH0gZnJvbSAnLi4vZ3JhcGhEYXRhYmFzZS9tZW1ncmFwaENvbnRhaW5lci5qcydcclxuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBtb2R1bGVQcm9qZWN0KHsgYXBpLCB0YWdOYW1lIH0pIHtcclxuICBydW5Eb2NrZXJDb250YWluZXIoKSAvLyBydW4gbWVtZ3JhcGggY29udGFpbmVyIGZvciB1c2FnZSBpbiBidWlsZFRvb2wgZ3JhcGhUcmF2ZXJzYWwgbW9kdWxlLlxyXG4gIGxldCB2ZXJzaW9uID0gYXdhaXQgYnVtcFZlcnNpb24oeyBhcGkgfSlcclxuICBhd2FpdCBjcmVhdGVHaXRodWJCcmFuY2hlZFJlbGVhc2Uoe1xyXG4gICAgYXBpLFxyXG4gICAgdGFnTmFtZTogdGFnTmFtZSB8fCB2ZXJzaW9uLFxyXG4gICAgYnVpbGRDYWxsYmFjazogKCkgPT4gYnVpbGRNb2R1bGVQcm9qZWN0KHsgYXBpIH0pLFxyXG4gIH0pXHJcbn1cclxuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiB3ZWJhcHBQcm9qZWN0KHsgYXBpLCB0YWdOYW1lIH0pIHtcclxuICBydW5Eb2NrZXJDb250YWluZXIoKSAvLyBydW4gbWVtZ3JhcGggY29udGFpbmVyIGZvciB1c2FnZSBpbiBidWlsZFRvb2wgZ3JhcGhUcmF2ZXJzYWwgbW9kdWxlLlxyXG4gIGxldCB2ZXJzaW9uID0gYXdhaXQgYnVtcFZlcnNpb24oeyBhcGkgfSlcclxuICBhd2FpdCBjcmVhdGVHaXRodWJCcmFuY2hlZFJlbGVhc2Uoe1xyXG4gICAgYXBpLFxyXG4gICAgdGFnTmFtZTogdmVyc2lvbixcclxuICAgIGJ1aWxkQ2FsbGJhY2s6ICgpID0+IGJ1aWxkV2ViYXBwUHJvamVjdCh7IGFwaSB9KSxcclxuICB9KVxyXG59XHJcbiJdfQ==
