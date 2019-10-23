@@ -9,6 +9,6 @@ export function runDockerContainer() {
   try {
     childProcess.execSync('docker run -p 7687:7687 -d memgraph', childProcessOption)
   } catch (error) {
-    console.log(`• Seems like the container is already running from a previous session.`)
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
   }
 }
