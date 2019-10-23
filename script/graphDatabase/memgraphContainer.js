@@ -1,8 +1,9 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-// Volumes for memgraph container:
-// `-v mg_lib:/var/lib/memgraph -v mg_log:/var/log/memgraph -v mg_etc:/etc/memgraph`
-export function runDockerContainer() {
-  childProcess.execSync('docker run -p 7687:7687 -d memgraph', childProcessOption)
+
+
+function runDockerContainer() {
+  childProcess.execSync('docker run -p 7687:7687 -d memgraph', childProcessOption);
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NjcmlwdC9ncmFwaERhdGFiYXNlL21lbWdyYXBoQ29udGFpbmVyLmpzIl0sIm5hbWVzIjpbImNoaWxkUHJvY2VzcyIsInJlcXVpcmUiLCJjaGlsZFByb2Nlc3NPcHRpb24iLCJjd2QiLCJfX2Rpcm5hbWUiLCJzaGVsbCIsInN0ZGlvIiwicnVuRG9ja2VyQ29udGFpbmVyIiwiZXhlY1N5bmMiXSwibWFwcGluZ3MiOiIySEFBQSxNQUFNQSxZQUFZLEdBQUdDLE9BQU8sQ0FBQyxlQUFELENBQTVCO0FBQ0EsTUFBTUMsa0JBQWtCLEdBQUcsRUFBRUMsR0FBRyxFQUFFQyxTQUFQLEVBQWtCQyxLQUFLLEVBQUUsSUFBekIsRUFBK0JDLEtBQUssRUFBRSxDQUFDLENBQUQsRUFBSSxDQUFKLEVBQU8sQ0FBUCxDQUF0QyxFQUEzQjs7OztBQUlPLFNBQVNDLGtCQUFULEdBQThCO0FBQ25DUCxFQUFBQSxZQUFZLENBQUNRLFFBQWIsQ0FBc0IscUNBQXRCLEVBQTZETixrQkFBN0Q7QUFDRCIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IGNoaWxkUHJvY2VzcyA9IHJlcXVpcmUoJ2NoaWxkX3Byb2Nlc3MnKVxuY29uc3QgY2hpbGRQcm9jZXNzT3B0aW9uID0geyBjd2Q6IF9fZGlybmFtZSwgc2hlbGw6IHRydWUsIHN0ZGlvOiBbMCwgMSwgMl0gfVxuXG4vLyBWb2x1bWVzIGZvciBtZW1ncmFwaCBjb250YWluZXI6XG4vLyBgLXYgbWdfbGliOi92YXIvbGliL21lbWdyYXBoIC12IG1nX2xvZzovdmFyL2xvZy9tZW1ncmFwaCAtdiBtZ19ldGM6L2V0Yy9tZW1ncmFwaGBcbmV4cG9ydCBmdW5jdGlvbiBydW5Eb2NrZXJDb250YWluZXIoKSB7XG4gIGNoaWxkUHJvY2Vzcy5leGVjU3luYygnZG9ja2VyIHJ1biAtcCA3Njg3Ojc2ODcgLWQgbWVtZ3JhcGgnLCBjaGlsZFByb2Nlc3NPcHRpb24pXG59XG4iXX0=
