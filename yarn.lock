@@ -968,8 +968,8 @@
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/deploymentProvisioning@https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x":
-  version "1.0.5"
-  resolved "https://github.com/AppScriptIO/deploymentProvisioning#fe804e37e131bcef728bc1ce92e6e552a7d19f25"
+  version "1.0.7"
+  resolved "https://github.com/AppScriptIO/deploymentProvisioning#63aa88b8abdd814b96293d227476cd9e1664d3b1"
   dependencies:
     any-promise "^1.3.0"
     command-exists "^1.2.8"
