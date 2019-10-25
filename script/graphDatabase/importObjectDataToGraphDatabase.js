@@ -9,61 +9,61 @@ let nodeArray = []
 ;(async () => {
   let session = await neo4jGraphDBDriver.session()
 
-  // for (let node of nodeArray) {
-  //   let query = `key: '${node.key}', name: '${node.label.name}', classification: '${classification}' `
-  //   if (node.callback) query += `, callback: ${JSON.stringify(JSON.stringify(node.callback))}`
-  //   let result = await session.run(`
-  //     match (p:Process { key: '${node.dataItemKey}', classification: '${classification}' })
-  //     create (s:Stage { ${query} }), (s)-[:EXECUTE]->(p)
-  //     RETURN p
-  //   `)
+  for (let node of nodeArray) {
+    let query = `key: '${node.key}', name: '${node.label.name}', classification: '${classification}' `
+    if (node.callback) query += `, callback: ${JSON.stringify(JSON.stringify(node.callback))}`
+    let result = await session.run(`
+      match (p:Process { key: '${node.dataItemKey}', classification: '${classification}' })
+      create (s:Stage { ${query} }), (s)-[:EXECUTE]->(p)
+      RETURN p
+    `)
 
-  //   if (node.port)
-  //     for (let port of node.port) {
-  //       let result = await session.run(`
-  //         MATCH (stage:Stage { key: '${node.key}', classification: '${classification}' })
-  //         CREATE (port:Port { key: '${port.key}', traverseNodeImplementation: '${port.executionType}' }),
-  //         (stage)-[:HAS_PORT { order: ${port.order}}]->(port)
-  //         RETURN port
-  //       `)
-  //       {
-  //         for (let record of result.records) {
-  //           let createdNode = record.toObject()
-  //           console.log(createdNode.port)
-  //         }
-  //       }
-  //     }
+    if (node.port)
+      for (let port of node.port) {
+        let result = await session.run(`
+          MATCH (stage:Stage { key: '${node.key}', classification: '${classification}' })
+          CREATE (port:Port { key: '${port.key}', traverseNodeImplementation: '${port.executionType}' }),
+          (stage)-[:HAS_PORT { order: ${port.order}}]->(port)
+          RETURN port
+        `)
+        {
+          for (let record of result.records) {
+            let createdNode = record.toObject()
+            console.log(createdNode.port)
+          }
+        }
+      }
 
-  //   for (let record of result.records) {
-  //     let createdNode = record.toObject()
-  //     process.stdout.write(`${node.key} --> ${createdNode.p.properties.key}\n`)
-  //     // console.log(createdNode.p.properties.processDataImplementation)
-  //   }
-  // }
+    for (let record of result.records) {
+      let createdNode = record.toObject()
+      process.stdout.write(`${node.key} --> ${createdNode.p.properties.key}\n`)
+      // console.log(createdNode.p.properties.processDataImplementation)
+    }
+  }
 
-  //--------------------------------------------------------------------------------------------------
+  // --------------------------------------------------------------------------------------------------
 
-  // // TODO: don't forget the additional node graph
-  // for (let node of nodeArray) {
-  //   if (node.connection) {
-  //     // node.children = node.children.filter(v => v.insertionPosition.insertionPathPointer)
-  //     for (let index in node.connection) {
-  //       let child = node.connection[index]
-  //       // console.log(child)
-  //       let result = await session.run(`
-  //       match (s:Stage { key: '${node.key}', classification: '${classification}' })-[:HAS_PORT]->(port:Port) where port.key = '${child.insertionPosition.port}'
-  //       match (snext:Stage { key: '${child.nestedUnit}', classification: '${classification}' })
-  //       create (port)-[:NEXT { order: ${index || 1}}]->(snext)
-  //       RETURN port, snext
-  //     `)
+  // TODO: don't forget the additional node graph
+  for (let node of nodeArray) {
+    if (node.connection) {
+      // node.children = node.children.filter(v => v.insertionPosition.insertionPathPointer)
+      for (let index in node.connection) {
+        let child = node.connection[index]
+        // console.log(child)
+        let result = await session.run(`
+        match (s:Stage { key: '${node.key}', classification: '${classification}' })-[:HAS_PORT]->(port:Port) where port.key = '${child.insertionPosition.port}'
+        match (snext:Stage { key: '${child.nestedUnit}', classification: '${classification}' })
+        create (port)-[:NEXT { order: ${index || 1}}]->(snext)
+        RETURN port, snext
+      `)
 
-  //       for (let record of result.records) {
-  //         let createdNode = record.toObject()
-  //         process.stdout.write(`${createdNode.port.properties.key} --> ${createdNode.snext.properties.key}\n`)
-  //       }
-  //     }
-  //   }
-  // }
+        for (let record of result.records) {
+          let createdNode = record.toObject()
+          process.stdout.write(`${createdNode.port.properties.key} --> ${createdNode.snext.properties.key}\n`)
+        }
+      }
+    }
+  }
 
   session.close()
   neo4jGraphDBDriver.close()

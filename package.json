@@ -14,6 +14,7 @@
 	],
 	"private": true,
 	"dependencies": {
+		"@dependency/deploymentProvisioning": "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x",
 		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
 		"@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
 		"@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x"

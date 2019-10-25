@@ -2,7 +2,7 @@
 
 import path from 'path'
 import assert from 'assert'
-import { promises as filesystem } from 'fs'
+import { promises as filesystem, existsSync, mkdirSync } from 'fs'
 import { Entity } from '@dependency/entity'
 import { Database as DatabaseModule } from '@dependency/graphTraversal'
 const { Database } = DatabaseModule
@@ -49,8 +49,11 @@ export async function exportAllGraphData({ api, targetPath = './test/asset/', fi
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
   let graphData = { node: await concereteDatabase.getAllNode(), edge: await concereteDatabase.getAllEdge() } |> JSON.stringify
+
+  if (!existsSync(exportPath)) mkdirSync(exportPath, { recursive: true }) // create base directory if it doesn't exist
   await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
   console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
+
   concereteDatabase.driverInstance.close()
 }
 
