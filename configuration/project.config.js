@@ -18,11 +18,11 @@ const ownConfig = {
     },
   },
   get script() {
-    return [...script, ...[{ type: 'directory', path: ownConfig.directory.script }]]
+    return [...script, ...[{ type: 'directory', path: ownConfig.directory.script }, { type: 'directory', path: ownConfig.directory.source }]]
   },
-  // entrypoint: {
-  //   programmaticAPI: './script.js',
-  // },
+  entrypoint: {
+    programmaticAPI: './script.js',
+  },
   transpilation: {
     babelConfigKey: 'serverRuntime.BabelConfig.js',
     get babelConfig() {
