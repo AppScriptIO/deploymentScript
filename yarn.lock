@@ -907,8 +907,8 @@
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
 "@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
-  version "1.0.14"
-  resolved "https://github.com/AppScriptIO/buildTool#6812f732d96505e981aeb68840a38cc735be0540"
+  version "1.0.15"
+  resolved "https://github.com/AppScriptIO/buildTool#f16c20d7e38fbd1c09d8ac550612ca860bac0fac"
   dependencies:
     "@dependency/deploymentProvisioning" "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x"
     "@dependency/fragmentIndentationObjectStream" "https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x"
@@ -995,8 +995,8 @@
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.11"
-  resolved "https://github.com/AppScriptIO/graphTraversal#3a17fad9ef1113657ea22c83896e47326e6924e4"
+  version "1.2.12"
+  resolved "https://github.com/AppScriptIO/graphTraversal#4cfa78754523549db04994e93528512edab1f0e4"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
