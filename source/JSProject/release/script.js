@@ -62,6 +62,13 @@ export async function createGithubBranchedRelease({
     targetProjectRoot = targetProject.configuration.rootPath,
     targetProjectGitUrl = targetProject.configuration.configuration?.build.repositoryURL
 
+  /** Make distribution folder as root directory in the branch */
+  // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
+  let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
+    gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
+  if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
+  provision.copy.copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
+
   // read git repository
   console.log(`• Openning repository: ${targetProjectRoot}`)
   const repository = await git.Repository.open(targetProjectRoot)
@@ -119,13 +126,6 @@ export async function createGithubBranchedRelease({
       .then(() => console.log('Project built successfully !'))
       .catch(error => console.error(error))
   }
-
-  /** Make distribution folder as root directory in the branch */
-  // deleting .gitignore will make it faster, by preventing node_modules from being processed by tools while deleting files.
-  let gitExcludePath = path.join(targetProjectRoot, './.git/info/exclude'),
-    gitIgnorePath = lookupConfigFile({ targetProjectRoot, configName: '.gitignore' })
-  if (filesystem.existsSync(gitExcludePath)) filesystem.unlinkSync(gitExcludePath) // remove file
-  provision.copy.copyFile([{ source: gitIgnorePath, destination: gitExcludePath }]) // copy .gitignore to `.git` folder
 
   // get top directories that are ignored
   let direntList = getAllDirent(targetProjectRoot) // get all files and directories on top level
