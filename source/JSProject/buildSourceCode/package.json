@@ -1,6 +1,0 @@
-{
-  "name": "@script/buildSourceCode",
-  "main": "./script.js",
-  "version": "1.0.0",
-  "dependencies": {}
-}

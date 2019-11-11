@@ -1,8 +1,0 @@
-{
-  "name": "@dependency/production",
-  "main": "./script.js",
-  "version": "1.0.0",
-  "dependencies": {
-    "node-ssh": "^5.1.1"
-  }
-}

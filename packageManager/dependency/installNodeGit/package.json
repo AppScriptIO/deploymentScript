@@ -1,0 +1,11 @@
+{
+    "name": "@script/InstallNodeGit",
+    "main": ".",
+    "version": "0.0.0",
+    "scripts": {
+        "preinstall": "echo '• Running script for installing LibGit2...'; node --eval \"let provision = require('@dependency/deploymentProvisioning'); provision.nodegit.install()\""
+    },
+    "dependencies": {
+        "nodegit": "^0.25.*"
+    }
+}
