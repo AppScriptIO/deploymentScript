@@ -11,7 +11,7 @@
 	"workspaces": [
 		"./source/*",
 		"./source/JSProject/*",
-		"./packageManager/dependency/*"
+		"./source/packageManager/dependency/*"
 	],
 	"private": true,
 	"dependencies": {
