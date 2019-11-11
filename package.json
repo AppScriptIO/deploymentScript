@@ -9,9 +9,7 @@
 		"build": "yarn run scriptManager shouldCompileScript=true ./ \".buildSourceCode.moduleProject({}, {compile:[/**'./test'*/]})\""
 	},
 	"workspaces": [
-		"./source/*",
-		"./source/JSProject/*",
-		"./source/packageManager/dependency/*"
+		"./source/packageManager/*"
 	],
 	"private": true,
 	"dependencies": {
