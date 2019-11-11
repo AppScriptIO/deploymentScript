@@ -47,7 +47,8 @@ export async function bumpVersion({
   assert(taggerSignature, `❌ Github username should be passed or found in the git local/system configs.`)
 
   // read package.json file
-  let packageConfig = await modifyJson.readFile(targetPackagePath).catch(error => console.error(error))
+  let packageConfig = modifyJson.readFileSync(targetPackagePath)
+  console.log(packageConfig)
 
   // bump version
   let updatedVersion = semanticVersioner.inc(packageConfig.version, 'patch') // increment version by release type - release type (major, premajor, minor, preminor, patch, prepatch, or prerelease).
