@@ -923,7 +923,7 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
-"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.0.17":
+"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
   version "1.0.18"
   resolved "https://github.com/AppScriptIO/buildTool#deeb2873393c3aa4991d28965b5619c947819bc5"
   dependencies:
@@ -963,18 +963,6 @@
     type-of-is "*"
     vinyl-fs "*"
 
-"@dependency/classMixin@https://github.com/AppScriptIO/classMixin#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/classMixin#6e25be33f65b81d6a0b27cebea7a970e74168a8d"
-  dependencies:
-    mixwith "*"
-
-"@dependency/commonPattern@https://github.com/AppScriptIO/commonPattern#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/commonPattern#4f085f3a5b8242a7c8c7057aa779619a777443ed"
-  dependencies:
-    promise-events "^0.1.6"
-
 "@dependency/configurationManagement@http://github.com/AppScriptIO/configurationManagement#semver:^1.x.x":
   version "1.0.4"
   uid "4b9ba191b7f9d1fbcfad46978d6c0e865852a4fe"
@@ -983,12 +971,6 @@
 "@dependency/configurationManagement@https://github.com/AppScriptIO/configurationManagement#semver:^1.x.x":
   version "1.0.4"
   resolved "https://github.com/AppScriptIO/configurationManagement#4b9ba191b7f9d1fbcfad46978d6c0e865852a4fe"
-
-"@dependency/databaseUtility@https://github.com/AppScriptIO/databaseUtility#semver:^1.x.x":
-  version "1.0.2"
-  resolved "https://github.com/AppScriptIO/databaseUtility#581076729dea717e757c11da17b4514a3f102bac"
-  dependencies:
-    "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/deploymentProvisioning@https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x":
   version "1.0.10"
@@ -1016,22 +998,22 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
-"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.12"
-  resolved "https://github.com/AppScriptIO/graphTraversal#4cfa78754523549db04994e93528512edab1f0e4"
+"@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^1.x.x":
+  version "1.0.1"
+  resolved "https://github.com/AppScriptIO/graphTraversal-implementation#efa994a12bb975a4735888c0ad615bbae16d3160"
   dependencies:
-    "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
-    "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
-    "@dependency/databaseUtility" "https://github.com/AppScriptIO/databaseUtility#semver:^1.x.x"
-    "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^1.x.x"
-    "@dependency/moduleContext" "https://github.com/AppScriptIO/moduleContext#semver:^1.x.x"
-    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
     "@dependency/promiseProperRace" "https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x"
-    "@dependency/prototypeChainDebug" "https://github.com/AppScriptIO/prototypeChainDebug#semver:^1.x.x"
     neo4j-driver "^1.7.5"
     redisgraph.js "^1.1.4"
-    rethinkdb "*"
-    uuid "^3.3.2"
+    uuid "*"
+
+"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
+  version "1.2.14"
+  resolved "https://github.com/AppScriptIO/graphTraversal#10a462a28ad1013f7d5d4a2bcb2caf110873e28a"
+  dependencies:
+    "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^1.x.x"
+    "@dependency/graphTraversal-implementation" "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^1.x.x"
+    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
 
 "@dependency/installNodeJSModule@http://github.com/AppScriptIO/installNodeJSModule#semver:^1.x.x":
   version "1.0.2"
@@ -1120,10 +1102,6 @@
   version "1.0.2"
   resolved "http://github.com/AppScriptIO/listDirectoryContent#d6c71ec86993e95892ff2f94bde12d089843dbb8"
 
-"@dependency/moduleContext@https://github.com/AppScriptIO/moduleContext#semver:^1.x.x":
-  version "1.0.2"
-  resolved "https://github.com/AppScriptIO/moduleContext#cd861fad6aab37978daa4ecbf35d1064970af029"
-
 "@dependency/moduleScopePattern@https://github.com/AppScriptIO/moduleScopePattern#semver:^1.x.x":
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/moduleScopePattern#82c3ee40de9a3e8bb5fe137b1337e27863266e90"
@@ -1134,10 +1112,6 @@
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
   version "1.0.9"
   resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#a769c94170954ef8745f6ad3544d2ee3e7968065"
-
-"@dependency/namedCurry@https://github.com/AppScriptIO/namedCurry#semver:^1.x.x":
-  version "1.0.2"
-  resolved "https://github.com/AppScriptIO/namedCurry#6b68af527dcf4ca139ada497e7206b31d5acc6ff"
 
 "@dependency/nodejsLiveReload@git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x":
   version "1.0.3"
@@ -1163,10 +1137,6 @@
 "@dependency/promiseProperRace@https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x":
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/promiseProperRace#72091832f41fdc59f68e834cd4e1fb5ef2f09e31"
-
-"@dependency/prototypeChainDebug@https://github.com/AppScriptIO/prototypeChainDebug#semver:^1.x.x":
-  version "1.0.3"
-  resolved "https://github.com/AppScriptIO/prototypeChainDebug#ede1fb2caf2ff3c8ba45d48bf54c1157c2975b4b"
 
 "@dependency/recursiveCreateDirectory@https://github.com/AppScriptIO/recursiveCreateDirectory#semver:^1.x.x":
   version "1.0.2"
@@ -6825,11 +6795,6 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mixwith@*:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/mixwith/-/mixwith-0.1.1.tgz#c8995918c5b61fbfda9ad377a857cd47750541c0"
-  integrity sha1-yJlZGMW2H7/amtN3qFfNR3UFQcA=
-
 mkdirp@*, mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
@@ -7981,11 +7946,6 @@ progress@^2.0.0:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-promise-events@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/promise-events/-/promise-events-0.1.6.tgz#e02deb6d35de64f65de7dfd5b167864569c49e13"
-  integrity sha512-DD49dV22rZRttJbX7tpYU4I+kJoe6M1qShRV0EiaLnp6waHhdx9oDbgcspUZl0cOtyT/YnKZqJVUsf05pqFCrQ==
-
 promise-polyfill@^6.0.1:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-6.1.0.tgz#dfa96943ea9c121fca4de9b5868cb39d3472e057"
@@ -8497,7 +8457,7 @@ ret@~0.1.10:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
-rethinkdb@*, rethinkdb@^2.3.3:
+rethinkdb@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/rethinkdb/-/rethinkdb-2.3.3.tgz#3dc6586e22fa1dabee0d254e64bd0e379fad2f72"
   integrity sha1-PcZYbiL6HavuDSVOZL0ON5+tL3I=
@@ -9943,7 +9903,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.2.1, uuid@^3.3.2:
+uuid@*, uuid@^3.2.1, uuid@^3.3.2:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
