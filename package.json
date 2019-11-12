@@ -13,6 +13,7 @@
 	],
 	"private": true,
 	"dependencies": {
+		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^1.x.x",
 		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
 		"@dependency/deploymentProvisioning": "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x",
 		"@dependency/entity": "https://github.com/AppScriptIO/entity#semver:^1.x.x",
