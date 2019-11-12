@@ -923,7 +923,7 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
-"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
+"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.0.17":
   version "1.0.18"
   resolved "https://github.com/AppScriptIO/buildTool#deeb2873393c3aa4991d28965b5619c947819bc5"
   dependencies:
