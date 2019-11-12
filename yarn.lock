@@ -999,8 +999,8 @@
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
 "@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^1.x.x":
-  version "1.0.1"
-  resolved "https://github.com/AppScriptIO/graphTraversal-implementation#efa994a12bb975a4735888c0ad615bbae16d3160"
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/graphTraversal-implementation#9ad0ad1d93f5b502d8750133f013970435981160"
   dependencies:
     "@dependency/promiseProperRace" "https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x"
     neo4j-driver "^1.7.5"
@@ -1285,9 +1285,9 @@
     "@types/chai" "*"
 
 "@types/chai@*":
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.4.tgz#8936cffad3c96ec470a2dc26a38c3ba8b9b6f619"
-  integrity sha512-7qvf9F9tMTzo0akeswHPGqgUx/gIaJqrOEET/FCD8CFRkSUHlygQiM5yB6OvjrtdxBVLSyw7COJubsFYs0683g==
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.5.tgz#f8da153ebbe30babb0adc9a528b9ad32be3175a2"
+  integrity sha512-YvbLiIc0DbbhiANrfVObdkLEHJksQZVq0Uvfg550SRAKVYaEJy+V70j65BVe2WNp6E3HtKsUczeijHFCjba3og==
 
 "@types/chalk@^0.4.30":
   version "0.4.31"
@@ -9722,9 +9722,9 @@ uglify-js@3.4.x:
     source-map "~0.6.1"
 
 uglify-js@^3.0.5, uglify-js@^3.5.1:
-  version "3.6.8"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.6.8.tgz#5edcbcf9d49cbb0403dc49f856fe81530d65145e"
-  integrity sha512-XhHJ3S3ZyMwP8kY1Gkugqx3CJh2C3O0y8NPiSxtm1tyD/pktLAkFZsFGpuNfTZddKDQ/bbDBLAd2YyA1pbi8HQ==
+  version "3.6.9"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.6.9.tgz#85d353edb6ddfb62a9d798f36e91792249320611"
+  integrity sha512-pcnnhaoG6RtrvHJ1dFncAe8Od6Nuy30oaJ82ts6//sGSXOP5UjBMEthiProjXmMNHOfd93sqlkztifFMcb+4yw==
   dependencies:
     commander "~2.20.3"
     source-map "~0.6.1"
