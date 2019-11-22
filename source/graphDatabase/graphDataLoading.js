@@ -38,7 +38,13 @@ export async function loadGraphDataFromFile({ api /**scriptManager api*/, should
 }
 
 // Relies on the interface for concrete database plugins of graphTraversal module.
-export async function exportAllGraphData({ api, targetPath = './test/asset/', fileName = 'graphData.exported.json', url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
+export async function exportAllGraphData({
+  api,
+  targetPath = './test/asset/',
+  fileName = 'graphData.exported.json',
+  url = { protocol: 'bolt', hostname: 'localhost', port: 7687 },
+  fixGraphData = true,
+} = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
     implementationList: { boltCypherModelAdapter: database.boltCypherModelAdapterFunction({ url, schemeReference }) },
     defaultImplementation: 'boltCypherModelAdapter',
@@ -53,6 +59,8 @@ export async function exportAllGraphData({ api, targetPath = './test/asset/', fi
   if (!existsSync(exportPath)) mkdirSync(exportPath, { recursive: true }) // create base directory if it doesn't exist
   await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
   console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
+
+  if (fixGraphData) await fixJSONData({ api, targetPath, fileName, url }) // For nodes laking keys, generate random keys.
 
   concereteDatabase.driverInstance.close()
 }
@@ -118,10 +126,6 @@ export async function fixJSONData({ api, targetPath = './resource/', exportedFil
       item.properties.key = uuidv4()
     }
     return item
-  })
-
-  graphData.edge = graphData.edge.map(edge => {
-    return edge
   })
 
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath, exportedFileName))
