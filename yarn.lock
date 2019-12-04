@@ -923,7 +923,7 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
-"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:^1.x.x":
+"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:1.0.24":
   version "1.0.24"
   resolved "https://github.com/AppScriptIO/buildTool#22085dad85725335e780c067eabcc6368da06c24"
   dependencies:
@@ -987,8 +987,9 @@
     vinyl-fs "*"
     which "*"
 
-"@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
+"@dependency/entity@https://github.com/AppScriptIO/entity#semver:1.0.8", "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
   version "1.0.8"
+  uid a0286c78200087befa3787fdb926440b0b654cf6
   resolved "https://github.com/AppScriptIO/entity#a0286c78200087befa3787fdb926440b0b654cf6"
   dependencies:
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
@@ -998,16 +999,18 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
-"@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x":
+"@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:2.0.1", "@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x":
   version "2.0.1"
+  uid dffabfbe55c9912970f111f563356e4d06f82a19
   resolved "https://github.com/AppScriptIO/graphTraversal-implementation#dffabfbe55c9912970f111f563356e4d06f82a19"
   dependencies:
     neo4j-driver "^1.7.5"
     redisgraph.js "^1.1.4"
     uuid "*"
 
-"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^2.x.x":
+"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:2.0.1", "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^2.x.x":
   version "2.0.1"
+  uid "866787504d1ea98c50e0229c2f7157aeca762dbd"
   resolved "https://github.com/AppScriptIO/graphTraversal#866787504d1ea98c50e0229c2f7157aeca762dbd"
   dependencies:
     "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^1.x.x"
