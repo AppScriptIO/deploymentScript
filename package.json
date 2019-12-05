@@ -1,7 +1,7 @@
 {
 	"name": "@dependency/deploymentScript",
 	"main": "./entrypoint/programmaticAPI",
-	"version": "1.2.25",
+	"version": "1.2.26",
 	"scripts": {
 		"upgrade": "echo 'Upgrading also workspaces'; yarn workspaces run upgrade",
 		"postinstall": "yarn workspaces run install # always install workspaces, even as a when this module is used as a dependency # important: must be registered on post install, as some package rely on scriptManager binary during installation",
@@ -13,11 +13,11 @@
 	],
 	"private": true,
 	"dependencies": {
-		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:1.0.24",
+		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^1.x.x",
 		"@dependency/deploymentProvisioning": "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x",
-		"@dependency/entity": "https://github.com/AppScriptIO/entity#semver:1.0.8",
-		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:2.0.1",
-		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:2.0.1",
+		"@dependency/entity": "https://github.com/AppScriptIO/entity#semver:^1.x.x",
+		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^2.x.x",
+		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x",
 		"@dependency/javascriptTestRunner": "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x",
 		"@dependency/nodejsLiveReload": "git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x",
 		"apollo-cache-inmemory": "*",
