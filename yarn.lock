@@ -923,9 +923,9 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/addModuleResolutionPath#fa351d3da0d496bf34831d840c5e30be2ab8defe"
 
-"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:1.0.27":
-  version "1.0.27"
-  resolved "https://github.com/AppScriptIO/buildTool#c64df9fec47592d3594d2184588f6f864551254d"
+"@dependency/buildTool@https://github.com/AppScriptIO/buildTool#semver:1.0.28":
+  version "1.0.28"
+  resolved "https://github.com/AppScriptIO/buildTool#e7f601a5b051824455bad62ab3aa2c19739a7cd1"
   dependencies:
     "@dependency/deploymentProvisioning" "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x"
     "@dependency/fragmentIndentationObjectStream" "https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x"
@@ -987,15 +987,9 @@
     vinyl-fs "*"
     which "*"
 
-"@dependency/entity@https://github.com/AppScriptIO/entity#semver:1.0.11":
-  version "1.0.11"
-  resolved "https://github.com/AppScriptIO/entity#a9ce5746ff50429ec48734604d78c4887fc4a5b9"
-  dependencies:
-    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:1.0.15"
-    lodash "^4.17.11"
-
-"@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
+"@dependency/entity@https://github.com/AppScriptIO/entity#semver:1.0.13", "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
   version "1.0.13"
+  uid "80bf66240a0fc6a26397928548186d72adda3543"
   resolved "https://github.com/AppScriptIO/entity#80bf66240a0fc6a26397928548186d72adda3543"
   dependencies:
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
@@ -1016,17 +1010,9 @@
     redisgraph.js "^1.1.4"
     uuid "*"
 
-"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:2.0.3":
-  version "2.0.3"
-  resolved "https://github.com/AppScriptIO/graphTraversal#31130419a086c719541acffad0cb23f84ef39aee"
-  dependencies:
-    "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^1.x.x"
-    "@dependency/graphTraversal-implementation" "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x"
-    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
-    "@dependency/promiseProperRace" "https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x"
-
-"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^2.x.x":
+"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:2.0.4", "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^2.x.x":
   version "2.0.4"
+  uid "0163fb9c90c6c348239f65eeca5c1cbb1c10c073"
   resolved "https://github.com/AppScriptIO/graphTraversal#0163fb9c90c6c348239f65eeca5c1cbb1c10c073"
   dependencies:
     "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^1.x.x"
@@ -1127,10 +1113,6 @@
   dependencies:
     "@dependency/recursiveCreateDirectory" "https://github.com/AppScriptIO/recursiveCreateDirectory#semver:^1.x.x"
     del "^3.0.0"
-
-"@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:1.0.15":
-  version "1.0.15"
-  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#054481e8228dc836f93d65b3790d66a7dba3c50c"
 
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
   version "1.0.16"
