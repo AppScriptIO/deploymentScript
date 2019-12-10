@@ -23,8 +23,7 @@ export async function loadGraphDataFromFile({ api /**scriptManager api*/, should
     implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
-  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.$.getInstanceOf](Database)
-  let concereteDatabase = concereteDatabaseInstance[Database.$.key.getter]()
+  let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
 
   assert(graphDataFilePath, `• graphDataFilePath must be passed to script - ${graphDataFilePath}`)
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
@@ -48,8 +47,7 @@ export async function exportAllGraphData({
     implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
-  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.$.getInstanceOf](Database)
-  let concereteDatabase = concereteDatabaseInstance[Database.$.key.getter]()
+  let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
 
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
@@ -69,8 +67,7 @@ export async function exportSpecificGraphData({ api, targetPath = './test/asset/
     implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
-  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.$.getInstanceOf](Database)
-  let concereteDatabase = concereteDatabaseInstance[Database.$.key.getter]()
+  let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
 
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
@@ -138,8 +135,7 @@ export async function clearDatabase({ concereteDatabase, url = { protocol: 'bolt
       implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
       defaultImplementation: 'boltCypherModelAdapter',
     })
-    let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.$.getInstanceOf](Database)
-    concereteDatabase = concereteDatabaseInstance[Database.$.key.getter]()
+    concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
   }
 
   // Delete all nodes in the in-memory database
