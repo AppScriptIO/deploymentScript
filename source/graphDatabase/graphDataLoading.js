@@ -10,7 +10,7 @@ import { file } from 'babel-types'
 const uuidv4 = require('uuid/v4')
 
 // remove duplicate objects from array using the identity property to check equality
-function removeArrayDuplicateEdgeObject(array) {
+function removeArrayDuplicateObjectByIdentity(array) {
   let unique = []
   array.forEach(item => {
     if (!unique.some(i => i.identity == item.identity)) unique.push(item)
@@ -51,6 +51,7 @@ export async function exportAllGraphData({
 
   const targetProjectRootPath = api.project.configuration.configuration.directory.root
   const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
+
   let graphData = { node: await concereteDatabase.getAllNode(), edge: await concereteDatabase.getAllEdge() } |> JSON.stringify
 
   if (!existsSync(exportPath)) mkdirSync(exportPath, { recursive: true }) // create base directory if it doesn't exist
@@ -59,6 +60,61 @@ export async function exportAllGraphData({
 
   if (fixGraphData) await fixJSONData({ api, targetPath, exportedFileName: fileName, targetFileName: fileName, url }) // For nodes laking keys, generate random keys.
 
+  concereteDatabase.driverInstance.close()
+}
+
+// Export subgraphs through specifying entrypoints which will recursively traverse through neighboring nodes and add them.
+export async function exportSubgraphData({
+  api,
+  subgraphEntryNodeKeyList = [],
+  targetPath = './test/asset/',
+  fileName = 'specific.exported.json',
+  url = { protocol: 'bolt', hostname: 'localhost', port: 7687 },
+} = {}) {
+  let concreteDatabaseBehavior = new Database.clientInterface({
+    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
+    defaultImplementation: 'boltCypherModelAdapter',
+  })
+  let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
+
+  const targetProjectRootPath = api.project.configuration.configuration.directory.root
+  const exportPath = path.normalize(path.join(targetProjectRootPath, targetPath))
+
+  // convert key to identity of node
+  let subgraphEntryNodeIdentityList = new Set()
+  for (let key of subgraphEntryNodeKeyList) subgraphEntryNodeIdentityList.add((await concereteDatabase.getNodeByKey({ key })).identity)
+
+  let exportNodeList = new Set(),
+    exportEdgeList = new Set()
+
+  // get the connections between the nodes
+  let hashTraversedNode = new Set()
+  async function addRelatedNode(nodeArray) {
+    for (let identity of nodeArray) {
+      if (!hashTraversedNode.has(identity)) {
+        hashTraversedNode.add(identity)
+
+        let connectionArray = await concereteDatabase.getNodeConnection({ nodeID: identity })
+        exportEdgeList = new Set([...exportEdgeList, ...connectionArray.map(result => result.connection.identity) /** get the connections only without the destination and source nodes */])
+
+        let nextNodeArray = new Set(
+          [...connectionArray.map(result => result.destination.identity), ...connectionArray.map(result => result.source.identity)].filter(identity => !nodeArray.has(identity)),
+        )
+
+        await addRelatedNode(nextNodeArray)
+      }
+      exportNodeList.add(identity)
+    }
+  }
+
+  await addRelatedNode(subgraphEntryNodeIdentityList)
+
+  let exportNode = (await concereteDatabase.getAllNode()).filter(node => exportNodeList.has(node.identity)),
+    exportEdge = (await concereteDatabase.getAllEdge()).filter(edge => exportEdgeList.has(edge.identity))
+
+  let graphData = { node: exportNode, edge: exportEdge } |> JSON.stringify
+  await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
+  console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
   concereteDatabase.driverInstance.close()
 }
 
@@ -88,10 +144,11 @@ export async function exportSpecificGraphData({ api, targetPath = './test/asset/
     queryResultArray = queryResultArray.map(result => result.connection) // get the connections only without the destination and source nodes
     edgeArray = [...edgeArray, ...queryResultArray]
   }
+
   // filter edges of the specific nodes only
   edgeArray = edgeArray.filter(edge => nodeArray.some(node => node.identity == edge.start) && nodeArray.some(node => node.identity == edge.end))
   // filter duplicates
-  edgeArray = removeArrayDuplicateEdgeObject(edgeArray)
+  edgeArray = removeArrayDuplicateObjectByIdentity(edgeArray)
 
   let graphData = { node: nodeArray, edge: edgeArray } |> JSON.stringify
   await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
