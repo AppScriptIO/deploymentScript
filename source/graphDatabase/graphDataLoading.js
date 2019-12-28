@@ -115,6 +115,8 @@ export async function exportSubgraphData({
   let graphData = { node: exportNode, edge: exportEdge } |> JSON.stringify
   await filesystem.writeFile(path.join(exportPath, fileName), graphData, { encoding: 'utf8', flag: 'w' /*tructace file if exists and create a new one*/ })
   console.log(`• Created json file - ${path.join(exportPath, fileName)}`)
+
+  if (fixGraphData) await fixJSONData({ api, targetPath, exportedFileName: fileName, targetFileName: fileName, url }) // For nodes laking keys, generate random keys.
   concereteDatabase.driverInstance.close()
 }
 
