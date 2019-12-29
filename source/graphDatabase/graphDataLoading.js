@@ -70,6 +70,7 @@ export async function exportSubgraphData({
   targetPath = './test/asset/',
   fileName = 'specific.exported.json',
   url = { protocol: 'bolt', hostname: 'localhost', port: 7687 },
+  fixGraphData = true,
 } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
     implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
