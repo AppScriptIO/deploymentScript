@@ -4,7 +4,7 @@ import path from 'path'
 import assert from 'assert'
 import { promises as filesystem, existsSync, mkdirSync } from 'fs'
 import { Entity } from '@dependency/entity'
-import { Database, schemeReference } from '@dependency/graphTraversal'
+import { Database } from '@dependency/graphTraversal'
 import * as implementation from '@dependency/graphTraversal-implementation'
 import { file } from 'babel-types'
 const uuidv4 = require('uuid/v4')
@@ -20,7 +20,7 @@ function removeArrayDuplicateObjectByIdentity(array) {
 
 export async function loadGraphDataFromFile({ api /**scriptManager api*/, shouldClearDatabase = false, graphDataFilePath, url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
-    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
+    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
   let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
@@ -44,7 +44,7 @@ export async function exportAllGraphData({
   fixGraphData = true,
 } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
-    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
+    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
   let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
@@ -73,7 +73,7 @@ export async function exportSubgraphData({
   fixGraphData = true,
 } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
-    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
+    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
   let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
@@ -123,7 +123,7 @@ export async function exportSubgraphData({
 
 export async function exportSpecificGraphData({ api, targetPath = './test/asset/', fileName = 'specific.exported.json', url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } } = {}) {
   let concreteDatabaseBehavior = new Database.clientInterface({
-    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
+    implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
   let concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
@@ -192,7 +192,7 @@ export async function fixJSONData({ api, targetPath = './resource/', exportedFil
 export async function clearDatabase({ concereteDatabase, url = { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) {
   if (!concereteDatabase) {
     let concreteDatabaseBehavior = new Database.clientInterface({
-      implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url, schemeReference }) },
+      implementationList: { boltCypherModelAdapter: implementation.database.boltCypherModelAdapterFunction({ url }) },
       defaultImplementation: 'boltCypherModelAdapter',
     })
     concereteDatabase = concreteDatabaseBehavior[Database.$.key.getter]()
