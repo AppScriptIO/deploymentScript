@@ -1009,9 +1009,18 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
-"@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:2.0.2", "@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x":
+"@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:4.x.x", "@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x":
+  version "4.1.1"
+  uid c5ba81fe08d1b781a50c7a64e9badc377bf34aaf
+  resolved "https://github.com/AppScriptIO/graphTraversal-implementation#c5ba81fe08d1b781a50c7a64e9badc377bf34aaf"
+  dependencies:
+    neo4j-driver "^1.7.5"
+    redisgraph.js "^1.1.4"
+    underscore "*"
+    uuid "*"
+
+"@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x":
   version "2.0.2"
-  uid "6f210f60a274b8c1513dd179a1a5b854bb6e481f"
   resolved "https://github.com/AppScriptIO/graphTraversal-implementation#6f210f60a274b8c1513dd179a1a5b854bb6e481f"
   dependencies:
     neo4j-driver "^1.7.5"
@@ -1026,6 +1035,16 @@
     "@dependency/graphTraversal-implementation" "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^2.x.x"
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
     "@dependency/promiseProperRace" "https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x"
+
+"@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:4.x.x":
+  version "4.1.5"
+  resolved "https://github.com/AppScriptIO/graphTraversal#f1657001e4943cd4fef899a5aff204abcd0d940c"
+  dependencies:
+    "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^1.x.x"
+    "@dependency/graphTraversal-implementation" "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x"
+    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
+    "@dependency/promiseProperRace" "https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x"
+    underscore "^1.9.1"
 
 "@dependency/installNodeJSModule@http://github.com/AppScriptIO/installNodeJSModule#semver:^1.x.x":
   version "1.0.2"
@@ -9748,6 +9767,11 @@ unc-path-regex@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
   integrity sha1-5z3T17DXxe2G+6xrCufYxqadUPo=
+
+underscore@*, underscore@^1.9.1:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.2.tgz#0c8d6f536d6f378a5af264a72f7bec50feb7cf2f"
+  integrity sha512-D39qtimx0c1fI3ya1Lnhk3E9nONswSKhnffBI0gME9C99fYOkNi04xs8K6pePLhvl1frbDemkaBQ5ikWllR2HQ==
 
 undertaker-registry@^1.0.0:
   version "1.0.1"
