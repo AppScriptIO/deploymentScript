@@ -25,6 +25,7 @@
 		"apollo-link": "*",
 		"apollo-link-error": "*",
 		"apollo-link-http": "*",
+		"dockerode": "^3.0.2",
 		"fs-extra": "*",
 		"git-url-parse": "^*",
 		"graphql": "*",
