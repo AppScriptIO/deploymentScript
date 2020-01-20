@@ -3,8 +3,8 @@ import assert from 'assert'
 import filesystem from 'fs'
 import EventEmitter from 'events'
 import childProcess from 'child_process'
-import { watchFile } from '@dependency/nodejsLiveReload'
-import { browserLivereload } from '@dependency/nodejsLiveReload'
+import { watchFile, browserLivereload } from '@dependency/nodejsLiveReload'
+const { resolveAndLookupFile } = require('@dependency/resolveAndLookupPath')
 
 function setInterval({ interval = 1000 } = {}) {
   // (function endlessProcess() { process.nextTick(endlessProcess) })() // Readable solution but it utilizes all available CPU. https://stackoverflow.com/questions/39082527/how-to-prevent-the-nodejs-event-loop-from-exiting

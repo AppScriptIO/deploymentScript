@@ -1,4 +1,5 @@
-const { runTest, resolveAndLookupFile } = require('@dependency/javascriptTestRunner')
+const { runTest } = require('@dependency/javascriptTestRunner')
+const { resolveAndLookupFile } = require('@dependency/resolveAndLookupPath')
 import { watchFile } from '@dependency/nodejsLiveReload'
 
 module.exports = async function({
