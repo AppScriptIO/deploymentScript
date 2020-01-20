@@ -42,9 +42,8 @@ class ManageSubprocess extends EventEmitter {
         ],
       })
       .on('exit', () => console.log(`subprocess ${this.subprocess.pid} exited.`))
-      .on('message', m => {
-        console.log(m)
-        this.emit('stateReady')
+      .on('message', message => {
+        if (message?.status == 'ready') this.emit('ready')
       })
       .on('close', code => {
         if (code === 8) console.error('Error detected, waiting for changes.')
@@ -72,8 +71,10 @@ module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
   assert(rootServiceConfig, `Root service must be configured in the projects apiGateway configuration.`)
   let targetServiceHost = api.project.configuration.configuration?.runtimeVariable?.HOST
   assert(targetServiceHost, `HOST runtime variable must be configured in the project's runtimeVariable configuration.`)
+  let clientSideProjectConfigList = api.project.configuration.configuration?.clientSideProjectConfigList
+  assert(clientSideProjectConfigList, `clientSideProjectConfigList must be configured in the project's configuration.`)
 
-  let { restart: restartBrowser } = await browserLivereload({
+  let { restart: reloadBrowserClient } = await browserLivereload({
     targetProject: api.project /*adapter for working with target function interface.*/,
     rootServicePort: rootServiceConfig.port,
     rootServiceHost: targetServiceHost,
@@ -82,7 +83,7 @@ module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
   // run application.
   let manageSubprocess = new ManageSubprocess({ cliAdapterPath: path.join(api.project.configuration.rootPath, 'entrypoint/cli') })
   manageSubprocess.runInSubprocess()
-  manageSubprocess.on('stateReady', () => restartBrowser())
+  manageSubprocess.on('ready', () => reloadBrowserClient()) // reload browser after server reload
 
   // File list to watch - Uses globs array for defining files patterns - https://github.com/isaacs/node-glob
   const watchFileList_clientSide = [
@@ -113,8 +114,16 @@ module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
     triggerCallback: () => {
       manageSubprocess.runInSubprocess()
     },
-    // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
-    fileArray: [path.join(api.project.configuration.rootPath, 'source')] || watchFileList_serverSide,
+    fileArray: [path.join(api.project.configuration.rootPath, 'source')],
+    ignoreNodeModules: true,
+    logMessage: true,
+  })
+
+  const clientSidePathList = clientSideProjectConfigList.map(item => item.path)
+  await watchFile({
+    // to be run after file notification
+    triggerCallback: () => reloadBrowserClient(), // reload browsers
+    fileArray: [...clientSidePathList],
     ignoreNodeModules: true,
     logMessage: true,
   })
