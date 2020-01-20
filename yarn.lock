@@ -992,13 +992,13 @@
     vinyl-fs "*"
 
 "@dependency/configurationManagement@http://github.com/AppScriptIO/configurationManagement#semver:^1.x.x":
-  version "1.0.4"
-  uid "4b9ba191b7f9d1fbcfad46978d6c0e865852a4fe"
-  resolved "http://github.com/AppScriptIO/configurationManagement#4b9ba191b7f9d1fbcfad46978d6c0e865852a4fe"
+  version "1.0.5"
+  uid c0d6aac471cdd123000c69dcc03d26a48f693bdd
+  resolved "http://github.com/AppScriptIO/configurationManagement#c0d6aac471cdd123000c69dcc03d26a48f693bdd"
 
 "@dependency/configurationManagement@https://github.com/AppScriptIO/configurationManagement#semver:^1.x.x":
-  version "1.0.4"
-  resolved "https://github.com/AppScriptIO/configurationManagement#4b9ba191b7f9d1fbcfad46978d6c0e865852a4fe"
+  version "1.0.5"
+  resolved "https://github.com/AppScriptIO/configurationManagement#c0d6aac471cdd123000c69dcc03d26a48f693bdd"
 
 "@dependency/deploymentProvisioning@https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x":
   version "1.0.10"
@@ -1087,8 +1087,8 @@
     sinon "*"
 
 "@dependency/javascriptTranspilation@https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x":
-  version "1.2.8"
-  resolved "https://github.com/AppScriptIO/javascriptTranspilation#1c621f97390864aee61b9ed618d8c71cdcf807a9"
+  version "1.2.9"
+  resolved "https://github.com/AppScriptIO/javascriptTranspilation#6e996d8a0ea6de6b934972ae4e0162bf8c804fba"
   dependencies:
     "@babel/babel-plugin-functionSentProxyImplementation" "https://github.com/AppScriptIO/babel-plugin-functionSentProxyImplementation#semver:^1.x.x"
     "@babel/cli" "*"

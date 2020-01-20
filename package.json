@@ -33,6 +33,7 @@
 		"graphql-tag": "*",
 		"jsonfile": "*",
 		"lodash": "*",
+		"neo4j-driver": "^1.7.5",
 		"nested-object-assign": "*",
 		"node-fetch": "*",
 		"node-ssh": "*",
