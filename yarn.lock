@@ -1074,8 +1074,8 @@
     typescript "^3.3.3333"
 
 "@dependency/javascriptTestRunner@https://github.com/AppScriptIO/javascriptTestRunner#semver:^1.x.x":
-  version "1.3.4"
-  resolved "https://github.com/AppScriptIO/javascriptTestRunner#ce8fb54dc47c97ada36478dc822283484d9ac645"
+  version "1.3.6"
+  resolved "https://github.com/AppScriptIO/javascriptTestRunner#f702a2a88bd34d7441fb9da029c4d24710cfbc38"
   dependencies:
     "@dependency/javascriptTranspilation" "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x"
     "@dependency/nodejsLiveReload" "https://github.com/AppScriptIO/nodejsLiveReload#semver:^2.x.x"
@@ -1144,8 +1144,8 @@
   resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#b36efb3cc5d7c807385f68aaf9521975d3251d6a"
 
 "@dependency/nodejsLiveReload@https://github.com/AppScriptIO/nodejsLiveReload#semver:^2.x.x":
-  version "2.0.2"
-  resolved "https://github.com/AppScriptIO/nodejsLiveReload#e6c50614530853a36e59c01e62ef4b799d28d782"
+  version "2.0.3"
+  resolved "https://github.com/AppScriptIO/nodejsLiveReload#0426a961f4d35e6e9079a6605c6d9e81f2a35a8b"
   dependencies:
     browser-sync "*"
     chokidar "*"
