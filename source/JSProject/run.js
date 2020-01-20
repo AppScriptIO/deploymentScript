@@ -1,108 +1,109 @@
-import path from 'path'
-import assert from 'assert'
-import filesystem from 'fs'
-import { watchFile, browserLivereload, ManageSubprocess } from '@dependency/nodejsLiveReload'
-const { resolveAndLookupFile } = require('@dependency/resolveAndLookupPath')
-const boltProtocolDriver = require('neo4j-driver').v1
-import { memgraphContainer } from '@dependency/deploymentProvisioning'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");var _path = _interopRequireDefault(require("path"));
+var _assert = _interopRequireDefault(require("assert"));
+
+var _nodejsLiveReload = require("@dependency/nodejsLiveReload");
+
+
+var _deploymentProvisioning = require("@dependency/deploymentProvisioning");const { resolveAndLookupFile } = require('@dependency/resolveAndLookupPath');const boltProtocolDriver = require('neo4j-driver').v1;
 
 async function clearGraphData() {
-  console.groupCollapsed('• Run prerequisite containers:')
-  memgraphContainer.runDockerContainer() // temporary solution
-  console.groupEnd()
-  // Delete all nodes in the in-memory database
-  console.log('• Cleared graph database.')
+  console.groupCollapsed('• Run prerequisite containers:');
+  _deploymentProvisioning.memgraphContainer.runDockerContainer();
+  console.groupEnd();
+
+  console.log('• Cleared graph database.');
   const url = { protocol: 'bolt', hostname: 'localhost', port: 7687 },
-    authentication = { username: 'neo4j', password: 'test' }
-  const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password))
-  let session = await graphDBDriver.session()
-  let result = await session.run(`match (n) detach delete n`)
-  session.close()
+  authentication = { username: 'neo4j', password: 'test' };
+  const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password));
+  let session = await graphDBDriver.session();
+  let result = await session.run(`match (n) detach delete n`);
+  session.close();
 }
 
 function setInterval({ interval = 1000 } = {}) {
-  // (function endlessProcess() { process.nextTick(endlessProcess) })() // Readable solution but it utilizes all available CPU. https://stackoverflow.com/questions/39082527/how-to-prevent-the-nodejs-event-loop-from-exiting
-  console.log(`Executing interval in ${__filename}. NodeJS version: ${JSON.stringify(process.versions)}`)
-  setInterval(() => console.info('Sleeping...'), interval)
+
+  console.log(`Executing interval in ${__filename}. NodeJS version: ${JSON.stringify(process.versions)}`);
+  setInterval(() => console.info('Sleeping...'), interval);
 }
-const setTimeout = ({ timeout = 10000 } = {}) => setTimeout(() => console.log('setTimeout command ended. The process will exit now.'), timeout)
+const setTimeout = ({ timeout = 10000 } = {}) => setTimeout(() => console.log('setTimeout command ended. The process will exit now.'), timeout);
 
-/*
-  Run webapp project: 
 
-  Takes into consideration: 
-    - debugger
-    - livereload
 
-  Algorithm: 
-    - watch files of different groups.
-    - start webapp application server.
-    - start browser proxy livereload server. 
-    - register watch actions: affected groups result in reloading of server &/or browser.
-*/
-module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
-  let rootServiceConfig = api.project.configuration.configuration?.apiGateway?.service.find(item => item.subdomain == null /*Root service*/)
-  assert(rootServiceConfig, `Root service must be configured in the projects apiGateway configuration.`)
-  let targetServiceHost = api.project.configuration.configuration?.runtimeVariable?.HOST
-  assert(targetServiceHost, `HOST runtime variable must be configured in the project's runtimeVariable configuration.`)
-  let clientSideProjectConfigList = api.project.configuration.configuration?.clientSideProjectConfigList
-  assert(clientSideProjectConfigList, `clientSideProjectConfigList must be configured in the project's configuration.`)
 
-  let { restart: reloadBrowserClient } = await browserLivereload({
-    targetProject: api.project /*adapter for working with target function interface.*/,
+
+
+
+
+
+
+
+
+
+
+module.exports = async function ({ api } = {}) {var _api$project$configur, _api$project$configur2, _api$project$configur3, _api$project$configur4, _api$project$configur5;
+  let rootServiceConfig = (_api$project$configur = api.project.configuration.configuration) === null || _api$project$configur === void 0 ? void 0 : (_api$project$configur2 = _api$project$configur.apiGateway) === null || _api$project$configur2 === void 0 ? void 0 : _api$project$configur2.service.find(item => item.subdomain == null);
+  (0, _assert.default)(rootServiceConfig, `Root service must be configured in the projects apiGateway configuration.`);
+  let targetServiceHost = (_api$project$configur3 = api.project.configuration.configuration) === null || _api$project$configur3 === void 0 ? void 0 : (_api$project$configur4 = _api$project$configur3.runtimeVariable) === null || _api$project$configur4 === void 0 ? void 0 : _api$project$configur4.HOST;
+  (0, _assert.default)(targetServiceHost, `HOST runtime variable must be configured in the project's runtimeVariable configuration.`);
+  let clientSideProjectConfigList = (_api$project$configur5 = api.project.configuration.configuration) === null || _api$project$configur5 === void 0 ? void 0 : _api$project$configur5.clientSideProjectConfigList;
+  (0, _assert.default)(clientSideProjectConfigList, `clientSideProjectConfigList must be configured in the project's configuration.`);
+
+  let { restart: reloadBrowserClient } = await (0, _nodejsLiveReload.browserLivereload)({
+    targetProject: api.project,
     rootServicePort: rootServiceConfig.port,
-    rootServiceHost: targetServiceHost,
-  })
+    rootServiceHost: targetServiceHost });
 
-  let manageSubprocess = new ManageSubprocess({ cliAdapterPath: path.join(api.project.configuration.rootPath, 'entrypoint/cli') })
-  manageSubprocess.on('ready', () => reloadBrowserClient()) // reload browser after server reload
 
-  // run application:
-  await clearGraphData() // run prerequesite container and clear graph
-  manageSubprocess.runInSubprocess()
+  let manageSubprocess = new _nodejsLiveReload.ManageSubprocess({ cliAdapterPath: _path.default.join(api.project.configuration.rootPath, 'entrypoint/cli') });
+  manageSubprocess.on('ready', () => reloadBrowserClient());
+
+
+  await clearGraphData();
+  manageSubprocess.runInSubprocess();
 
   const watchFileList_serverSide = [
-    '/project/application/source/serverSide/**/*.js',
-    // '/project/application/source/serverSide/**/*.css',
-    // '/project/application/source/serverSide/**/*.html',
-    // '/project/application/source/serverSide/node_modules/appscript{/**/*.js,!/node_modules/**/*}',
-    '!/project/application/source/serverSide/node_modules{,/**/*,!/appscript/**/*}',
-    // '!/project/application/source/serverSide/node_modules/appscript/node_modules{,/**/*}',
-  ] // equals to '!/app/{node_modules,node_modules/**/*}'
+  '/project/application/source/serverSide/**/*.js',
 
-  await watchFile({
-    // to be run after file notification
+
+
+  '!/project/application/source/serverSide/node_modules{,/**/*,!/appscript/**/*}'];
+
+
+
+  await (0, _nodejsLiveReload.watchFile)({
+
     triggerCallback: async () => {
-      await clearGraphData()
-      manageSubprocess.runInSubprocess()
+      await clearGraphData();
+      manageSubprocess.runInSubprocess();
     },
-    fileArray: [path.join(api.project.configuration.rootPath, 'source')],
+    fileArray: [_path.default.join(api.project.configuration.rootPath, 'source')],
     ignoreNodeModules: true,
-    logMessage: true,
-  })
+    logMessage: true });
 
-  // File list to watch - Uses globs array for defining files patterns - https://github.com/isaacs/node-glob
-  // TODO: use resolveAndLookupFile function
+
+
+
   const watchFileList_clientSide = [
-    // TODO: there is an issue when specifying multiple paths, for some reason it doesn't watch all files when separately configured, while watching all files without distinction is possible. Maybe an issue with glob strings
-    // not working when separated.
-    // '/project/application/source/clientSide/**/*.css',
-    // '/project/application/source/clientSide/**/*.html',
-    // '/project/application/source/clientSide/**/*.js',
 
-    // the following works.
-    '/project/application/source/clientSide/**/*',
-    '!/project/application/source/clientSide/**/node_modules/**/*',
-    '!/project/application/source/clientSide/**/component.package/**/*',
-    '!/project/application/source/clientSide/**/js.package.yarn/**/*',
-  ] // equals to '!/project/application/source/{node_modules,node_modules/**/*}'
 
-  const clientSidePathList = clientSideProjectConfigList.map(item => item.path)
-  await watchFile({
-    // to be run after file notification
-    triggerCallback: () => reloadBrowserClient(), // reload browsers
+
+
+
+
+
+  '/project/application/source/clientSide/**/*',
+  '!/project/application/source/clientSide/**/node_modules/**/*',
+  '!/project/application/source/clientSide/**/component.package/**/*',
+  '!/project/application/source/clientSide/**/js.package.yarn/**/*'];
+
+
+  const clientSidePathList = clientSideProjectConfigList.map(item => item.path);
+  await (0, _nodejsLiveReload.watchFile)({
+
+    triggerCallback: () => reloadBrowserClient(),
     fileArray: [...clientSidePathList],
     ignoreNodeModules: true,
-    logMessage: true,
-  })
-}
+    logMessage: true });
+
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvcnVuLmpzIl0sIm5hbWVzIjpbInJlc29sdmVBbmRMb29rdXBGaWxlIiwicmVxdWlyZSIsImJvbHRQcm90b2NvbERyaXZlciIsInYxIiwiY2xlYXJHcmFwaERhdGEiLCJjb25zb2xlIiwiZ3JvdXBDb2xsYXBzZWQiLCJtZW1ncmFwaENvbnRhaW5lciIsInJ1bkRvY2tlckNvbnRhaW5lciIsImdyb3VwRW5kIiwibG9nIiwidXJsIiwicHJvdG9jb2wiLCJob3N0bmFtZSIsInBvcnQiLCJhdXRoZW50aWNhdGlvbiIsInVzZXJuYW1lIiwicGFzc3dvcmQiLCJncmFwaERCRHJpdmVyIiwiZHJpdmVyIiwiYXV0aCIsImJhc2ljIiwic2Vzc2lvbiIsInJlc3VsdCIsInJ1biIsImNsb3NlIiwic2V0SW50ZXJ2YWwiLCJpbnRlcnZhbCIsIl9fZmlsZW5hbWUiLCJKU09OIiwic3RyaW5naWZ5IiwicHJvY2VzcyIsInZlcnNpb25zIiwiaW5mbyIsInNldFRpbWVvdXQiLCJ0aW1lb3V0IiwibW9kdWxlIiwiZXhwb3J0cyIsImFwaSIsInJvb3RTZXJ2aWNlQ29uZmlnIiwicHJvamVjdCIsImNvbmZpZ3VyYXRpb24iLCJhcGlHYXRld2F5Iiwic2VydmljZSIsImZpbmQiLCJpdGVtIiwic3ViZG9tYWluIiwidGFyZ2V0U2VydmljZUhvc3QiLCJydW50aW1lVmFyaWFibGUiLCJIT1NUIiwiY2xpZW50U2lkZVByb2plY3RDb25maWdMaXN0IiwicmVzdGFydCIsInJlbG9hZEJyb3dzZXJDbGllbnQiLCJ0YXJnZXRQcm9qZWN0Iiwicm9vdFNlcnZpY2VQb3J0Iiwicm9vdFNlcnZpY2VIb3N0IiwibWFuYWdlU3VicHJvY2VzcyIsIk1hbmFnZVN1YnByb2Nlc3MiLCJjbGlBZGFwdGVyUGF0aCIsInBhdGgiLCJqb2luIiwicm9vdFBhdGgiLCJvbiIsInJ1bkluU3VicHJvY2VzcyIsIndhdGNoRmlsZUxpc3Rfc2VydmVyU2lkZSIsInRyaWdnZXJDYWxsYmFjayIsImZpbGVBcnJheSIsImlnbm9yZU5vZGVNb2R1bGVzIiwibG9nTWVzc2FnZSIsIndhdGNoRmlsZUxpc3RfY2xpZW50U2lkZSIsImNsaWVudFNpZGVQYXRoTGlzdCIsIm1hcCJdLCJtYXBwaW5ncyI6ImtHQUFBO0FBQ0E7O0FBRUE7OztBQUdBLDRFQUZBLE1BQU0sRUFBRUEsb0JBQUYsS0FBMkJDLE9BQU8sQ0FBQyxrQ0FBRCxDQUF4QyxDQUNBLE1BQU1DLGtCQUFrQixHQUFHRCxPQUFPLENBQUMsY0FBRCxDQUFQLENBQXdCRSxFQUFuRDs7QUFHQSxlQUFlQyxjQUFmLEdBQWdDO0FBQzlCQyxFQUFBQSxPQUFPLENBQUNDLGNBQVIsQ0FBdUIsZ0NBQXZCO0FBQ0FDLDRDQUFrQkMsa0JBQWxCO0FBQ0FILEVBQUFBLE9BQU8sQ0FBQ0ksUUFBUjs7QUFFQUosRUFBQUEsT0FBTyxDQUFDSyxHQUFSLENBQVksMkJBQVo7QUFDQSxRQUFNQyxHQUFHLEdBQUcsRUFBRUMsUUFBUSxFQUFFLE1BQVosRUFBb0JDLFFBQVEsRUFBRSxXQUE5QixFQUEyQ0MsSUFBSSxFQUFFLElBQWpELEVBQVo7QUFDRUMsRUFBQUEsY0FBYyxHQUFHLEVBQUVDLFFBQVEsRUFBRSxPQUFaLEVBQXFCQyxRQUFRLEVBQUUsTUFBL0IsRUFEbkI7QUFFQSxRQUFNQyxhQUFhLEdBQUdoQixrQkFBa0IsQ0FBQ2lCLE1BQW5CLENBQTJCLEdBQUVSLEdBQUcsQ0FBQ0MsUUFBUyxNQUFLRCxHQUFHLENBQUNFLFFBQVMsSUFBR0YsR0FBRyxDQUFDRyxJQUFLLEVBQXhFLEVBQTJFWixrQkFBa0IsQ0FBQ2tCLElBQW5CLENBQXdCQyxLQUF4QixDQUE4Qk4sY0FBYyxDQUFDQyxRQUE3QyxFQUF1REQsY0FBYyxDQUFDRSxRQUF0RSxDQUEzRSxDQUF0QjtBQUNBLE1BQUlLLE9BQU8sR0FBRyxNQUFNSixhQUFhLENBQUNJLE9BQWQsRUFBcEI7QUFDQSxNQUFJQyxNQUFNLEdBQUcsTUFBTUQsT0FBTyxDQUFDRSxHQUFSLENBQWEsMkJBQWIs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US9CLCtDQVIrQjtBQVMvQixnRUFUK0I7QUFVL0IscUVBVitCO0FBVy9CLG1FQVgrQixDQUFqQzs7O0FBY0EsUUFBTUMsa0JBQWtCLEdBQUdwQiwyQkFBMkIsQ0FBQ3FCLEdBQTVCLENBQWdDMUIsSUFBSSxJQUFJQSxJQUFJLENBQUNjLElBQTdDLENBQTNCO0FBQ0EsUUFBTSxpQ0FBVTs7QUFFZE0sSUFBQUEsZUFBZSxFQUFFLE1BQU1iLG1CQUFtQixFQUY1QjtBQUdkYyxJQUFBQSxTQUFTLEVBQUUsQ0FBQyxHQUFHSSxrQkFBSixDQUhHO0FBSWRILElBQUFBLGlCQUFpQixFQUFFLElBSkw7QUFLZEMsSUFBQUEsVUFBVSxFQUFFLElBTEUsRUFBVixDQUFOOztBQU9ELENBakVEIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcclxuaW1wb3J0IGFzc2VydCBmcm9tICdhc3NlcnQnXHJcbmltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xyXG5pbXBvcnQgeyB3YXRjaEZpbGUsIGJyb3dzZXJMaXZlcmVsb2FkLCBNYW5hZ2VTdWJwcm9jZXNzIH0gZnJvbSAnQGRlcGVuZGVuY3kvbm9kZWpzTGl2ZVJlbG9hZCdcclxuY29uc3QgeyByZXNvbHZlQW5kTG9va3VwRmlsZSB9ID0gcmVxdWlyZSgnQGRlcGVuZGVuY3kvcmVzb2x2ZUFuZExvb2t1cFBhdGgnKVxyXG5jb25zdCBib2x0UHJvdG9jb2xEcml2ZXIgPSByZXF1aXJlKCduZW80ai1kcml2ZXInKS52MVxyXG5pbXBvcnQgeyBtZW1ncmFwaENvbnRhaW5lciB9IGZyb20gJ0BkZXBlbmRlbmN5L2RlcGxveW1lbnRQcm92aXNpb25pbmcnXHJcblxyXG5hc3luYyBmdW5jdGlvbiBjbGVhckdyYXBoRGF0YSgpIHtcclxuICBjb25zb2xlLmdyb3VwQ29sbGFwc2VkKCfigKIgUnVuIHByZXJlcXVpc2l0ZSBjb250YWluZXJzOicpXHJcbiAgbWVtZ3JhcGhDb250YWluZXIucnVuRG9ja2VyQ29udGFpbmVyKCkgLy8gdGVtcG9yYXJ5IHNvbHV0aW9uXHJcbiAgY29uc29sZS5ncm91cEVuZCgpXHJcbiAgLy8gRGVsZXRlIGFsbCBub2RlcyBpbiB0aGUgaW4tbWVtb3J5IGRhdGFiYXNlXHJcbiAgY29uc29sZS5sb2coJ+KAoiBDbGVhcmVkIGdyYXBoIGRhdGFiYXNlLicpXHJcbiAgY29uc3QgdXJsID0geyBwcm90b2NvbDogJ2JvbHQnLCBob3N0bmFtZTogJ2xvY2FsaG9zdCcsIHBvcnQ6IDc2ODcgfSxcclxuICAgIGF1dGhlbnRpY2F0aW9uID0geyB1c2VybmFtZTogJ25lbzRqJywgcGFzc3dvcmQ6ICd0ZXN0JyB9XHJcbiAgY29uc3QgZ3JhcGhEQkRyaXZlciA9IGJvbHRQcm90b2NvbERyaXZlci5kcml2ZXIoYCR7dXJsLnByb3RvY29sfTovLyR7dXJsLmhvc3RuYW1lfToke3VybC5wb3J0fWAsIGJvbHRQcm90b2NvbERyaXZlci5hdXRoLmJhc2ljKGF1dGhlbnRpY2F0aW9uLnVzZXJuYW1lLCBhdXRoZW50aWNhdGlvbi5wYXNzd29yZCkpXHJcbiAgbGV0IHNlc3Npb24gPSBhd2FpdCBncmFwaERCRHJpdmVyLnNlc3Npb24oKVxyXG4gIGxldCByZXN1bHQgPSBhd2FpdCBzZXNzaW9uLnJ1bihgbWF0Y2ggKG4pIGRldGFjaCBkZWxldGUgbmApXHJcbiAgc2Vzc2lvbi5jbG9zZSgpXHJcbn1cclxuXHJcbmZ1bmN0aW9uIHNldEludGVydmFsKHsgaW50ZXJ2YWwgPSAxMDAwIH0gPSB7fSkge1xyXG4gIC8vIChmdW5jdGlvbiBlbmRsZXNzUHJvY2VzcygpIHsgcHJvY2Vzcy5uZXh0VGljayhlbmRsZXNzUHJvY2VzcykgfSkoKSAvLyBSZWFkYWJsZSBzb2x1dGlvbiBidXQgaXQgdXRpbGl6ZXMgYWxsIGF2YWlsYWJsZSBDUFUuIGh0dHBzOi8vc3RhY2tvdmVyZmxvdy5jb20vcXVlc3Rpb25zLzM5MDgyNTI3L2hvdy10by1wcmV2ZW50LXRoZS1ub2RlanMtZXZlbnQtbG9vcC1mcm9tLWV4aXRpbmdcclxuICBjb25zb2xlLmxvZyhgRXhlY3V0aW5nIGludGVydmFsIGluICR7X19maWxlbmFtZX0uIE5vZGVKUyB2ZXJzaW9uOiAke0pTT04uc3RyaW5naWZ5KHByb2Nlc3MudmVyc2lvbnMpfWApXHJcbiAgc2V0SW50ZXJ2YWwoKCkgPT4gY29uc29sZS5pbmZvKCdTbGVlcGluZy4uLicpLCBpbnRlcnZhbClcclxufVxyXG5jb25zdCBzZXRUaW1lb3V0ID0gKHsgdGltZW91dCA9IDEwMDAwIH0gPSB7fSkgPT4gc2V0VGltZW91dCgoKSA9PiBjb25zb2xlLmxvZygnc2V0VGltZW91dCBjb21tYW5kIGVuZGVkLiBUaGUgcHJvY2VzcyB3aWxsIGV4aXQgbm93LicpLCB0aW1lb3V0KVxyXG5cclxuLypcclxuICBSdW4gd2ViYXBwIHByb2plY3Q6IFxyXG5cclxuICBUYWtlcyBpbnRvIGNvbnNpZGVyYXRpb246IFxyXG4gICAgLSBkZWJ1Z2dlclxyXG4gICAgLSBsaXZlcmVsb2FkXHJcblxyXG4gIEFsZ29yaXRobTogXHJcbiAgICAtIHdhdGNoIGZpbGVzIG9mIGRpZmZlcmVudCBncm91cHMuXHJcbiAgICAtIHN0YXJ0IHdlYmFwcCBhcHBsaWNhdGlvbiBzZXJ2ZXIuXHJcbiAgICAtIHN0YXJ0IGJyb3dzZXIgcHJveHkgbGl2ZXJlbG9hZCBzZXJ2ZXIuIFxyXG4gICAgLSByZWdpc3RlciB3YXRjaCBhY3Rpb25zOiBhZmZlY3RlZCBncm91cHMgcmVzdWx0IGluIHJlbG9hZGluZyBvZiBzZXJ2ZXIgJi9vciBicm93c2VyLlxyXG4qL1xyXG5tb2R1bGUuZXhwb3J0cyA9IGFzeW5jIGZ1bmN0aW9uKHsgYXBpIC8qIHN1cHBsaWVkIGJ5IHNjcmlwdE1hbmFnZXIgKi8gfSA9IHt9KSB7XHJcbiAgbGV0IHJvb3RTZXJ2aWNlQ29uZmlnID0gYXBpLnByb2plY3QuY29uZmlndXJhdGlvbi5jb25maWd1cmF0aW9uPy5hcGlHYXRld2F5Py5zZXJ2aWNlLmZpbmQoaXRlbSA9PiBpdGVtLnN1YmRvbWFpbiA9PSBudWxsIC8qUm9vdCBzZXJ2aWNlKi8pXHJcbiAgYXNzZXJ0KHJvb3RTZXJ2aWNlQ29uZmlnLCBgUm9vdCBzZXJ2aWNlIG11c3QgYmUgY29uZmlndXJlZCBpbiB0aGUgcHJvamVjdHMgYXBpR2F0ZXdheSBjb25maWd1cmF0aW9uLmApXHJcbiAgbGV0IHRhcmdldFNlcnZpY2VIb3N0ID0gYXBpLnByb2plY3QuY29uZmlndXJhdGlvbi5jb25maWd1cmF0aW9uPy5ydW50aW1lVmFyaWFibGU/LkhPU1RcclxuICBhc3NlcnQodGFyZ2V0U2VydmljZUhvc3QsIGBIT1NUIHJ1bnRpbWUgdmFyaWFibGUgbXVzdCBiZSBjb25maWd1cmVkIGluIHRoZSBwcm9qZWN0J3MgcnVudGltZVZhcmlhYmxlIGNvbmZpZ3VyYXRpb24uYClcclxuICBsZXQgY2xpZW50U2lkZVByb2plY3RDb25maWdMaXN0ID0gYXBpLnByb2plY3QuY29uZmlndXJhdGlvbi5jb25maWd1cmF0aW9uPy5jbGllbnRTaWRlUHJvamVjdENvbmZpZ0xpc3RcclxuICBhc3NlcnQoY2xpZW50U2lkZVByb2plY3RDb25maWdMaXN0LCBgY2xpZW50U2lkZVByb2plY3RDb25maWdMaXN0IG11c3QgYmUgY29uZmlndXJlZCBpbiB0aGUgcHJvamVjdCdzIGNvbmZpZ3VyYXRpb24uYClcclxuXHJcbiAgbGV0IHsgcmVzdGFydDogcmVsb2FkQnJvd3NlckNsaWVudCB9ID0gYXdhaXQgYnJvd3NlckxpdmVyZWxvYWQoe1xyXG4gICAgdGFyZ2V0UHJvamVjdDogYXBpLnByb2plY3QgLyphZGFwdGVyIGZvciB3b3JraW5nIHdpdGggdGFyZ2V0IGZ1bmN0aW9uIGludGVyZmFjZS4qLyxcclxuICAgIHJvb3RTZXJ2aWNlUG9ydDogcm9vdFNlcnZpY2VDb25maWcucG9ydCxcclxuICAgIHJvb3RTZXJ2aWNlSG9zdDogdGFyZ2V0U2VydmljZUhvc3QsXHJcbiAgfSlcclxuXHJcbiAgbGV0IG1hbmFnZVN1YnByb2Nlc3MgPSBuZXcgTWFuYWdlU3VicHJvY2Vzcyh7IGNsaUFkYXB0ZXJQYXRoOiBwYXRoLmpvaW4oYXBpLnByb2plY3QuY29uZmlndXJhdGlvbi5yb290UGF0aCwgJ2VudHJ5cG9pbnQvY2xpJykgfSlcclxuICBtYW5hZ2VTdWJwcm9jZXNzLm9uKCdyZWFkeScsICgpID0+IHJlbG9hZEJyb3dzZXJDbGllbnQoKSkgLy8gcmVsb2FkIGJyb3dzZXIgYWZ0ZXIgc2VydmVyIHJlbG9hZFxyXG5cclxuICAvLyBydW4gYXBwbGljYXRpb246XHJcbiAgYXdhaXQgY2xlYXJHcmFwaERhdGEoKSAvLyBydW4gcHJlcmVxdWVzaXRlIGNvbnRhaW5lciBhbmQgY2xlYXIgZ3JhcGhcclxuICBtYW5hZ2VTdWJwcm9jZXNzLnJ1bkluU3VicHJvY2VzcygpXHJcblxyXG4gIGNvbnN0IHdhdGNoRmlsZUxpc3Rfc2VydmVyU2lkZSA9IFtcclxuICAgICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uvc2VydmVyU2lkZS8qKi8qLmpzJyxcclxuICAgIC8vICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uvc2VydmVyU2lkZS8qKi8qLmNzcycsXHJcbiAgICAvLyAnL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL3NlcnZlclNpZGUvKiovKi5odG1sJyxcclxuICAgIC8vICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uvc2VydmVyU2lkZS9ub2RlX21vZHVsZXMvYXBwc2NyaXB0ey8qKi8qLmpzLCEvbm9kZV9tb2R1bGVzLyoqLyp9JyxcclxuICAgICchL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL3NlcnZlclNpZGUvbm9kZV9tb2R1bGVzeywvKiovKiwhL2FwcHNjcmlwdC8qKi8qfScsXHJcbiAgICAvLyAnIS9wcm9qZWN0L2FwcGxpY2F0aW9uL3NvdXJjZS9zZXJ2ZXJTaWRlL25vZGVfbW9kdWxlcy9hcHBzY3JpcHQvbm9kZV9tb2R1bGVzeywvKiovKn0nLFxyXG4gIF0gLy8gZXF1YWxzIHRvICchL2FwcC97bm9kZV9tb2R1bGVzLG5vZGVfbW9kdWxlcy8qKi8qfSdcclxuXHJcbiAgYXdhaXQgd2F0Y2hGaWxlKHtcclxuICAgIC8vIHRvIGJlIHJ1biBhZnRlciBmaWxlIG5vdGlmaWNhdGlvblxyXG4gICAgdHJpZ2dlckNhbGxiYWNrOiBhc3luYyAoKSA9PiB7XHJcbiAgICAgIGF3YWl0IGNsZWFyR3JhcGhEYXRhKClcclxuICAgICAgbWFuYWdlU3VicHJvY2Vzcy5ydW5JblN1YnByb2Nlc3MoKVxyXG4gICAgfSxcclxuICAgIGZpbGVBcnJheTogW3BhdGguam9pbihhcGkucHJvamVjdC5jb25maWd1cmF0aW9uLnJvb3RQYXRoLCAnc291cmNlJyldLFxyXG4gICAgaWdub3JlTm9kZU1vZHVsZXM6IHRydWUsXHJcbiAgICBsb2dNZXNzYWdlOiB0cnVlLFxyXG4gIH0pXHJcblxyXG4gIC8vIEZpbGUgbGlzdCB0byB3YXRjaCAtIFVzZXMgZ2xvYnMgYXJyYXkgZm9yIGRlZmluaW5nIGZpbGVzIHBhdHRlcm5zIC0gaHR0cHM6Ly9naXRodWIuY29tL2lzYWFjcy9ub2RlLWdsb2JcclxuICAvLyBUT0RPOiB1c2UgcmVzb2x2ZUFuZExvb2t1cEZpbGUgZnVuY3Rpb25cclxuICBjb25zdCB3YXRjaEZpbGVMaXN0X2NsaWVudFNpZGUgPSBbXHJcbiAgICAvLyBUT0RPOiB0aGVyZSBpcyBhbiBpc3N1ZSB3aGVuIHNwZWNpZnlpbmcgbXVsdGlwbGUgcGF0aHMsIGZvciBzb21lIHJlYXNvbiBpdCBkb2Vzbid0IHdhdGNoIGFsbCBmaWxlcyB3aGVuIHNlcGFyYXRlbHkgY29uZmlndXJlZCwgd2hpbGUgd2F0Y2hpbmcgYWxsIGZpbGVzIHdpdGhvdXQgZGlzdGluY3Rpb24gaXMgcG9zc2libGUuIE1heWJlIGFuIGlzc3VlIHdpdGggZ2xvYiBzdHJpbmdzXHJcbiAgICAvLyBub3Qgd29ya2luZyB3aGVuIHNlcGFyYXRlZC5cclxuICAgIC8vICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvY2xpZW50U2lkZS8qKi8qLmNzcycsXHJcbiAgICAvLyAnL3Byb2plY3QvYXBwbGljYXRpb24vc291cmNlL2NsaWVudFNpZGUvKiovKi5odG1sJyxcclxuICAgIC8vICcvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvY2xpZW50U2lkZS8qKi8qLmpzJyxcclxuXHJcbiAgICAvLyB0aGUgZm9sbG93aW5nIHdvcmtzLlxyXG4gICAgJy9wcm9qZWN0L2FwcGxpY2F0aW9uL3NvdXJjZS9jbGllbnRTaWRlLyoqLyonLFxyXG4gICAgJyEvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvY2xpZW50U2lkZS8qKi9ub2RlX21vZHVsZXMvKiovKicsXHJcbiAgICAnIS9wcm9qZWN0L2FwcGxpY2F0aW9uL3NvdXJjZS9jbGllbnRTaWRlLyoqL2NvbXBvbmVudC5wYWNrYWdlLyoqLyonLFxyXG4gICAgJyEvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvY2xpZW50U2lkZS8qKi9qcy5wYWNrYWdlLnlhcm4vKiovKicsXHJcbiAgXSAvLyBlcXVhbHMgdG8gJyEvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2Uve25vZGVfbW9kdWxlcyxub2RlX21vZHVsZXMvKiovKn0nXHJcblxyXG4gIGNvbnN0IGNsaWVudFNpZGVQYXRoTGlzdCA9IGNsaWVudFNpZGVQcm9qZWN0Q29uZmlnTGlzdC5tYXAoaXRlbSA9PiBpdGVtLnBhdGgpXHJcbiAgYXdhaXQgd2F0Y2hGaWxlKHtcclxuICAgIC8vIHRvIGJlIHJ1biBhZnRlciBmaWxlIG5vdGlmaWNhdGlvblxyXG4gICAgdHJpZ2dlckNhbGxiYWNrOiAoKSA9PiByZWxvYWRCcm93c2VyQ2xpZW50KCksIC8vIHJlbG9hZCBicm93c2Vyc1xyXG4gICAgZmlsZUFycmF5OiBbLi4uY2xpZW50U2lkZVBhdGhMaXN0XSxcclxuICAgIGlnbm9yZU5vZGVNb2R1bGVzOiB0cnVlLFxyXG4gICAgbG9nTWVzc2FnZTogdHJ1ZSxcclxuICB9KVxyXG59XHJcbiJdfQ==
