@@ -1,0 +1,7 @@
+{
+  "name": "@dependency/hostMachineClientEntrypoint",
+  "version": "1.0.0",
+  "main": "./preserveSymlink.entrypoint.js",
+  "flat": false,
+  "license": "MIT"
+}
