@@ -1,33 +1,34 @@
-const { runTest } = require('@dependency/javascriptTestRunner')
-const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation')
-import { watchFile } from '@dependency/nodejsLiveReload'
+"use strict";
 
-module.exports = async function({
-  api /* supplied by scriptManager */,
-  testPath = [], // relative or absolute paths
+var _nodejsLiveReload = require("@dependency/nodejsLiveReload");const { runTest } = require('@dependency/javascriptTestRunner');const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation');
+
+module.exports = async function ({
+  api,
+  testPath = [],
   jsPath = [],
   shouldCompileTest,
-  shouldDebugger,
-} = {}) {
-  let targetProjectRootPath = api.project.configuration.rootPath // from scriptManager api.
+  shouldDebugger } =
+{}) {
+  let targetProjectRootPath = api.project.configuration.rootPath;
 
-  let testFileArray = resolveAndLookupFile({ pathArray: [...testPath], basePath: targetProjectRootPath, fileExtension: ['.test.js'] })
-  let jsFileArray = resolveAndLookupFile({ pathArray: [...jsPath, ...testFileArray, targetProjectRootPath], basePath: targetProjectRootPath, fileExtension: ['.js', '.ts'] })
+  let testFileArray = resolveAndLookupFile({ pathArray: [...testPath], basePath: targetProjectRootPath, fileExtension: ['.test.js'] });
+  let jsFileArray = resolveAndLookupFile({ pathArray: [...jsPath, ...testFileArray, targetProjectRootPath], basePath: targetProjectRootPath, fileExtension: ['.js', '.ts'] });
 
   let { restart: restartTest } = await runTest({
-    targetProject: api.project /**adapter for working with target function interface*/,
+    targetProject: api.project,
     shouldCompileTest,
     shouldDebugger,
     testFileArray,
-    jsFileArray,
-  })
+    jsFileArray });
 
-  await watchFile({
-    // to be run after file notification
+
+  await (0, _nodejsLiveReload.watchFile)({
+
     triggerCallback: () => restartTest(),
-    // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
+
     fileArray: jsFileArray,
     ignoreNodeModules: true,
-    logMessage: true,
-  })
-}
+    logMessage: true });
+
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvdGVzdC5qcyJdLCJuYW1lcyI6WyJydW5UZXN0IiwicmVxdWlyZSIsInJlc29sdmVBbmRMb29rdXBGaWxlIiwibW9kdWxlIiwiZXhwb3J0cyIsImFwaSIsInRlc3RQYXRoIiwianNQYXRoIiwic2hvdWxkQ29tcGlsZVRlc3QiLCJzaG91bGREZWJ1Z2dlciIsInRhcmdldFByb2plY3RSb290UGF0aCIsInByb2plY3QiLCJjb25maWd1cmF0aW9uIiwicm9vdFBhdGgiLCJ0ZXN0RmlsZUFycmF5IiwicGF0aEFycmF5IiwiYmFzZVBhdGgiLCJmaWxlRXh0ZW5zaW9uIiwianNGaWxlQXJyYXkiLCJyZXN0YXJ0IiwicmVzdGFydFRlc3QiLCJ0YXJnZXRQcm9qZWN0IiwidHJpZ2dlckNhbGxiYWNrIiwiZmlsZUFycmF5IiwiaWdub3JlTm9kZU1vZHVsZXMiLCJsb2dNZXNzYWdlIl0sIm1hcHBpbmdzIjoiOztBQUVBLGdFQUZBLE1BQU0sRUFBRUEsT0FBRixLQUFjQyxPQUFPLENBQUMsa0NBQUQsQ0FBM0IsQ0FDQSxNQUFNLEVBQUVDLG9CQUFGLEtBQTJCRCxPQUFPLENBQUMsdUNBQUQsQ0FBeEM7O0FBR0FFLE1BQU0sQ0FBQ0MsT0FBUCxHQUFpQixnQkFBZTtBQUM5QkMsRUFBQUEsR0FEOEI7QUFFOUJDLEVBQUFBLFFBQVEsR0FBRyxFQUZtQjtBQUc5QkMsRUFBQUEsTUFBTSxHQUFHLEVBSHFCO0FBSTlCQyxFQUFBQSxpQkFKOEI7QUFLOUJDLEVBQUFBLGNBTDhCO0FBTTVCLEVBTmEsRUFNVDtBQUNOLE1BQUlDLHFCQUFxQixHQUFHTCxHQUFHLENBQUNNLE9BQUosQ0FBWUMsYUFBWixDQUEwQkMsUUFBdEQ7O0FBRUEsTUFBSUMsYUFBYSxHQUFHWixvQkFBb0IsQ0FBQyxFQUFFYSxTQUFTLEVBQUUsQ0FBQyxHQUFHVCxRQUFKLENBQWIsRUFBNEJVLFFBQVEsRUFBRU4scUJBQXRDLEVBQTZETyxhQUFhLEVBQUUsQ0FBQyxVQUFELENBQTVFLEVBQUQsQ0FBeEM7QUFDQSxNQUFJQyxXQUFXLEdBQUdoQixvQkFBb0IsQ0FBQyxFQUFFYSxTQUFTLEVBQUUsQ0FBQyxHQUFHUixNQUFKLEVBQVksR0FBR08sYUFBZixFQUE4QkoscUJBQTlCLENBQWIsRUFBbUVNLFFBQVEsRUFBRU4scUJBQTdFLEVBQW9HTyxhQUFhLEVBQUUsQ0FBQyxLQUFELEVBQVEsS0FBUixDQUFuSCxFQUFELENBQXRDOztBQUVBLE1BQUksRUFBRUUsT0FBTyxFQUFFQyxXQUFYLEtBQTJCLE1BQU1wQixPQUFPLENBQUM7QUFDM0NxQixJQUFBQSxhQUFhLEVBQUVoQixHQUFHLENBQUNNLE9BRHdCO0FBRTNDSCxJQUFBQSxpQkFGMkM7QUFHM0NDLElBQUFBLGNBSDJDO0FBSTNDSyxJQUFBQSxhQUoyQztBQUszQ0ksSUFBQUEsV0FMMkMsRUFBRCxDQUE1Qzs7O0FBUUEsUUFBTSxpQ0FBVTs7QUFFZEksSUFBQUEsZUFBZSxFQUFFLE1BQU1GLFdBQVcsRUFGcEI7O0FBSWRHLElBQUFBLFNBQVMsRUFBRUwsV0FKRztBQUtkTSxJQUFBQSxpQkFBaUIsRUFBRSxJQUxMO0FBTWRDLElBQUFBLFVBQVUsRUFBRSxJQU5FLEVBQVYsQ0FBTjs7QUFRRCxDQTVCRCIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IHsgcnVuVGVzdCB9ID0gcmVxdWlyZSgnQGRlcGVuZGVuY3kvamF2YXNjcmlwdFRlc3RSdW5uZXInKVxyXG5jb25zdCB7IHJlc29sdmVBbmRMb29rdXBGaWxlIH0gPSByZXF1aXJlKCdAZGVwZW5kZW5jeS9oYW5kbGVGaWxlc3lzdGVtT3BlcmF0aW9uJylcclxuaW1wb3J0IHsgd2F0Y2hGaWxlIH0gZnJvbSAnQGRlcGVuZGVuY3kvbm9kZWpzTGl2ZVJlbG9hZCdcclxuXHJcbm1vZHVsZS5leHBvcnRzID0gYXN5bmMgZnVuY3Rpb24oe1xyXG4gIGFwaSAvKiBzdXBwbGllZCBieSBzY3JpcHRNYW5hZ2VyICovLFxyXG4gIHRlc3RQYXRoID0gW10sIC8vIHJlbGF0aXZlIG9yIGFic29sdXRlIHBhdGhzXHJcbiAganNQYXRoID0gW10sXHJcbiAgc2hvdWxkQ29tcGlsZVRlc3QsXHJcbiAgc2hvdWxkRGVidWdnZXIsXHJcbn0gPSB7fSkge1xyXG4gIGxldCB0YXJnZXRQcm9qZWN0Um9vdFBhdGggPSBhcGkucHJvamVjdC5jb25maWd1cmF0aW9uLnJvb3RQYXRoIC8vIGZyb20gc2NyaXB0TWFuYWdlciBhcGkuXHJcblxyXG4gIGxldCB0ZXN0RmlsZUFycmF5ID0gcmVzb2x2ZUFuZExvb2t1cEZpbGUoeyBwYXRoQXJyYXk6IFsuLi50ZXN0UGF0aF0sIGJhc2VQYXRoOiB0YXJnZXRQcm9qZWN0Um9vdFBhdGgsIGZpbGVFeHRlbnNpb246IFsnLnRlc3QuanMnXSB9KVxyXG4gIGxldCBqc0ZpbGVBcnJheSA9IHJlc29sdmVBbmRMb29rdXBGaWxlKHsgcGF0aEFycmF5OiBbLi4uanNQYXRoLCAuLi50ZXN0RmlsZUFycmF5LCB0YXJnZXRQcm9qZWN0Um9vdFBhdGhdLCBiYXNlUGF0aDogdGFyZ2V0UHJvamVjdFJvb3RQYXRoLCBmaWxlRXh0ZW5zaW9uOiBbJy5qcycsICcudHMnXSB9KVxyXG5cclxuICBsZXQgeyByZXN0YXJ0OiByZXN0YXJ0VGVzdCB9ID0gYXdhaXQgcnVuVGVzdCh7XHJcbiAgICB0YXJnZXRQcm9qZWN0OiBhcGkucHJvamVjdCAvKiphZGFwdGVyIGZvciB3b3JraW5nIHdpdGggdGFyZ2V0IGZ1bmN0aW9uIGludGVyZmFjZSovLFxyXG4gICAgc2hvdWxkQ29tcGlsZVRlc3QsXHJcbiAgICBzaG91bGREZWJ1Z2dlcixcclxuICAgIHRlc3RGaWxlQXJyYXksXHJcbiAgICBqc0ZpbGVBcnJheSxcclxuICB9KVxyXG5cclxuICBhd2FpdCB3YXRjaEZpbGUoe1xyXG4gICAgLy8gdG8gYmUgcnVuIGFmdGVyIGZpbGUgbm90aWZpY2F0aW9uXHJcbiAgICB0cmlnZ2VyQ2FsbGJhY2s6ICgpID0+IHJlc3RhcnRUZXN0KCksXHJcbiAgICAvLyBUT0RPOiBtYWtlIHN1cmUgZXhwbGljaXRseSBhZGRpbmcgYC4vbm9kZV9tb2R1bGVzL2AgaW50byB0aGUgdGhpcyBhcnJheSwgd2lsbCBwcmV2ZW50IGl0IGZyb20gYmVpbmcgaWdub3JlZC5cclxuICAgIGZpbGVBcnJheToganNGaWxlQXJyYXksXHJcbiAgICBpZ25vcmVOb2RlTW9kdWxlczogdHJ1ZSxcclxuICAgIGxvZ01lc3NhZ2U6IHRydWUsXHJcbiAgfSlcclxufVxyXG4iXX0=

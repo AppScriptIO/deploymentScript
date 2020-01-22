@@ -1,4 +1,5 @@
 #!/usr/bin/env node 
-// Shebang (#!) above allows for invoking this file directly on Unix-like platforms.
+"use strict";
 
-require('../../runInContainer/clientInterface/commandLine.js')
+require('../../runInContainer/clientInterface/commandLine.js');
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL2VudHJ5cG9pbnQtY2xpUnVuSW5Db250YWluZXIvaW52b2tlQ2xpLmpzIl0sIm5hbWVzIjpbInJlcXVpcmUiXSwibWFwcGluZ3MiOiJBQUFBOzs7QUFHQUEsT0FBTyxDQUFDLHFEQUFELENBQVAiLCJzb3VyY2VzQ29udGVudCI6WyIjIS91c3IvYmluL2VudiBub2RlIFxyXG4vLyBTaGViYW5nICgjISkgYWJvdmUgYWxsb3dzIGZvciBpbnZva2luZyB0aGlzIGZpbGUgZGlyZWN0bHkgb24gVW5peC1saWtlIHBsYXRmb3Jtcy5cclxuXHJcbnJlcXVpcmUoJy4uLy4uL3J1bkluQ29udGFpbmVyL2NsaWVudEludGVyZmFjZS9jb21tYW5kTGluZS5qcycpIl19

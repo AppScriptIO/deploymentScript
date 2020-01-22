@@ -1,8 +1,9 @@
 #!/usr/bin/env node 
+"use strict";
 
-/* Entrypoint chain */
-// • Transpilation (babelJSCompiler)
-require('@dependency/javascriptTranspilation')({ babelConfigurationFile: 'serverRuntime.BabelConfig.js' })
 
-// • Run
-module.exports = require('./')
+require('@dependency/javascriptTranspilation')({ babelConfigurationFile: 'serverRuntime.BabelConfig.js' });
+
+
+module.exports = require('./');
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL2VudHJ5cG9pbnQtY2xpUnVuSW5Db250YWluZXIvdHJhbnNwaWxhdGlvbi5lbnRyeXBvaW50LmpzIl0sIm5hbWVzIjpbInJlcXVpcmUiLCJiYWJlbENvbmZpZ3VyYXRpb25GaWxlIiwibW9kdWxlIiwiZXhwb3J0cyJdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7QUFJQUEsT0FBTyxDQUFDLHFDQUFELENBQVAsQ0FBK0MsRUFBRUMsc0JBQXNCLEVBQUUsOEJBQTFCLEVBQS9DOzs7QUFHQUMsTUFBTSxDQUFDQyxPQUFQLEdBQWlCSCxPQUFPLENBQUMsSUFBRCxDQUF4QiIsInNvdXJjZXNDb250ZW50IjpbIiMhL3Vzci9iaW4vZW52IG5vZGUgXHJcblxyXG4vKiBFbnRyeXBvaW50IGNoYWluICovXHJcbi8vIOKAoiBUcmFuc3BpbGF0aW9uIChiYWJlbEpTQ29tcGlsZXIpXHJcbnJlcXVpcmUoJ0BkZXBlbmRlbmN5L2phdmFzY3JpcHRUcmFuc3BpbGF0aW9uJykoeyBiYWJlbENvbmZpZ3VyYXRpb25GaWxlOiAnc2VydmVyUnVudGltZS5CYWJlbENvbmZpZy5qcycgfSlcclxuXHJcbi8vIOKAoiBSdW5cclxubW9kdWxlLmV4cG9ydHMgPSByZXF1aXJlKCcuLycpIl19

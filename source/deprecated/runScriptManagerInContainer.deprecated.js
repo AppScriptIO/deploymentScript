@@ -1,14 +1,14 @@
-// ❗ Should refactor - doesn't work.
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-// run container manager with requested command.
-const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
-console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ container manager - container with volumes & requested entrypoint script`)
 
-import path from 'path'
-import { runInContainer } from '../..' // own package (@dependency/appDeploymentManager)
-const ownRootPath = path.dirname(require.resolve('../package.json')) // own package root path
 
-runInContainer({
-  applicationHostPath: path.normalize(path.join(__dirname, '../..')),
-  scriptManagerHostPath: appDeploymentManagerPath,
-})
+
+
+var _path = _interopRequireDefault(require("path"));
+var _ = require("../..");const message_prefix = `\x1b[3m\x1b[2m•[${_path.default.basename(__filename)} JS script]:\x1b[0m`;console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ container manager - container with volumes & requested entrypoint script`);
+const ownRootPath = _path.default.dirname(require.resolve('../package.json'));
+
+(0, _.runInContainer)({
+  applicationHostPath: _path.default.normalize(_path.default.join(__dirname, '../..')),
+  scriptManagerHostPath: appDeploymentManagerPath });
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL3J1blNjcmlwdE1hbmFnZXJJbkNvbnRhaW5lci5kZXByZWNhdGVkLmpzIl0sIm5hbWVzIjpbIm1lc3NhZ2VfcHJlZml4IiwicGF0aCIsImJhc2VuYW1lIiwiX19maWxlbmFtZSIsImNvbnNvbGUiLCJncm91cCIsIm93blJvb3RQYXRoIiwiZGlybmFtZSIsInJlcXVpcmUiLCJyZXNvbHZlIiwiYXBwbGljYXRpb25Ib3N0UGF0aCIsIm5vcm1hbGl6ZSIsImpvaW4iLCJfX2Rpcm5hbWUiLCJzY3JpcHRNYW5hZ2VySG9zdFBhdGgiLCJhcHBEZXBsb3ltZW50TWFuYWdlclBhdGgiXSwibWFwcGluZ3MiOiI7Ozs7OztBQU1BO0FBQ0EseUJBSkEsTUFBTUEsY0FBYyxHQUFJLG1CQUFrQkMsY0FBS0MsUUFBTCxDQUFjQyxVQUFkLENBQTBCLHFCQUFwRSxDQUNBQyxPQUFPLENBQUNDLEtBQVIsQ0FBZSxzQkFBZixFQUF1QyxHQUFFTCxjQUFlLEVBQXhELEVBQTRELDRFQUE1RDtBQUlBLE1BQU1NLFdBQVcsR0FBR0wsY0FBS00sT0FBTCxDQUFhQyxPQUFPLENBQUNDLE9BQVIsQ0FBZ0IsaUJBQWhCLENBQWIsQ0FBcEI7O0FBRUEsc0JBQWU7QUFDYkMsRUFBQUEsbUJBQW1CLEVBQUVULGNBQUtVLFNBQUwsQ0FBZVYsY0FBS1csSUFBTCxDQUFVQyxTQUFWLEVBQXFCLE9BQXJCLENBQWYsQ0FEUjtBQUViQyxFQUFBQSxxQkFBcUIsRUFBRUMsd0JBRlYsRUFBZiIsInNvdXJjZXNDb250ZW50IjpbIi8vIOKdlyBTaG91bGQgcmVmYWN0b3IgLSBkb2Vzbid0IHdvcmsuXHJcblxyXG4vLyBydW4gY29udGFpbmVyIG1hbmFnZXIgd2l0aCByZXF1ZXN0ZWQgY29tbWFuZC5cclxuY29uc3QgbWVzc2FnZV9wcmVmaXggPSBgXFx4MWJbM21cXHgxYlsybeKAolske3BhdGguYmFzZW5hbWUoX19maWxlbmFtZSl9IEpTIHNjcmlwdF06XFx4MWJbMG1gXHJcbmNvbnNvbGUuZ3JvdXAoYCVzIFxceDFiWzMzbSVzXFx4MWJbMG1gLCBgJHttZXNzYWdlX3ByZWZpeH1gLCBgxpIgY29udGFpbmVyIG1hbmFnZXIgLSBjb250YWluZXIgd2l0aCB2b2x1bWVzICYgcmVxdWVzdGVkIGVudHJ5cG9pbnQgc2NyaXB0YClcclxuXHJcbmltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXHJcbmltcG9ydCB7IHJ1bkluQ29udGFpbmVyIH0gZnJvbSAnLi4vLi4nIC8vIG93biBwYWNrYWdlIChAZGVwZW5kZW5jeS9hcHBEZXBsb3ltZW50TWFuYWdlcilcclxuY29uc3Qgb3duUm9vdFBhdGggPSBwYXRoLmRpcm5hbWUocmVxdWlyZS5yZXNvbHZlKCcuLi9wYWNrYWdlLmpzb24nKSkgLy8gb3duIHBhY2thZ2Ugcm9vdCBwYXRoXHJcblxyXG5ydW5JbkNvbnRhaW5lcih7XHJcbiAgYXBwbGljYXRpb25Ib3N0UGF0aDogcGF0aC5ub3JtYWxpemUocGF0aC5qb2luKF9fZGlybmFtZSwgJy4uLy4uJykpLFxyXG4gIHNjcmlwdE1hbmFnZXJIb3N0UGF0aDogYXBwRGVwbG95bWVudE1hbmFnZXJQYXRoLFxyXG59KVxyXG4iXX0=
