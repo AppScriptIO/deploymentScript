@@ -20,7 +20,7 @@
 		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:4.x.x",
 		"@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner#semver:^1.x.x",
 		"@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload#semver:^2.x.x",
-		"@dependency/resolveAndLookupPath": "https://github.com/AppScriptIO/resolveAndLookupPath#semver:^1.x.x",
+		"@dependency/handleFilesystemOperation": "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x",
 		"apollo-cache-inmemory": "*",
 		"apollo-client": "*",
 		"apollo-link": "*",
@@ -44,7 +44,7 @@
 	},
 	"devDependencies": {
 		"@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
-		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
+		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^2.x.x",
 		"@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
 		"typescript": "^3.3.3333"
 	}

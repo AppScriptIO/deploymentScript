@@ -2,7 +2,7 @@ import path from 'path'
 import assert from 'assert'
 import filesystem from 'fs'
 import { watchFile, browserLivereload, ManageSubprocess } from '@dependency/nodejsLiveReload'
-const { resolveAndLookupFile } = require('@dependency/resolveAndLookupPath')
+const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation')
 const boltProtocolDriver = require('neo4j-driver').v1
 import { memgraphContainer } from '@dependency/deploymentProvisioning'
 
