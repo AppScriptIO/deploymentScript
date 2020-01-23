@@ -1,11 +1,12 @@
-// NETWORK
-let networkName = 'scriptManager'
+"use strict";
+let networkName = 'scriptManager';
 {
   let createNetwork = spawnSync('docker', [`network create ${networkName}`], {
     detached: false,
     shell: true,
     stdio: ['inherit', 'inherit', 'ignore'],
-    env: process.env, // pass environment variables like process.env.PWD to spawn process
-  })
-  if (createNetwork.status == 1) console.log('Docker network already exist.')
+    env: process.env });
+
+  if (createNetwork.status == 1) console.log('Docker network already exist.');
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL3NjcmlwdE1hbmFnZXItcnVuSW5Db250YWluZXIvY29udGFpbmVyU2NyaXB0L25ldHdvcmsuanMiXSwibmFtZXMiOlsibmV0d29ya05hbWUiLCJjcmVhdGVOZXR3b3JrIiwic3Bhd25TeW5jIiwiZGV0YWNoZWQiLCJzaGVsbCIsInN0ZGlvIiwiZW52IiwicHJvY2VzcyIsInN0YXR1cyIsImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiI7QUFDQSxJQUFJQSxXQUFXLEdBQUcsZUFBbEI7QUFDQTtBQUNFLE1BQUlDLGFBQWEsR0FBR0MsU0FBUyxDQUFDLFFBQUQsRUFBVyxDQUFFLGtCQUFpQkYsV0FBWSxFQUEvQixDQUFYLEVBQThDO0FBQ3pFRyxJQUFBQSxRQUFRLEVBQUUsS0FEK0Q7QUFFekVDLElBQUFBLEtBQUssRUFBRSxJQUZrRTtBQUd6RUMsSUFBQUEsS0FBSyxFQUFFLENBQUMsU0FBRCxFQUFZLFNBQVosRUFBdUIsUUFBdkIsQ0FIa0U7QUFJekVDLElBQUFBLEdBQUcsRUFBRUMsT0FBTyxDQUFDRCxHQUo0RCxFQUE5QyxDQUE3Qjs7QUFNQSxNQUFJTCxhQUFhLENBQUNPLE1BQWQsSUFBd0IsQ0FBNUIsRUFBK0JDLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLCtCQUFaO0FBQ2hDIiwic291cmNlc0NvbnRlbnQiOlsiLy8gTkVUV09SS1xubGV0IG5ldHdvcmtOYW1lID0gJ3NjcmlwdE1hbmFnZXInXG57XG4gIGxldCBjcmVhdGVOZXR3b3JrID0gc3Bhd25TeW5jKCdkb2NrZXInLCBbYG5ldHdvcmsgY3JlYXRlICR7bmV0d29ya05hbWV9YF0sIHtcbiAgICBkZXRhY2hlZDogZmFsc2UsXG4gICAgc2hlbGw6IHRydWUsXG4gICAgc3RkaW86IFsnaW5oZXJpdCcsICdpbmhlcml0JywgJ2lnbm9yZSddLFxuICAgIGVudjogcHJvY2Vzcy5lbnYsIC8vIHBhc3MgZW52aXJvbm1lbnQgdmFyaWFibGVzIGxpa2UgcHJvY2Vzcy5lbnYuUFdEIHRvIHNwYXduIHByb2Nlc3NcbiAgfSlcbiAgaWYgKGNyZWF0ZU5ldHdvcmsuc3RhdHVzID09IDEpIGNvbnNvbGUubG9nKCdEb2NrZXIgbmV0d29yayBhbHJlYWR5IGV4aXN0LicpXG59XG4iXX0=

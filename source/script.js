@@ -1,12 +1,2 @@
-export * as graphDataLoading from './graphDatabase/graphDataLoading.js'
-export * as importObjectDataToGraphDatabase from './graphDatabase/importObjectDataToGraphDatabase.js'
-
-export * as buildAndRelease from './JSProject/buildAndRelease.js'
-export * as release from './JSProject/release'
-export * as packageVersion from './JSProject/packageVersion'
-export * as buildSourceCode from './JSProject/buildSourceCode'
-
-// export * as production from './JSProject/production'
-
-export * as test from './JSProject/test.js'
-export * as run from './JSProject/run.js'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.run = exports.test = exports.buildSourceCode = exports.packageVersion = exports.release = exports.buildAndRelease = exports.importObjectDataToGraphDatabase = exports.graphDataLoading = void 0;var _graphDataLoading = _interopRequireWildcard(require("./graphDatabase/graphDataLoading.js"));exports.graphDataLoading = _graphDataLoading;var _importObjectDataToGraphDatabase = _interopRequireWildcard(require("./graphDatabase/importObjectDataToGraphDatabase.js"));exports.importObjectDataToGraphDatabase = _importObjectDataToGraphDatabase;var _buildAndRelease = _interopRequireWildcard(require("./JSProject/buildAndRelease.js"));exports.buildAndRelease = _buildAndRelease;var _release = _interopRequireWildcard(require("./JSProject/release"));exports.release = _release;var _packageVersion = _interopRequireWildcard(require("./JSProject/packageVersion"));exports.packageVersion = _packageVersion;var _buildSourceCode = _interopRequireWildcard(require("./JSProject/buildSourceCode"));exports.buildSourceCode = _buildSourceCode;var _test = _interopRequireWildcard(require("./JSProject/test.js"));exports.test = _test;var _run = _interopRequireWildcard(require("./JSProject/run.js"));exports.run = _run;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZXNDb250ZW50IjpbXX0=

@@ -1,53 +1,54 @@
-/**
- * Runs the test script inside a container.
- */
-import path from 'path'
-import { parseKeyValuePairSeparatedBySymbolFromArray, combineKeyValueObjectIntoString } from '@dependency/parseKeyValuePairSeparatedBySymbol'
-import { unitTest } from '../script.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.cliAdapter = cliAdapter;
 
-// check if executed directly from cli or should be invoked as module.
+
+var _path = _interopRequireDefault(require("path"));
+var _parseKeyValuePairSeparatedBySymbol = require("@dependency/parseKeyValuePairSeparatedBySymbol");
+var _script = require("../script.js");
+
+
 if (require.main === module) {
-  console.log('• Executed directly.')
-  cliAdapter()
+  console.log('• Executed directly.');
+  cliAdapter();
 }
 
-export { cliAdapter }
 
-/**
- * USAGE:
- * ./setup/entrypoint.js containerManager entrypointConfigurationKey=test testType=unitTest
- */
+
+
+
+
+
 function cliAdapter({ testType, configurationPath } = {}) {
-  console.group('• Running entrypoint application in Manager Container:')
-  console.log(`- passed process arguments: ${JSON.stringify(process.argv)}`)
-  const namedArgs = parseKeyValuePairSeparatedBySymbolFromArray({ array: process.argv }) // ['x=y'] --> { x: y }
+  console.group('• Running entrypoint application in Manager Container:');
+  console.log(`- passed process arguments: ${JSON.stringify(process.argv)}`);
+  const namedArgs = (0, _parseKeyValuePairSeparatedBySymbol.parseKeyValuePairSeparatedBySymbolFromArray)({ array: process.argv });
 
-  testType = testType || namedArgs['testType'] || null
+  testType = testType || namedArgs['testType'] || null;
 
-  // use own script algorithm for finding configuration file, rather than using containerManager's passed configurationPath.
-  if (!configurationPath) configurationPath = namedArgs.configuration ? path.join(process.cwd(), namedArgs.configuration) : path.join(process.cwd(), 'configuration') // For this to work - configuration arg must be kept after usage by containerManager.
-  const configuration = require(configurationPath)
+
+  if (!configurationPath) configurationPath = namedArgs.configuration ? _path.default.join(process.cwd(), namedArgs.configuration) : _path.default.join(process.cwd(), 'configuration');
+  const configuration = require(configurationPath);
 
   switch (testType) {
     default:
     case 'undefined':
-      console.error('• No `testType` passed. Test type should be the passed - e.g. `testType=unitTest`.')
-      break
+      console.error('• No `testType` passed. Test type should be the passed - e.g. `testType=unitTest`.');
+      break;
     case 'unitTest':
       {
-        unitTest({
+        (0, _script.unitTest)({
           configuration,
           container: {
-            imageName: namedArgs.imageName || process.env.imageName,
-          },
+            imageName: namedArgs.imageName || process.env.imageName },
+
           nodeFlag: {
             debug: process.argv.includes('debug'),
-            break: process.argv.includes('break'),
-          },
+            break: process.argv.includes('break') },
+
           testPath: namedArgs['path'],
-          applicationPathOnHostMachine: process.env.applicationPathOnHostMachine,
-        })
+          applicationPathOnHostMachine: process.env.applicationPathOnHostMachine });
+
       }
-      break
-  }
+      break;}
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL3Rlc3RSdW5JbkNvbnRhaW5lci9jbGllbnRJbnRlcmZhY2UvY29tbWFuZExpbmUuZGVwcmVjYXRlZC5qcyJdLCJuYW1lcyI6WyJyZXF1aXJlIiwibWFpbiIsIm1vZHVsZSIsImNvbnNvbGUiLCJsb2ciLCJjbGlBZGFwdGVyIiwidGVzdFR5cGUiLCJjb25maWd1cmF0aW9uUGF0aCIsImdyb3VwIiwiSlNPTiIsInN0cmluZ2lmeSIsInByb2Nlc3MiLCJhcmd2IiwibmFtZWRBcmdzIiwiYXJyYXkiLCJjb25maWd1cmF0aW9uIiwicGF0aCIsImpvaW4iLCJjd2QiLCJlcnJvciIsImNvbnRhaW5lciIsImltYWdlTmFtZSIsImVudiIsIm5vZGVGbGFnIiwiZGVidWciLCJpbmNsdWRlcyIsImJyZWFrIiwidGVzdFBhdGgiLCJhcHBsaWNhdGlvblBhdGhPbkhvc3RNYWNoaW5lIl0sIm1hcHBpbmdzIjoiOzs7QUFHQTtBQUNBO0FBQ0E7OztBQUdBLElBQUlBLE9BQU8sQ0FBQ0MsSUFBUixLQUFpQkMsTUFBckIsRUFBNkI7QUFDM0JDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLHNCQUFaO0FBQ0FDLEVBQUFBLFVBQVU7QUFDWDs7Ozs7Ozs7QUFRRCxTQUFTQSxVQUFULENBQW9CLEVBQUVDLFFBQUYsRUFBWUMsaUJBQVosS0FBa0MsRUFBdEQsRUFBMEQ7QUFDeERKLEVBQUFBLE9BQU8sQ0FBQ0ssS0FBUixDQUFjLHdEQUFkO0FBQ0FMLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLCtCQUE4QkssSUFBSSxDQUFDQyxTQUFMLENBQWVDLE9BQU8sQ0FBQ0MsSUFBdkIsQ0FBNkIsRUFBeEU7QUFDQSxRQUFNQyxTQUFTLEdBQUcscUZBQTRDLEVBQUVDLEtBQUssRUFBRUgsT0FBTyxDQUFDQyxJQUFqQixFQUE1QyxDQUFsQjs7QUFFQU4sRUFBQUEsUUFBUSxHQUFHQSxRQUFRLElBQUlPLFNBQVMsQ0FBQyxVQUFELENBQXJCLElBQXFDLElBQWhEOzs7QUFHQSxNQUFJLENBQUNOLGlCQUFMLEVBQXdCQSxpQkFBaUIsR0FBR00sU0FBUyxDQUFDRSxhQUFWLEdBQTBCQyxjQUFLQyxJQUFMLENBQVVOLE9BQU8sQ0FBQ08sR0FBUixFQUFWLEVBQXlCTCxTQUFTLENBQUNFLGFBQW5DLENBQTFCLEdBQThFQyxjQUFLQyxJQUFMLENBQVVOLE9BQU8sQ0FBQ08sR0FBUixFQUFWLEVBQXlCLGVBQXpCLENBQWxHO0FBQ3hCLFFBQU1ILGFBQWEsR0FBR2YsT0FBTyxDQUFDTyxpQkFBRCxDQUE3Qjs7QUFFQSxVQUFRRCxRQUFSO0FBQ0U7QUFDQSxTQUFLLFdBQUw7QUFDRUgsTUFBQUEsT0FBTyxDQUFDZ0IsS0FBUixDQUFjLG9GQUFkO0FBQ0E7QUFDRixTQUFLLFVBQUw7QUFDRTtBQUNFLDhCQUFTO0FBQ1BKLFVBQUFBLGFBRE87QUFFUEssVUFBQUEsU0FBUyxFQUFFO0FBQ1RDLFlBQUFBLFNBQVMsRUFBRVIsU0FBUyxDQUFDUSxTQUFWLElBQXVCVixPQUFPLENBQUNXLEdBQVIsQ0FBWUQsU0FEckMsRUFGSjs7QUFLUEUsVUFBQUEsUUFBUSxFQUFFO0FBQ1JDLFlBQUFBLEtBQUssRUFBRWIsT0FBTyxDQUFDQyxJQUFSLENBQWFhLFFBQWIsQ0FBc0IsT0FBdEIsQ0FEQztBQUVSQyxZQUFBQSxLQUFLLEVBQUVmLE9BQU8sQ0FBQ0MsSUFBUixDQUFhYSxRQUFiLENBQXNCLE9BQXRCLENBRkMsRUFMSDs7QUFTUEUsVUFBQUEsUUFBUSxFQUFFZCxTQUFTLENBQUMsTUFBRCxDQVRaO0FBVVBlLFVBQUFBLDRCQUE0QixFQUFFakIsT0FBTyxDQUFDVyxHQUFSLENBQVlNLDRCQVZuQyxFQUFUOztBQVlEO0FBQ0QsWUFwQko7O0FBc0JEIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBSdW5zIHRoZSB0ZXN0IHNjcmlwdCBpbnNpZGUgYSBjb250YWluZXIuXG4gKi9cbmltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5pbXBvcnQgeyBwYXJzZUtleVZhbHVlUGFpclNlcGFyYXRlZEJ5U3ltYm9sRnJvbUFycmF5LCBjb21iaW5lS2V5VmFsdWVPYmplY3RJbnRvU3RyaW5nIH0gZnJvbSAnQGRlcGVuZGVuY3kvcGFyc2VLZXlWYWx1ZVBhaXJTZXBhcmF0ZWRCeVN5bWJvbCdcbmltcG9ydCB7IHVuaXRUZXN0IH0gZnJvbSAnLi4vc2NyaXB0LmpzJ1xuXG4vLyBjaGVjayBpZiBleGVjdXRlZCBkaXJlY3RseSBmcm9tIGNsaSBvciBzaG91bGQgYmUgaW52b2tlZCBhcyBtb2R1bGUuXG5pZiAocmVxdWlyZS5tYWluID09PSBtb2R1bGUpIHtcbiAgY29uc29sZS5sb2coJ+KAoiBFeGVjdXRlZCBkaXJlY3RseS4nKVxuICBjbGlBZGFwdGVyKClcbn1cblxuZXhwb3J0IHsgY2xpQWRhcHRlciB9XG5cbi8qKlxuICogVVNBR0U6XG4gKiAuL3NldHVwL2VudHJ5cG9pbnQuanMgY29udGFpbmVyTWFuYWdlciBlbnRyeXBvaW50Q29uZmlndXJhdGlvbktleT10ZXN0IHRlc3RUeXBlPXVuaXRUZXN0XG4gKi9cbmZ1bmN0aW9uIGNsaUFkYXB0ZXIoeyB0ZXN0VHlwZSwgY29uZmlndXJhdGlvblBhdGggfSA9IHt9KSB7XG4gIGNvbnNvbGUuZ3JvdXAoJ+KAoiBSdW5uaW5nIGVudHJ5cG9pbnQgYXBwbGljYXRpb24gaW4gTWFuYWdlciBDb250YWluZXI6JylcbiAgY29uc29sZS5sb2coYC0gcGFzc2VkIHByb2Nlc3MgYXJndW1lbnRzOiAke0pTT04uc3RyaW5naWZ5KHByb2Nlc3MuYXJndil9YClcbiAgY29uc3QgbmFtZWRBcmdzID0gcGFyc2VLZXlWYWx1ZVBhaXJTZXBhcmF0ZWRCeVN5bWJvbEZyb21BcnJheSh7IGFycmF5OiBwcm9jZXNzLmFyZ3YgfSkgLy8gWyd4PXknXSAtLT4geyB4OiB5IH1cblxuICB0ZXN0VHlwZSA9IHRlc3RUeXBlIHx8IG5hbWVkQXJnc1sndGVzdFR5cGUnXSB8fCBudWxsXG5cbiAgLy8gdXNlIG93biBzY3JpcHQgYWxnb3JpdGhtIGZvciBmaW5kaW5nIGNvbmZpZ3VyYXRpb24gZmlsZSwgcmF0aGVyIHRoYW4gdXNpbmcgY29udGFpbmVyTWFuYWdlcidzIHBhc3NlZCBjb25maWd1cmF0aW9uUGF0aC5cbiAgaWYgKCFjb25maWd1cmF0aW9uUGF0aCkgY29uZmlndXJhdGlvblBhdGggPSBuYW1lZEFyZ3MuY29uZmlndXJhdGlvbiA/IHBhdGguam9pbihwcm9jZXNzLmN3ZCgpLCBuYW1lZEFyZ3MuY29uZmlndXJhdGlvbikgOiBwYXRoLmpvaW4ocHJvY2Vzcy5jd2QoKSwgJ2NvbmZpZ3VyYXRpb24nKSAvLyBGb3IgdGhpcyB0byB3b3JrIC0gY29uZmlndXJhdGlvbiBhcmcgbXVzdCBiZSBrZXB0IGFmdGVyIHVzYWdlIGJ5IGNvbnRhaW5lck1hbmFnZXIuXG4gIGNvbnN0IGNvbmZpZ3VyYXRpb24gPSByZXF1aXJlKGNvbmZpZ3VyYXRpb25QYXRoKVxuXG4gIHN3aXRjaCAodGVzdFR5cGUpIHtcbiAgICBkZWZhdWx0OlxuICAgIGNhc2UgJ3VuZGVmaW5lZCc6XG4gICAgICBjb25zb2xlLmVycm9yKCfigKIgTm8gYHRlc3RUeXBlYCBwYXNzZWQuIFRlc3QgdHlwZSBzaG91bGQgYmUgdGhlIHBhc3NlZCAtIGUuZy4gYHRlc3RUeXBlPXVuaXRUZXN0YC4nKVxuICAgICAgYnJlYWtcbiAgICBjYXNlICd1bml0VGVzdCc6XG4gICAgICB7XG4gICAgICAgIHVuaXRUZXN0KHtcbiAgICAgICAgICBjb25maWd1cmF0aW9uLFxuICAgICAgICAgIGNvbnRhaW5lcjoge1xuICAgICAgICAgICAgaW1hZ2VOYW1lOiBuYW1lZEFyZ3MuaW1hZ2VOYW1lIHx8IHByb2Nlc3MuZW52LmltYWdlTmFtZSxcbiAgICAgICAgICB9LFxuICAgICAgICAgIG5vZGVGbGFnOiB7XG4gICAgICAgICAgICBkZWJ1ZzogcHJvY2Vzcy5hcmd2LmluY2x1ZGVzKCdkZWJ1ZycpLFxuICAgICAgICAgICAgYnJlYWs6IHByb2Nlc3MuYXJndi5pbmNsdWRlcygnYnJlYWsnKSxcbiAgICAgICAgICB9LFxuICAgICAgICAgIHRlc3RQYXRoOiBuYW1lZEFyZ3NbJ3BhdGgnXSxcbiAgICAgICAgICBhcHBsaWNhdGlvblBhdGhPbkhvc3RNYWNoaW5lOiBwcm9jZXNzLmVudi5hcHBsaWNhdGlvblBhdGhPbkhvc3RNYWNoaW5lLFxuICAgICAgICB9KVxuICAgICAgfVxuICAgICAgYnJlYWtcbiAgfVxufVxuIl19
