@@ -11,7 +11,7 @@ const moduleRootPath = `${__dirname}/../../../`
 const { runscriptManagerInContainerWithClientApp } = require(moduleRootPath)
 const { parseKeyValuePairSeparatedBySymbolFromArray, combineKeyValueObjectIntoString } = require('@dependency/parseKeyValuePairSeparatedBySymbol')
 const ownConfig = require(path.join(moduleRootPath, 'configuration/configuration.js')) // container manager config path
-const { configurationFileLookup } = require(`@dependency/configurationManagement`)
+const { configurationFileLookup } = require(`@deployment/configurationManagement`)
 
 const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
 console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ container manager - container with volumes & requested entrypoint script`)

@@ -1,6 +1,6 @@
 import path from 'path'
 const { execSync, spawn, spawnSync } = require('child_process')
-const deploymentScriptPath = path.dirname(require.resolve('@dependency/deploymentScript/package.json')),
+const deploymentScriptPath = path.dirname(require.resolve('@deployment/deploymentScript/package.json')),
   javascriptTestRunnerPath = path.normalize(`${__dirname}/../entrypoint/cli/transpilation.entrypoint.js`)
 
 /*

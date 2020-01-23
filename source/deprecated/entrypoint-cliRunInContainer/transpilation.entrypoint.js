@@ -2,7 +2,7 @@
 
 /* Entrypoint chain */
 // • Transpilation (babelJSCompiler)
-require('@dependency/javascriptTranspilation')({ babelConfigurationFile: 'serverRuntime.BabelConfig.js' })
+require('@deployment/javascriptTranspilation')({ babelConfigurationFile: 'serverRuntime.BabelConfig.js' })
 
 // • Run
 module.exports = require('./')

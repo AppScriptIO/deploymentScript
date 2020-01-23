@@ -1,6 +1,6 @@
 import filesystem from 'fs'
 import path from 'path'
-import { build } from '@dependency/buildTool'
+import { build } from '@deployment/buildTool'
 
 // build process for webapps relying on appscript module.
 export async function webappProject(...args) {

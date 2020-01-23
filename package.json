@@ -1,7 +1,7 @@
 {
-	"name": "@dependency/deploymentScript",
+	"name": "@deployment/deploymentScript",
 	"main": "./entrypoint/programmaticAPI",
-	"version": "2.0.7",
+	"version": "2.2.1",
 	"scripts": {
 		"upgrade": "echo 'Upgrading also workspaces'; yarn workspaces run upgrade",
 		"postinstall": "yarn workspaces run install # always install workspaces, even as a when this module is used as a dependency # important: must be registered on post install, as some package rely on scriptManager binary during installation",
@@ -13,13 +13,13 @@
 	],
 	"private": true,
 	"dependencies": {
-		"@dependency/buildTool": "https://github.com/AppScriptIO/buildTool#semver:2.x.x",
-		"@dependency/deploymentProvisioning": "https://github.com/AppScriptIO/deploymentProvisioning#semver:^1.x.x",
-		"@dependency/entity": "https://github.com/AppScriptIO/entity#semver:1.0.15",
-		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:4.x.x",
-		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:4.x.x",
-		"@dependency/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner#semver:^1.x.x",
-		"@dependency/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload#semver:^2.x.x",
+		"@deployment/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^2.x.x",
+		"@deployment/deploymentProvisioning": "https://github.com/AppScriptIO/deploymentProvisioning#semver:^2.x.x",
+		"@dependency/entity": "https://github.com/AppScriptIO/entity#semver:^2.x.x",
+		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^4.x.x",
+		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x",
+		"@deployment/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner#semver:^2.x.x",
+		"@deployment/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload#semver:^2.x.x",
 		"@dependency/handleFilesystemOperation": "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x",
 		"apollo-cache-inmemory": "*",
 		"apollo-client": "*",
@@ -43,9 +43,9 @@
 		"write-json-file": "*"
 	},
 	"devDependencies": {
-		"@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
-		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^2.x.x",
-		"@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
+		"@deployment/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^2.x.x",
+		"@deployment/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^2.x.x",
+		"@deployment/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^2.x.x",
 		"typescript": "^3.3.3333"
 	}
 }

@@ -1,6 +1,6 @@
-const { runTest } = require('@dependency/javascriptTestRunner')
+const { runTest } = require('@deployment/javascriptTestRunner')
 const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation')
-import { watchFile } from '@dependency/nodejsLiveReload'
+import { watchFile } from '@deployment/nodejsLiveReload'
 
 module.exports = async function({
   api /* supplied by scriptManager */,

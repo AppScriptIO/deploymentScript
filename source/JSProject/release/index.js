@@ -4,7 +4,7 @@ import assert from 'assert'
 import childProcess from 'child_process'
 import filesystemExtra from 'fs-extra'
 import { default as git, Commit, Repository, Reference, Branch, Signature, Reset, Stash } from 'nodegit'
-import * as provision from '@dependency/deploymentProvisioning'
+import * as provision from '@deployment/deploymentProvisioning'
 const getDirectory = source => filesystem.readdirSync(source, { withFileTypes: true }).filter(dirent => dirent.isDirectory())
 const getAllDirent = source => filesystem.readdirSync(source, { withFileTypes: true })
 /** Filter array with async function

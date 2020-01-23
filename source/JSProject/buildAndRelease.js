@@ -1,7 +1,7 @@
 import { createGithubBranchedRelease } from './release'
 import { moduleProject as buildModuleProject, webappProject as buildWebappProject } from './buildSourceCode'
 import { bumpVersion } from './packageVersion'
-import { memgraphContainer } from '@dependency/deploymentProvisioning'
+import { memgraphContainer } from '@deployment/deploymentProvisioning'
 
 export async function moduleProject({ api, tagName }) {
   memgraphContainer.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.

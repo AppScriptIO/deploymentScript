@@ -1,10 +1,10 @@
 import path from 'path'
 import assert from 'assert'
 import filesystem from 'fs'
-import { watchFile, browserLivereload, ManageSubprocess } from '@dependency/nodejsLiveReload'
+import { watchFile, browserLivereload, ManageSubprocess } from '@deployment/nodejsLiveReload'
 const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation')
 const boltProtocolDriver = require('neo4j-driver').v1
-import { memgraphContainer } from '@dependency/deploymentProvisioning'
+import { memgraphContainer } from '@deployment/deploymentProvisioning'
 
 async function clearGraphData() {
   console.groupCollapsed('• Run prerequisite containers:')
