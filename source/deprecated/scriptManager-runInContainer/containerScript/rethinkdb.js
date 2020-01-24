@@ -1,43 +1,44 @@
-// RETHINKDB
+"use strict";
 {
-  let image = 'rethinkdb:latest', // this container should have docker client & docker-compose installed in.
-    processCommand = 'docker',
-    containerCommand = ``,
-    containerPrefix = 'scriptManager_rehinkdb',
-    networkAlais = 'rethinkdb'
+  let image = 'rethinkdb:latest',
+  processCommand = 'docker',
+  containerCommand = ``,
+  containerPrefix = 'scriptManager_rehinkdb',
+  networkAlais = 'rethinkdb';
 
   let processArg = [
-    `run`,
-    `--rm`, // automatically remove after container exists.
-    // `--interactive --tty`, // allocate a terminal - this allows for interacting with the container process.
-    // `--volume ${application.hostPath}:${application.pathInContainer}`,
-    `--network-alias ${networkAlais}`,
-    `--network=${networkName}`,
-    `-P `,
-    // `-P`
-  ].concat([`--name ${containerPrefix}`, `${image}`])
-  console.log(`%s \n %s \n %s`, `\x1b[3m\x1b[2m > ${processCommand} ${processArg.join(' ')}\x1b[0m`, `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`, `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`)
+  `run`,
+  `--rm`,
+
+
+  `--network-alias ${networkAlais}`,
+  `--network=${networkName}`,
+  `-P `].
+
+  concat([`--name ${containerPrefix}`, `${image}`]);
+  console.log(`%s \n %s \n %s`, `\x1b[3m\x1b[2m > ${processCommand} ${processArg.join(' ')}\x1b[0m`, `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`, `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`);
 
   let childProcess = spawn(processCommand, processArg, {
-    // detached: false, shell: true, stdio: [ 'inherit', 'inherit', 'inherit', 'ipc' ],
+
     detached: false,
     shell: true,
     stdio: ['ignore', 'ignore', 'ignore'],
-    env: process.env, // pass environment variables like process.env.PWD to spawn process
-  })
-  childProcessArray.push(childProcess)
-  // childProcess.unref() // prevent parent from waiting to child process and un reference child from parent's event loop.
-  console.log(`\x1b[45m%s\x1b[0m`, `[NODE HOST MACHINE] PID: Child ${childProcess.pid}`)
-  childProcess.on('error', function(err) {
-    throw err
-  })
+    env: process.env });
+
+  childProcessArray.push(childProcess);
+
+  console.log(`\x1b[45m%s\x1b[0m`, `[NODE HOST MACHINE] PID: Child ${childProcess.pid}`);
+  childProcess.on('error', function (err) {
+    throw err;
+  });
   childProcess.on('exit', () => {
-    console.log(`\x1b[41m%s\x1b[0m`, `[NODE HOST MACHINE] PID: Child ${childProcess.pid} terminated.`)
+    console.log(`\x1b[41m%s\x1b[0m`, `[NODE HOST MACHINE] PID: Child ${childProcess.pid} terminated.`);
     spawnSync('docker', [`kill ${containerPrefix}`], {
       detached: false,
       shell: true,
       stdio: 'inherit',
-      env: process.env, // pass environment variables like process.env.PWD to spawn process
-    })
-  })
+      env: process.env });
+
+  });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL3NjcmlwdE1hbmFnZXItcnVuSW5Db250YWluZXIvY29udGFpbmVyU2NyaXB0L3JldGhpbmtkYi5qcyJdLCJuYW1lcyI6WyJpbWFnZSIsInByb2Nlc3NDb21tYW5kIiwiY29udGFpbmVyQ29tbWFuZCIsImNvbnRhaW5lclByZWZpeCIsIm5ldHdvcmtBbGFpcyIsInByb2Nlc3NBcmciLCJuZXR3b3JrTmFtZSIsImNvbmNhdCIsImNvbnNvbGUiLCJsb2ciLCJqb2luIiwiY2hpbGRQcm9jZXNzIiwic3Bhd24iLCJkZXRhY2hlZCIsInNoZWxsIiwic3RkaW8iLCJlbnYiLCJwcm9jZXNzIiwiY2hpbGRQcm9jZXNzQXJyYXkiLCJwdXNoIiwicGlkIiwib24iLCJlcnIiLCJzcGF3blN5bmMiXSwibWFwcGluZ3MiOiI7QUFDQTtBQUNFLE1BQUlBLEtBQUssR0FBRyxrQkFBWjtBQUNFQyxFQUFBQSxjQUFjLEdBQUcsUUFEbkI7QUFFRUMsRUFBQUEsZ0JBQWdCLEdBQUksRUFGdEI7QUFHRUMsRUFBQUEsZUFBZSxHQUFHLHdCQUhwQjtBQUlFQyxFQUFBQSxZQUFZLEdBQUcsV0FKakI7O0FBTUEsTUFBSUMsVUFBVSxHQUFHO0FBQ2QsT0FEYztBQUVkLFFBRmM7OztBQUtkLHFCQUFrQkQsWUFBYSxFQUxqQjtBQU1kLGVBQVlFLFdBQVksRUFOVjtBQU9kLE9BUGM7O0FBU2ZDLEVBQUFBLE1BVGUsQ0FTUixDQUFFLFVBQVNKLGVBQWdCLEVBQTNCLEVBQStCLEdBQUVILEtBQU0sRUFBdkMsQ0FUUSxDQUFqQjtBQVVBUSxFQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSxnQkFBYixFQUErQixvQkFBbUJSLGNBQWUsSUFBR0ksVUFBVSxDQUFDSyxJQUFYLENBQWdCLEdBQWhCLENBQXFCLFNBQXpGLEVBQW9HLGlDQUFnQ1YsS0FBTSxFQUExSSxFQUE4SSxtQ0FBa0NFLGdCQUFpQixFQUFqTTs7QUFFQSxNQUFJUyxZQUFZLEdBQUdDLEtBQUssQ0FBQ1gsY0FBRCxFQUFpQkksVUFBakIsRUFBNkI7O0FBRW5EUSxJQUFBQSxRQUFRLEVBQUUsS0FGeUM7QUFHbkRDLElBQUFBLEtBQUssRUFBRSxJQUg0QztBQUluREMsSUFBQUEsS0FBSyxFQUFFLENBQUMsUUFBRCxFQUFXLFFBQVgsRUFBcUIsUUFBckIsQ0FKNEM7QUFLbkRDLElBQUFBLEdBQUcsRUFBRUMsT0FBTyxDQUFDRCxHQUxzQyxFQUE3QixDQUF4Qjs7QUFPQUUsRUFBQUEsaUJBQWlCLENBQUNDLElBQWxCLENBQXVCUixZQUF2Qjs7QUFFQUgsRUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsbUJBQWIsRUFBa0Msa0NBQWlDRSxZQUFZLENBQUNTLEdBQUksRUFBcEY7QUFDQVQsRUFBQUEsWUFBWSxDQUFDVSxFQUFiLENBQWdCLE9BQWhCLEVBQXlCLFVBQVNDLEdBQVQsRUFBYztBQUNyQyxVQUFNQSxHQUFOO0FBQ0QsR0FGRDtBQUdBWCxFQUFBQSxZQUFZLENBQUNVLEVBQWIsQ0FBZ0IsTUFBaEIsRUFBd0IsTUFBTTtBQUM1QmIsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsbUJBQWIsRUFBa0Msa0NBQWlDRSxZQUFZLENBQUNTLEdBQUksY0FBcEY7QUFDQUcsSUFBQUEsU0FBUyxDQUFDLFFBQUQsRUFBVyxDQUFFLFFBQU9wQixlQUFnQixFQUF6QixDQUFYLEVBQXdDO0FBQy9DVSxNQUFBQSxRQUFRLEVBQUUsS0FEcUM7QUFFL0NDLE1BQUFBLEtBQUssRUFBRSxJQUZ3QztBQUcvQ0MsTUFBQUEsS0FBSyxFQUFFLFNBSHdDO0FBSS9DQyxNQUFBQSxHQUFHLEVBQUVDLE9BQU8sQ0FBQ0QsR0FKa0MsRUFBeEMsQ0FBVDs7QUFNRCxHQVJEO0FBU0QiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBSRVRISU5LREJcbntcbiAgbGV0IGltYWdlID0gJ3JldGhpbmtkYjpsYXRlc3QnLCAvLyB0aGlzIGNvbnRhaW5lciBzaG91bGQgaGF2ZSBkb2NrZXIgY2xpZW50ICYgZG9ja2VyLWNvbXBvc2UgaW5zdGFsbGVkIGluLlxuICAgIHByb2Nlc3NDb21tYW5kID0gJ2RvY2tlcicsXG4gICAgY29udGFpbmVyQ29tbWFuZCA9IGBgLFxuICAgIGNvbnRhaW5lclByZWZpeCA9ICdzY3JpcHRNYW5hZ2VyX3JlaGlua2RiJyxcbiAgICBuZXR3b3JrQWxhaXMgPSAncmV0aGlua2RiJ1xuXG4gIGxldCBwcm9jZXNzQXJnID0gW1xuICAgIGBydW5gLFxuICAgIGAtLXJtYCwgLy8gYXV0b21hdGljYWxseSByZW1vdmUgYWZ0ZXIgY29udGFpbmVyIGV4aXN0cy5cbiAgICAvLyBgLS1pbnRlcmFjdGl2ZSAtLXR0eWAsIC8vIGFsbG9jYXRlIGEgdGVybWluYWwgLSB0aGlzIGFsbG93cyBmb3IgaW50ZXJhY3Rpbmcgd2l0aCB0aGUgY29udGFpbmVyIHByb2Nlc3MuXG4gICAgLy8gYC0tdm9sdW1lICR7YXBwbGljYXRpb24uaG9zdFBhdGh9OiR7YXBwbGljYXRpb24ucGF0aEluQ29udGFpbmVyfWAsXG4gICAgYC0tbmV0d29yay1hbGlhcyAke25ldHdvcmtBbGFpc31gLFxuICAgIGAtLW5ldHdvcms9JHtuZXR3b3JrTmFtZX1gLFxuICAgIGAtUCBgLFxuICAgIC8vIGAtUGBcbiAgXS5jb25jYXQoW2AtLW5hbWUgJHtjb250YWluZXJQcmVmaXh9YCwgYCR7aW1hZ2V9YF0pXG4gIGNvbnNvbGUubG9nKGAlcyBcXG4gJXMgXFxuICVzYCwgYFxceDFiWzNtXFx4MWJbMm0gPiAke3Byb2Nlc3NDb21tYW5kfSAke3Byb2Nlc3NBcmcuam9pbignICcpfVxceDFiWzBtYCwgYFxcdFxceDFiWzNtXFx4MWJbMm1pbWFnZTpcXHgxYlswbSAke2ltYWdlfWAsIGBcXHRcXHgxYlszbVxceDFiWzJtY29tbWFuZDpcXHgxYlswbSAke2NvbnRhaW5lckNvbW1hbmR9YClcblxuICBsZXQgY2hpbGRQcm9jZXNzID0gc3Bhd24ocHJvY2Vzc0NvbW1hbmQsIHByb2Nlc3NBcmcsIHtcbiAgICAvLyBkZXRhY2hlZDogZmFsc2UsIHNoZWxsOiB0cnVlLCBzdGRpbzogWyAnaW5oZXJpdCcsICdpbmhlcml0JywgJ2luaGVyaXQnLCAnaXBjJyBdLFxuICAgIGRldGFjaGVkOiBmYWxzZSxcbiAgICBzaGVsbDogdHJ1ZSxcbiAgICBzdGRpbzogWydpZ25vcmUnLCAnaWdub3JlJywgJ2lnbm9yZSddLFxuICAgIGVudjogcHJvY2Vzcy5lbnYsIC8vIHBhc3MgZW52aXJvbm1lbnQgdmFyaWFibGVzIGxpa2UgcHJvY2Vzcy5lbnYuUFdEIHRvIHNwYXduIHByb2Nlc3NcbiAgfSlcbiAgY2hpbGRQcm9jZXNzQXJyYXkucHVzaChjaGlsZFByb2Nlc3MpXG4gIC8vIGNoaWxkUHJvY2Vzcy51bnJlZigpIC8vIHByZXZlbnQgcGFyZW50IGZyb20gd2FpdGluZyB0byBjaGlsZCBwcm9jZXNzIGFuZCB1biByZWZlcmVuY2UgY2hpbGQgZnJvbSBwYXJlbnQncyBldmVudCBsb29wLlxuICBjb25zb2xlLmxvZyhgXFx4MWJbNDVtJXNcXHgxYlswbWAsIGBbTk9ERSBIT1NUIE1BQ0hJTkVdIFBJRDogQ2hpbGQgJHtjaGlsZFByb2Nlc3MucGlkfWApXG4gIGNoaWxkUHJvY2Vzcy5vbignZXJyb3InLCBmdW5jdGlvbihlcnIpIHtcbiAgICB0aHJvdyBlcnJcbiAgfSlcbiAgY2hpbGRQcm9jZXNzLm9uKCdleGl0JywgKCkgPT4ge1xuICAgIGNvbnNvbGUubG9nKGBcXHgxYls0MW0lc1xceDFiWzBtYCwgYFtOT0RFIEhPU1QgTUFDSElORV0gUElEOiBDaGlsZCAke2NoaWxkUHJvY2Vzcy5waWR9IHRlcm1pbmF0ZWQuYClcbiAgICBzcGF3blN5bmMoJ2RvY2tlcicsIFtga2lsbCAke2NvbnRhaW5lclByZWZpeH1gXSwge1xuICAgICAgZGV0YWNoZWQ6IGZhbHNlLFxuICAgICAgc2hlbGw6IHRydWUsXG4gICAgICBzdGRpbzogJ2luaGVyaXQnLFxuICAgICAgZW52OiBwcm9jZXNzLmVudiwgLy8gcGFzcyBlbnZpcm9ubWVudCB2YXJpYWJsZXMgbGlrZSBwcm9jZXNzLmVudi5QV0QgdG8gc3Bhd24gcHJvY2Vzc1xuICAgIH0pXG4gIH0pXG59XG4iXX0=
