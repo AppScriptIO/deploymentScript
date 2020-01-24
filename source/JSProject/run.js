@@ -2,7 +2,7 @@ import path from 'path'
 import assert from 'assert'
 import filesystem from 'fs'
 import { watchFile, browserLivereload, ManageSubprocess } from '@deployment/nodejsLiveReload'
-const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation')
+const { resolveAndLookupFile, findFileByGlobPattern } = require('@dependency/handleFilesystemOperation')
 const boltProtocolDriver = require('neo4j-driver').v1
 import { memgraphContainer } from '@deployment/deploymentProvisioning'
 
@@ -41,6 +41,8 @@ const setTimeout = ({ timeout = 10000 } = {}) => setTimeout(() => console.log('s
     - register watch actions: affected groups result in reloading of server &/or browser.
 */
 module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
+  const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
+    rootPath = api.project.configuration.rootPath
   let rootServiceConfig = api.project.configuration.configuration?.apiGateway?.service.find(item => item.subdomain == null /*Root service*/)
   assert(rootServiceConfig, `Root service must be configured in the projects apiGateway configuration.`)
   let targetServiceHost = api.project.configuration.configuration?.runtimeVariable?.HOST
@@ -48,61 +50,59 @@ module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
   let clientSideProjectConfigList = api.project.configuration.configuration?.clientSideProjectConfigList
   assert(clientSideProjectConfigList, `clientSideProjectConfigList must be configured in the project's configuration.`)
 
+  // Application
+  let manageSubprocess = new ManageSubprocess({ cliAdapterPath: applicationPath })
+  const runApplication = async () => {
+    await clearGraphData() // run prerequesite container and clear graph
+    manageSubprocess.runInSubprocess()
+  }
+
+  // Browser control
   let { restart: reloadBrowserClient } = await browserLivereload({
     targetProject: api.project /*adapter for working with target function interface.*/,
     rootServicePort: rootServiceConfig.port,
     rootServiceHost: targetServiceHost,
   })
 
-  let manageSubprocess = new ManageSubprocess({ cliAdapterPath: path.join(api.project.configuration.rootPath, 'entrypoint/cli') })
   manageSubprocess.on('ready', () => reloadBrowserClient()) // reload browser after server reload
+  await runApplication()
 
-  // run application:
-  await clearGraphData() // run prerequesite container and clear graph
-  manageSubprocess.runInSubprocess()
+  {
+    let serverSideList = await findFileByGlobPattern({
+      basePath: rootPath,
+      patternGlob: [`**/*.js`],
+      ignore: [`**/{temporary/**/*,distribution/**/*,.git/**/*,node_modules/**/*}`].map(item => path.join(rootPath, item) /*related only nested paths*/),
+    })
 
-  const watchFileList_serverSide = [
-    '/project/application/source/serverSide/**/*.js',
-    // '/project/application/source/serverSide/**/*.css',
-    // '/project/application/source/serverSide/**/*.html',
-    // '/project/application/source/serverSide/node_modules/appscript{/**/*.js,!/node_modules/**/*}',
-    '!/project/application/source/serverSide/node_modules{,/**/*,!/appscript/**/*}',
-    // '!/project/application/source/serverSide/node_modules/appscript/node_modules{,/**/*}',
-  ] // equals to '!/app/{node_modules,node_modules/**/*}'
+    await watchFile({
+      // to be run after file notification
+      triggerCallback: async () => {
+        await runApplication()
+      },
+      fileArray: [...serverSideList],
+      ignoreNodeModules: false,
+      logMessage: true,
+    })
+  }
 
-  await watchFile({
-    // to be run after file notification
-    triggerCallback: async () => {
-      await clearGraphData()
-      manageSubprocess.runInSubprocess()
-    },
-    fileArray: [path.join(api.project.configuration.rootPath, 'source')],
-    ignoreNodeModules: true,
-    logMessage: true,
-  })
+  {
+    let clientSideList = []
+    for (let { path: clientSideBasePath } of clientSideProjectConfigList)
+      clientSideList = [
+        ...clientSideList,
+        ...(await findFileByGlobPattern({
+          basePath: clientSideBasePath,
+          patternGlob: ['**/*.js', '**/*.css', '**/*.html'],
+          ignore: [`**/{@package*/**/*,temporary/**/*,distribution/**/*,.git/**/*,node_modules/**/*}`].map(item => path.join(clientSideBasePath, item) /*related only nested paths*/),
+        })),
+      ]
 
-  // File list to watch - Uses globs array for defining files patterns - https://github.com/isaacs/node-glob
-  // TODO: use resolveAndLookupFile function
-  const watchFileList_clientSide = [
-    // TODO: there is an issue when specifying multiple paths, for some reason it doesn't watch all files when separately configured, while watching all files without distinction is possible. Maybe an issue with glob strings
-    // not working when separated.
-    // '/project/application/source/clientSide/**/*.css',
-    // '/project/application/source/clientSide/**/*.html',
-    // '/project/application/source/clientSide/**/*.js',
-
-    // the following works.
-    '/project/application/source/clientSide/**/*',
-    '!/project/application/source/clientSide/**/node_modules/**/*',
-    '!/project/application/source/clientSide/**/component.package/**/*',
-    '!/project/application/source/clientSide/**/js.package.yarn/**/*',
-  ] // equals to '!/project/application/source/{node_modules,node_modules/**/*}'
-
-  const clientSidePathList = clientSideProjectConfigList.map(item => item.path)
-  await watchFile({
-    // to be run after file notification
-    triggerCallback: () => reloadBrowserClient(), // reload browsers
-    fileArray: [...clientSidePathList],
-    ignoreNodeModules: true,
-    logMessage: true,
-  })
+    await watchFile({
+      // to be run after file notification
+      triggerCallback: () => reloadBrowserClient(), // reload browsers
+      fileArray: [...clientSideList],
+      ignoreNodeModules: false,
+      logMessage: true,
+    })
+  }
 }
