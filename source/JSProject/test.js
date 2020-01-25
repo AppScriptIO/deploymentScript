@@ -25,7 +25,6 @@ module.exports = async function({
   await watchFile({
     // to be run after file notification
     triggerCallback: () => restartTest(),
-    // TODO: make sure explicitly adding `./node_modules/` into the this array, will prevent it from being ignored.
     fileArray: jsFileArray,
     ignoreNodeModules: true,
     logMessage: true,
