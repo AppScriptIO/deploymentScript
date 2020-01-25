@@ -1,117 +1,118 @@
-let config = {
-  get containerSetting() {
-    // ⚗ refactor when fixing `runInContainer` functionality.
-    const projectPath = '/project',
-      scriptManagerRootFolder = `${projectPath}/scriptManager`,
-      targetAppRootFolder = process.env.targetAppBasePath || `${projectPath}/application`
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-    // try to find module in targetApp
-    let targetAppDeploymentScript
-    try {
-      targetAppDeploymentScript = path.dirname(require.resolve(`@dependency/DeploymentScript/package.json`, { paths: [targetAppRootFolder] }))
-    } catch (error) {
-      // console.log(`• Cannot find DeploymentScript module in target app.`)
-      targetAppDeploymentScript = null
-    }
 
-    return {
-      targetApp: {
-        rootFolder: targetAppRootFolder,
-        scriptFolder: `${targetAppRootFolder}/script`,
-      },
-    }
-  },
-}
 
-import { spawn, spawnSync } from 'child_process'
-import operatingSystem from 'os'
-import path from 'path'
-import slash from 'slash' // convert backward Windows slash to Unix/Windows supported forward slash.
-import { setInterval } from 'timers'
-const parsedArg = require('yargs').argv
-import { convertObjectToDockerEnvFlag } from './utility/convertObjectToDockerEnvFlag.js'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _path = _interopRequireDefault(require("path"));
+var _slash = _interopRequireDefault(require("slash"));let config = { get containerSetting() {const projectPath = '/project',scriptManagerRootFolder = `${projectPath}/scriptManager`,targetAppRootFolder = process.env.targetAppBasePath || `${projectPath}/application`;let targetAppDeploymentScript;try {targetAppDeploymentScript = _path.default.dirname(require.resolve(`@dependency/DeploymentScript/package.json`, { paths: [targetAppRootFolder] }));} catch (error) {targetAppDeploymentScript = null;}return { targetApp: { rootFolder: targetAppRootFolder, scriptFolder: `${targetAppRootFolder}/script` } };} };
+
+const parsedArg = require('yargs').argv;
+
 const containerPath = {
-  // defined paths of volumes inside container.
-  application: '/project/application',
-}
 
-parsedArg.env = !Array.isArray(parsedArg.env) ? [parsedArg.env] : parsedArg.env // transform `--env` value flags to array even when only one value present
+  application: '/project/application' };
+
+
+parsedArg.env = !Array.isArray(parsedArg.env) ? [parsedArg.env] : parsedArg.env;
 let exportEnvironmentArg = parsedArg.env.reduce((accumulator, currentValue) => {
   if (process.env[currentValue])
-    // only keys that passed through environment variables
-    accumulator[currentValue] = process.env[currentValue]
-  return accumulator
-}, {}) // get environment values and match them to keys in an object.
 
-// NOTE: A way to remove commandline argument after usage.
-// process.argv = process.argv.filter(value => value !== `configuration=${namedArgs.configuration}`) // remove configuration paramter
+    accumulator[currentValue] = process.env[currentValue];
+  return accumulator;
+}, {});
 
-/**
- * Runs scriptManager in container with the target app as volume.
- * Spins a container and passes entrypoint node script the relevant parameters used as:
- *  - Project root path
- *  - Manager path in container
- */
+
+
+
+
+
+
+
+
+
 module.exports = function runInContainer(input) {
-  console.log(process.argv)
-  // use nested objects as function parameters - an implementation of destructuring that preserves nested structure of parameters and default values. // ISSUE: doesn't throw if parameters not passed.
+  console.log(process.argv);
+
   let application = {},
-    scriptManager = {},
-    invokedDirectly,
-    configurationAbsoluteHostPath
-  ;({
+  scriptManager = {},
+  invokedDirectly,
+  configurationAbsoluteHostPath;
+  ({
     configurationAbsoluteHostPath,
     application: {
-      hostPath: application.hostPath, // the Windows host application path
+      hostPath: application.hostPath,
       configuration: application.configuration,
-      pathInContainer: application.pathInContainer = application.configuration.directory.application.containerAbsolutePath || containerPath.application,
-    },
-    // as default the scriptManager should be installed (i.e. expected to be a dependency) as a dependency in a nested folder to the application.
-    scriptManager: { hostRelativePath: scriptManager.hostRelativePath, commandArgument: scriptManager.commandArgument = process.argv },
-    invokedDirectly = false,
-  } = input) // destructure nested objects to the object properties themselves.
-  ;(scriptManager.commandArgument = invokedDirectly
-    ? scriptManager.commandArgument.slice(2) // remove first 2 commands only - "<binPath>/node", "<path>/containerManager.js".
-    : scriptManager.commandArgument.slice(3)), // remove first 2 commands - "<binPath>/node", "<path>/entrypoint.js" and the third host machine script name "containerManager"
-    (scriptManager.relativePathFromProject = path.relative(application.hostPath, scriptManager.hostRelativePath))
-  scriptManager.relativePathFromProject = slash(scriptManager.relativePathFromProject) // convert to Unix path from Windows path (change \ slash to /)
-  // NOTE: creating an absolute path for scriptManager assumes that the module exist under the application directory (/project/application).
-  scriptManager.absolutePathInContainer = slash(path.join(application.pathInContainer, scriptManager.relativePathFromProject)) // create an absolute path for scriptManager which should be nested to application path.
+      pathInContainer: application.pathInContainer = application.configuration.directory.application.containerAbsolutePath || containerPath.application },
 
-  let configurationAbsoluteContainerPath
+
+    scriptManager: { hostRelativePath: scriptManager.hostRelativePath, commandArgument: scriptManager.commandArgument = process.argv },
+    invokedDirectly = false } =
+  input);
+  scriptManager.commandArgument = invokedDirectly ?
+  scriptManager.commandArgument.slice(2) :
+  scriptManager.commandArgument.slice(3),
+  scriptManager.relativePathFromProject = _path.default.relative(application.hostPath, scriptManager.hostRelativePath);
+  scriptManager.relativePathFromProject = (0, _slash.default)(scriptManager.relativePathFromProject);
+
+  scriptManager.absolutePathInContainer = (0, _slash.default)(_path.default.join(application.pathInContainer, scriptManager.relativePathFromProject));
+
+  let configurationAbsoluteContainerPath;
   {
-    let relativePathFromProject = path.relative(application.hostPath, configurationAbsoluteHostPath)
-    relativePathFromProject = slash(relativePathFromProject) // convert to Unix path from Windows path (change \ slash to /)
-    configurationAbsoluteContainerPath = slash(path.join(application.pathInContainer, relativePathFromProject)) // create an absolute path which should be nested to application path.
+    let relativePathFromProject = _path.default.relative(application.hostPath, configurationAbsoluteHostPath);
+    relativePathFromProject = (0, _slash.default)(relativePathFromProject);
+    configurationAbsoluteContainerPath = (0, _slash.default)(_path.default.join(application.pathInContainer, relativePathFromProject));
   }
 
-  // resolve working directory path from host path to container path.
-  let hostWorkingDirectory_PWD = process.env.PWD,
-    workingDirectoryRelativeToApp_PWD = slash(path.relative(application.hostPath, hostWorkingDirectory_PWD)),
-    workingDirectoryInContainer_PWD = slash(path.join(application.pathInContainer, workingDirectoryRelativeToApp_PWD)) // absolute container path of working directory
-  let hostWorkingDirectory_CWD = process.cwd(),
-    workingDirectoryRelativeToApp_CWD = slash(path.relative(application.hostPath, hostWorkingDirectory_CWD)),
-    workingDirectoryInContainer_CWD = slash(path.join(application.pathInContainer, workingDirectoryRelativeToApp_CWD)) // absolute container path of working directory
 
-  let childProcessArray = []
+  let hostWorkingDirectory_PWD = process.env.PWD,
+  workingDirectoryRelativeToApp_PWD = (0, _slash.default)(_path.default.relative(application.hostPath, hostWorkingDirectory_PWD)),
+  workingDirectoryInContainer_PWD = (0, _slash.default)(_path.default.join(application.pathInContainer, workingDirectoryRelativeToApp_PWD));
+  let hostWorkingDirectory_CWD = process.cwd(),
+  workingDirectoryRelativeToApp_CWD = (0, _slash.default)(_path.default.relative(application.hostPath, hostWorkingDirectory_CWD)),
+  workingDirectoryInContainer_CWD = (0, _slash.default)(_path.default.join(application.pathInContainer, workingDirectoryRelativeToApp_CWD));
+
+  let childProcessArray = [];
   function killChildProcess({ childProcesses = childProcessArray } = {}) {
     childProcesses.forEach((childProcess, index) => {
-      childProcess.kill('SIGINT')
-      childProcess.kill('SIGTERM')
-      childProcesses.splice(index, 1) // remove item from array
-    })
-    // process.exit()
+      childProcess.kill('SIGINT');
+      childProcess.kill('SIGTERM');
+      childProcesses.splice(index, 1);
+    });
+
   }
 
-  // create container
-  console.log('creating containers !!!!!')
-  // TODO: Add require statements from directory `./containerScript`
+
+  console.log('creating containers !!!!!');
+
 
   process.on('SIGINT', () => {
-    // when docker is using `-it` option this event won't be fired in this process, as the SIGINT signal is passed directly to the docker container.
-    console.log('• [NODE HOST MACHINE] Caught interrupt signal - host machine level')
-    killChildProcess()
-  })
 
-  console.groupEnd()
-}
+    console.log('• [NODE HOST MACHINE] Caught interrupt signal - host machine level');
+    killChildProcess();
+  });
+
+  console.groupEnd();
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL3NjcmlwdE1hbmFnZXItcnVuSW5Db250YWluZXIvc2NyaXB0LmpzIl0sIm5hbWVzIjpbImNvbmZpZyIsImNvbnRhaW5lclNldHRpbmciLCJwcm9qZWN0UGF0aCIsInNjcmlwdE1hbmFnZXJSb290Rm9sZGVyIiwidGFyZ2V0QXBwUm9vdEZvbGRlciIsInByb2Nlc3MiLCJlbnYiLCJ0YXJnZXRBcHBCYXNlUGF0aCIsInRhcmdldEFwcERlcGxveW1lbnRTY3JpcHQiLCJwYXRoIiwiZGlybmFtZSIsInJlcXVpcmUiLCJyZXNvbHZlIiwicGF0aHMiLCJlcnJvciIsInRhcmdldEFwcCIsInJvb3RGb2xkZXIiLCJzY3JpcHRGb2xkZXIiLCJwYXJzZWRBcmciLCJhcmd2IiwiY29udGFpbmVyUGF0aCIsImFwcGxpY2F0aW9uIiwiQXJyYXkiLCJpc0FycmF5IiwiZXhwb3J0RW52aXJvbm1lbnRBcmciLCJyZWR1Y2UiLCJhY2N1bXVsYXRvciIsImN1cnJlbnRWYWx1ZSIsIm1vZHVsZSIsImV4cG9ydHMiLCJydW5JbkNvbnRhaW5lciIsImlucHV0IiwiY29uc29sZSIsImxvZyIsInNjcmlwdE1hbmFnZXIiLCJpbnZva2VkRGlyZWN0bHkiLCJjb25maWd1cmF0aW9uQWJzb2x1dGVIb3N0UGF0aCIsImhvc3RQYXRoIiwiY29uZmlndXJhdGlvbiIsInBhdGhJbkNvbnRhaW5lciIsImRpcmVjdG9yeSIsImNvbnRhaW5lckFic29sdXRlUGF0aCIsImhvc3RSZWxhdGl2ZVBhdGgiLCJjb21tYW5kQXJndW1lbnQiLCJzbGljZSIsInJlbGF0aXZlUGF0aEZyb21Qcm9qZWN0IiwicmVsYXRpdmUiLCJhYnNvbHV0ZVBhdGhJbkNvbnRhaW5lciIsImpvaW4iLCJjb25maWd1cmF0aW9uQWJzb2x1dGVDb250YWluZXJQYXRoIiwiaG9zdFdvcmtpbmdEaXJlY3RvcnlfUFdEIiwiUFdEIiwid29ya2luZ0RpcmVjdG9yeVJlbGF0aXZlVG9BcHBfUFdEIiwid29ya2luZ0RpcmVjdG9yeUluQ29udGFpbmVyX1BXRCIsImhvc3RXb3JraW5nRGlyZWN0b3J5X0NXRCIsImN3ZCIsIndvcmtpbmdEaXJlY3RvcnlSZWxhdGl2ZVRvQXBwX0NXRCIsIndvcmtpbmdEaXJlY3RvcnlJbkNvbnRhaW5lcl9DV0QiLCJjaGlsZFByb2Nlc3NBcnJheSIsImtpbGxDaGlsZFByb2Nlc3MiLCJjaGlsZFByb2Nlc3NlcyIsImZvckVhY2giLCJjaGlsZFByb2Nlc3MiLCJpbmRleCIsImtpbGwiLCJzcGxpY2UiLCJvbiIsImdyb3VwRW5kIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUEyQkE7QUFDQSxzREE1QkEsSUFBSUEsTUFBTSxHQUFHLEVBQ1gsSUFBSUMsZ0JBQUosR0FBdUIsQ0FFckIsTUFBTUMsV0FBVyxHQUFHLFVBQXBCLENBQ0VDLHVCQUF1QixHQUFJLEdBQUVELFdBQVksZ0JBRDNDLENBRUVFLG1CQUFtQixHQUFHQyxPQUFPLENBQUNDLEdBQVIsQ0FBWUMsaUJBQVosSUFBa0MsR0FBRUwsV0FBWSxjQUZ4RSxDQUtBLElBQUlNLHlCQUFKLENBQ0EsSUFBSSxDQUNGQSx5QkFBeUIsR0FBR0MsY0FBS0MsT0FBTCxDQUFhQyxPQUFPLENBQUNDLE9BQVIsQ0FBaUIsMkNBQWpCLEVBQTZELEVBQUVDLEtBQUssRUFBRSxDQUFDVCxtQkFBRCxDQUFULEVBQTdELENBQWIsQ0FBNUIsQ0FDRCxDQUZELENBRUUsT0FBT1UsS0FBUCxFQUFjLENBRWROLHlCQUF5QixHQUFHLElBQTVCLENBQ0QsQ0FFRCxPQUFPLEVBQ0xPLFNBQVMsRUFBRSxFQUNUQyxVQUFVLEVBQUVaLG1CQURILEVBRVRhLFlBQVksRUFBRyxHQUFFYixtQkFBb0IsU0FGNUIsRUFETixFQUFQLENBTUQsQ0F0QlUsRUFBYjs7QUE4QkEsTUFBTWMsU0FBUyxHQUFHUCxPQUFPLENBQUMsT0FBRCxDQUFQLENBQWlCUSxJQUFuQzs7QUFFQSxNQUFNQyxhQUFhLEdBQUc7O0FBRXBC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QUFDQTBCLElBQUFBLGdCQUFnQjtBQUNqQixHQUpEOztBQU1BM0IsRUFBQUEsT0FBTyxDQUFDbUMsUUFBUjtBQUNELENBOUREIiwic291cmNlc0NvbnRlbnQiOlsibGV0IGNvbmZpZyA9IHtcbiAgZ2V0IGNvbnRhaW5lclNldHRpbmcoKSB7XG4gICAgLy8g4pqXIHJlZmFjdG9yIHdoZW4gZml4aW5nIGBydW5JbkNvbnRhaW5lcmAgZnVuY3Rpb25hbGl0eS5cbiAgICBjb25zdCBwcm9qZWN0UGF0aCA9ICcvcHJvamVjdCcsXG4gICAgICBzY3JpcHRNYW5hZ2VyUm9vdEZvbGRlciA9IGAke3Byb2plY3RQYXRofS9zY3JpcHRNYW5hZ2VyYCxcbiAgICAgIHRhcmdldEFwcFJvb3RGb2xkZXIgPSBwcm9jZXNzLmVudi50YXJnZXRBcHBCYXNlUGF0aCB8fCBgJHtwcm9qZWN0UGF0aH0vYXBwbGljYXRpb25gXG5cbiAgICAvLyB0cnkgdG8gZmluZCBtb2R1bGUgaW4gdGFyZ2V0QXBwXG4gICAgbGV0IHRhcmdldEFwcERlcGxveW1lbnRTY3JpcHRcbiAgICB0cnkge1xuICAgICAgdGFyZ2V0QXBwRGVwbG95bWVudFNjcmlwdCA9IHBhdGguZGlybmFtZShyZXF1aXJlLnJlc29sdmUoYEBkZXBlbmRlbmN5L0RlcGxveW1lbnRTY3JpcHQvcGFja2FnZS5qc29uYCwgeyBwYXRoczogW3RhcmdldEFwcFJvb3RGb2xkZXJdIH0pKVxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICAvLyBjb25zb2xlLmxvZyhg4oCiIENhbm5vdCBmaW5kIERlcGxveW1lbnRTY3JpcHQgbW9kdWxlIGluIHRhcmdldCBhcHAuYClcbiAgICAgIHRhcmdldEFwcERlcGxveW1lbnRTY3JpcHQgPSBudWxsXG4gICAgfVxuXG4gICAgcmV0dXJuIHtcbiAgICAgIHRhcmdldEFwcDoge1xuICAgICAgICByb290Rm9sZGVyOiB0YXJnZXRBcHBSb290Rm9sZGVyLFxuICAgICAgICBzY3JpcHRGb2xkZXI6IGAke3RhcmdldEFwcFJvb3RGb2xkZXJ9L3NjcmlwdGAsXG4gICAgICB9LFxuICAgIH1cbiAgfSxcbn1cblxuaW1wb3J0IHsgc3Bhd24sIHNwYXduU3luYyB9IGZyb20gJ2NoaWxkX3Byb2Nlc3MnXG5pbXBvcnQgb3BlcmF0aW5nU3lzdGVtIGZyb20gJ29zJ1xuaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcbmltcG9ydCBzbGFzaCBmcm9tICdzbGFzaCcgLy8gY29udmVydCBiYWNrd2FyZCBXaW5kb3dzIHNsYXNoIHRvIFVuaXgvV2luZG93cyBzdXBwb3J0ZWQgZm9yd2FyZCBzbGFzaC5cbmltcG9ydCB7IHNldEludGVydmFsIH0gZnJvbSAndGltZXJzJ1xuY29uc3QgcGFyc2VkQXJnID0gcmVxdWlyZSgneWFyZ3MnKS5hcmd2XG5pbXBvcnQgeyBjb252ZXJ0T2JqZWN0VG9Eb2NrZXJFbnZGbGFnIH0gZnJvbSAnLi91dGlsaXR5L2NvbnZlcnRPYmplY3RUb0RvY2tlckVudkZsYWcuanMnXG5jb25zdCBjb250YWluZXJQYXRoID0ge1xuICAvLyBkZWZpbmVkIHBhdGhzIG9mIHZvbHVtZXMgaW5zaWRlIGNvbnRhaW5lci5cbiAgYXBwbGljYXRpb246ICcvcHJvamVjdC9hcHBsaWNhdGlvbicsXG59XG5cbnBhcnNlZEFyZy5lbnYgPSAhQXJyYXkuaXNBcnJheShwYXJzZWRBcmcuZW52KSA/IFtwYXJzZWRBcmcuZW52XSA6IHBhcnNlZEFyZy5lbnYgLy8gdHJhbnNmb3JtIGAtLWVudmAgdmFsdWUgZmxhZ3MgdG8gYXJyYXkgZXZlbiB3aGVuIG9ubHkgb25lIHZhbHVlIHByZXNlbnRcbmxldCBleHBvcnRFbnZpcm9ubWVudEFyZyA9IHBhcnNlZEFyZy5lbnYucmVkdWNlKChhY2N1bXVsYXRvciwgY3VycmVudFZhbHVlKSA9PiB7XG4gIGlmIChwcm9jZXNzLmVudltjdXJyZW50VmFsdWVdKVxuICAgIC8vIG9ubHkga2V5cyB0aGF0IHBhc3NlZCB0aHJvdWdoIGVudmlyb25tZW50IHZhcmlhYmxlc1xuICAgIGFjY3VtdWxhdG9yW2N1cnJlbnRWYWx1ZV0gPSBwcm9jZXNzLmVudltjdXJyZW50VmFsdWVdXG4gIHJldHVybiBhY2N1bXVsYXRvclxufSwge30pIC8vIGdldCBlbnZpcm9ubWVudCB2YWx1ZXMgYW5kIG1hdGNoIHRoZW0gdG8ga2V5cyBpbiBhbiBvYmplY3QuXG5cbi8vIE5PVEU6IEEgd2F5IHRvIHJlbW92ZSBjb21tYW5kbGluZSBhcmd1bWVudCBhZnRlciB1c2FnZS5cbi8vIHByb2Nlc3MuYXJndiA9IHByb2Nlc3MuYXJndi5maWx0ZXIodmFsdWUgPT4gdmFsdWUgIT09IGBjb25maWd1cmF0aW9uPSR7bmFtZWRBcmdzLmNvbmZpZ3VyYXRpb259YCkgLy8gcmVtb3ZlIGNvbmZpZ3VyYXRpb24gcGFyYW10ZXJcblxuLyoqXG4gKiBSdW5zIHNjcmlwdE1hbmFnZXIgaW4gY29udGFpbmVyIHdpdGggdGhlIHRhcmdldCBhcHAgYXMgdm9sdW1lLlxuICogU3BpbnMgYSBjb250YWluZXIgYW5kIHBhc3NlcyBlbnRyeXBvaW50IG5vZGUgc2NyaXB0IHRoZSByZWxldmFudCBwYXJhbWV0ZXJzIHVzZWQgYXM6XG4gKiAgLSBQcm9qZWN0IHJvb3QgcGF0aFxuICogIC0gTWFuYWdlciBwYXRoIGluIGNvbnRhaW5lclxuICovXG5tb2R1bGUuZXhwb3J0cyA9IGZ1bmN0aW9uIHJ1bkluQ29udGFpbmVyKGlucHV0KSB7XG4gIGNvbnNvbGUubG9nKHByb2Nlc3MuYXJndilcbiAgLy8gdXNlIG5lc3RlZCBvYmplY3RzIGFzIGZ1bmN0aW9uIHBhcmFtZXRlcnMgLSBhbiBpbXBsZW1lbnRhdGlvbiBvZiBkZXN0cnVjdHVyaW5nIHRoYXQgcHJlc2VydmVzIG5lc3RlZCBzdHJ1Y3R1cmUgb2YgcGFyYW1ldGVycyBhbmQgZGVmYXVsdCB2YWx1ZXMuIC8vIElTU1VFOiBkb2Vzbid0IHRocm93IGlmIHBhcmFtZXRlcnMgbm90IHBhc3NlZC5cbiAgbGV0IGFwcGxpY2F0aW9uID0ge30sXG4gICAgc2NyaXB0TWFuYWdlciA9IHt9LFxuICAgIGludm9rZWREaXJlY3RseSxcbiAgICBjb25maWd1cmF0aW9uQWJzb2x1dGVIb3N0UGF0aFxuICA7KHtcbiAgICBjb25maWd1cmF0aW9uQWJzb2x1dGVIb3N0UGF0aCxcbiAgICBhcHBsaWNhdGlvbjoge1xuICAgICAgaG9zdFBhdGg6IGFwcGxpY2F0aW9uLmhvc3RQYXRoLCAvLyB0aGUgV2luZG93cyBob3N0IGFwcGxpY2F0aW9uIHBhdGhcbiAgICAgIGNvbmZpZ3VyYXRpb246IGFwcGxpY2F0aW9uLmNvbmZpZ3VyYXRpb24sXG4gICAgICBwYXRoSW5Db250YWluZXI6IGFwcGxpY2F0aW9uLnBhdGhJbkNvbnRhaW5lciA9IGFwcGxpY2F0aW9uLmNvbmZpZ3VyYXRpb24uZGlyZWN0b3J5LmFwcGxpY2F0aW9uLmNvbnRhaW5lckFic29sdXRlUGF0aCB8fCBjb250YWluZXJQYXRoLmFwcGxpY2F0aW9uLFxuICAgIH0sXG4gICAgLy8gYXMgZGVmYXVsdCB0aGUgc2NyaXB0TWFuYWdlciBzaG91bGQgYmUgaW5zdGFsbGVkIChpLmUuIGV4cGVjdGVkIHRvIGJlIGEgZGVwZW5kZW5jeSkgYXMgYSBkZXBlbmRlbmN5IGluIGEgbmVzdGVkIGZvbGRlciB0byB0aGUgYXBwbGljYXRpb24uXG4gICAgc2NyaXB0TWFuYWdlcjogeyBob3N0UmVsYXRpdmVQYXRoOiBzY3JpcHRNYW5hZ2VyLmhvc3RSZWxhdGl2ZVBhdGgsIGNvbW1hbmRBcmd1bWVudDogc2NyaXB0TWFuYWdlci5jb21tYW5kQXJndW1lbnQgPSBwcm9jZXNzLmFyZ3YgfSxcbiAgICBpbnZva2VkRGlyZWN0bHkgPSBmYWxzZSxcbiAgfSA9IGlucHV0KSAvLyBkZXN0cnVjdHVyZSBuZXN0ZWQgb2JqZWN0cyB0byB0aGUgb2JqZWN0IHByb3BlcnRpZXMgdGhlbXNlbHZlcy5cbiAgOyhzY3JpcHRNYW5hZ2VyLmNvbW1hbmRBcmd1bWVudCA9IGludm9rZWREaXJlY3RseVxuICAgID8gc2NyaXB0TWFuYWdlci5jb21tYW5kQXJndW1lbnQuc2xpY2UoMikgLy8gcmVtb3ZlIGZpcnN0IDIgY29tbWFuZHMgb25seSAtIFwiPGJpblBhdGg+L25vZGVcIiwgXCI8cGF0aD4vY29udGFpbmVyTWFuYWdlci5qc1wiLlxuICAgIDogc2NyaXB0TWFuYWdlci5jb21tYW5kQXJndW1lbnQuc2xpY2UoMykpLCAvLyByZW1vdmUgZmlyc3QgMiBjb21tYW5kcyAtIFwiPGJpblBhdGg+L25vZGVcIiwgXCI8cGF0aD4vZW50cnlwb2ludC5qc1wiIGFuZCB0aGUgdGhpcmQgaG9zdCBtYWNoaW5lIHNjcmlwdCBuYW1lIFwiY29udGFpbmVyTWFuYWdlclwiXG4gICAgKHNjcmlwdE1hbmFnZXIucmVsYXRpdmVQYXRoRnJvbVByb2plY3QgPSBwYXRoLnJlbGF0aXZlKGFwcGxpY2F0aW9uLmhvc3RQYXRoLCBzY3JpcHRNYW5hZ2VyLmhvc3RSZWxhdGl2ZVBhdGgpKVxuICBzY3JpcHRNYW5hZ2VyLnJlbGF0aXZlUGF0aEZyb21Qcm9qZWN0ID0gc2xhc2goc2NyaXB0TWFuYWdlci5yZWxhdGl2ZVBhdGhGcm9tUHJvamVjdCkgLy8gY29udmVydCB0byBVbml4IHBhdGggZnJvbSBXaW5kb3dzIHBhdGggKGNoYW5nZSBcXCBzbGFzaCB0byAvKVxuICAvLyBOT1RFOiBjcmVhdGluZyBhbiBhYnNvbHV0ZSBwYXRoIGZvciBzY3JpcHRNYW5hZ2VyIGFzc3VtZXMgdGhhdCB0aGUgbW9kdWxlIGV4aXN0IHVuZGVyIHRoZSBhcHBsaWNhdGlvbiBkaXJlY3RvcnkgKC9wcm9qZWN0L2FwcGxpY2F0aW9uKS5cbiAgc2NyaXB0TWFuYWdlci5hYnNvbHV0ZVBhdGhJbkNvbnRhaW5lciA9IHNsYXNoKHBhdGguam9pbihhcHBsaWNhdGlvbi5wYXRoSW5Db250YWluZXIsIHNjcmlwdE1hbmFnZXIucmVsYXRpdmVQYXRoRnJvbVByb2plY3QpKSAvLyBjcmVhdGUgYW4gYWJzb2x1dGUgcGF0aCBmb3Igc2NyaXB0TWFuYWdlciB3aGljaCBzaG91bGQgYmUgbmVzdGVkIHRvIGFwcGxpY2F0aW9uIHBhdGguXG5cbiAgbGV0IGNvbmZpZ3VyYXRpb25BYnNvbHV0ZUNvbnRhaW5lclBhdGhcbiAge1xuICAgIGxldCByZWxhdGl2ZVBhdGhGcm9tUHJvamVjdCA9IHBhdGgucmVsYXRpdmUoYXBwbGljYXRpb24uaG9zdFBhdGgsIGNvbmZpZ3VyYXRpb25BYnNvbHV0ZUhvc3RQYXRoKVxuICAgIHJlbGF0aXZlUGF0aEZyb21Qcm9qZWN0ID0gc2xhc2gocmVsYXRpdmVQYXRoRnJvbVByb2plY3QpIC8vIGNvbnZlcnQgdG8gVW5peCBwYXRoIGZyb20gV2luZG93cyBwYXRoIChjaGFuZ2UgXFwgc2xhc2ggdG8gLylcbiAgICBjb25maWd1cmF0aW9uQWJzb2x1dGVDb250YWluZXJQYXRoID0gc2xhc2gocGF0aC5qb2luKGFwcGxpY2F0aW9uLnBhdGhJbkNvbnRhaW5lciwgcmVsYXRpdmVQYXRoRnJvbVByb2plY3QpKSAvLyBjcmVhdGUgYW4gYWJzb2x1dGUgcGF0aCB3aGljaCBzaG91bGQgYmUgbmVzdGVkIHRvIGFwcGxpY2F0aW9uIHBhdGguXG4gIH1cblxuICAvLyByZXNvbHZlIHdvcmtpbmcgZGlyZWN0b3J5IHBhdGggZnJvbSBob3N0IHBhdGggdG8gY29udGFpbmVyIHBhdGguXG4gIGxldCBob3N0V29ya2luZ0RpcmVjdG9yeV9QV0QgPSBwcm9jZXNzLmVudi5QV0QsXG4gICAgd29ya2luZ0RpcmVjdG9yeVJlbGF0aXZlVG9BcHBfUFdEID0gc2xhc2gocGF0aC5yZWxhdGl2ZShhcHBsaWNhdGlvbi5ob3N0UGF0aCwgaG9zdFdvcmtpbmdEaXJlY3RvcnlfUFdEKSksXG4gICAgd29ya2luZ0RpcmVjdG9yeUluQ29udGFpbmVyX1BXRCA9IHNsYXNoKHBhdGguam9pbihhcHBsaWNhdGlvbi5wYXRoSW5Db250YWluZXIsIHdvcmtpbmdEaXJlY3RvcnlSZWxhdGl2ZVRvQXBwX1BXRCkpIC8vIGFic29sdXRlIGNvbnRhaW5lciBwYXRoIG9mIHdvcmtpbmcgZGlyZWN0b3J5XG4gIGxldCBob3N0V29ya2luZ0RpcmVjdG9yeV9DV0QgPSBwcm9jZXNzLmN3ZCgpLFxuICAgIHdvcmtpbmdEaXJlY3RvcnlSZWxhdGl2ZVRvQXBwX0NXRCA9IHNsYXNoKHBhdGgucmVsYXRpdmUoYXBwbGljYXRpb24uaG9zdFBhdGgsIGhvc3RXb3JraW5nRGlyZWN0b3J5X0NXRCkpLFxuICAgIHdvcmtpbmdEaXJlY3RvcnlJbkNvbnRhaW5lcl9DV0QgPSBzbGFzaChwYXRoLmpvaW4oYXBwbGljYXRpb24ucGF0aEluQ29udGFpbmVyLCB3b3JraW5nRGlyZWN0b3J5UmVsYXRpdmVUb0FwcF9DV0QpKSAvLyBhYnNvbHV0ZSBjb250YWluZXIgcGF0aCBvZiB3b3JraW5nIGRpcmVjdG9yeVxuXG4gIGxldCBjaGlsZFByb2Nlc3NBcnJheSA9IFtdXG4gIGZ1bmN0aW9uIGtpbGxDaGlsZFByb2Nlc3MoeyBjaGlsZFByb2Nlc3NlcyA9IGNoaWxkUHJvY2Vzc0FycmF5IH0gPSB7fSkge1xuICAgIGNoaWxkUHJvY2Vzc2VzLmZvckVhY2goKGNoaWxkUHJvY2VzcywgaW5kZXgpID0+IHtcbiAgICAgIGNoaWxkUHJvY2Vzcy5raWxsKCdTSUdJTlQnKVxuICAgICAgY2hpbGRQcm9jZXNzLmtpbGwoJ1NJR1RFUk0nKVxuICAgICAgY2hpbGRQcm9jZXNzZXMuc3BsaWNlKGluZGV4LCAxKSAvLyByZW1vdmUgaXRlbSBmcm9tIGFycmF5XG4gICAgfSlcbiAgICAvLyBwcm9jZXNzLmV4aXQoKVxuICB9XG5cbiAgLy8gY3JlYXRlIGNvbnRhaW5lclxuICBjb25zb2xlLmxvZygnY3JlYXRpbmcgY29udGFpbmVycyAhISEhIScpXG4gIC8vIFRPRE86IEFkZCByZXF1aXJlIHN0YXRlbWVudHMgZnJvbSBkaXJlY3RvcnkgYC4vY29udGFpbmVyU2NyaXB0YFxuXG4gIHByb2Nlc3Mub24oJ1NJR0lOVCcsICgpID0+IHtcbiAgICAvLyB3aGVuIGRvY2tlciBpcyB1c2luZyBgLWl0YCBvcHRpb24gdGhpcyBldmVudCB3b24ndCBiZSBmaXJlZCBpbiB0aGlzIHByb2Nlc3MsIGFzIHRoZSBTSUdJTlQgc2lnbmFsIGlzIHBhc3NlZCBkaXJlY3RseSB0byB0aGUgZG9ja2VyIGNvbnRhaW5lci5cbiAgICBjb25zb2xlLmxvZygn4oCiIFtOT0RFIEhPU1QgTUFDSElORV0gQ2F1Z2h0IGludGVycnVwdCBzaWduYWwgLSBob3N0IG1hY2hpbmUgbGV2ZWwnKVxuICAgIGtpbGxDaGlsZFByb2Nlc3MoKVxuICB9KVxuXG4gIGNvbnNvbGUuZ3JvdXBFbmQoKVxufVxuIl19

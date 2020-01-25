@@ -1,29 +1,30 @@
-// for development to check the image or try to install packages on it before writting it to the code of the build.
-import { spawn, spawnSync } from 'child_process'
-import path from 'path'
-const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ run - container with volumes`)
+var _path = _interopRequireDefault(require("path"));
+const message_prefix = `\x1b[3m\x1b[2m•[${_path.default.basename(__filename)} JS script]:\x1b[0m`;
+
+console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ run - container with volumes`);
 
 let image = 'myuserindocker/deployment-environment:latest',
-  containerCommand = 'node /project/application/source/entrypoint.js run',
-  processCommand = 'docker',
-  containerPrefix = 'sleepscriptManager',
-  applicationHostPath = path.normalize(path.join(__dirname, '../../'))
+containerCommand = 'node /project/application/source/entrypoint.js run',
+processCommand = 'docker',
+containerPrefix = 'sleepscriptManager',
+applicationHostPath = _path.default.normalize(_path.default.join(__dirname, '../../'));
 
-console.log(`%s \n %s \n %s`, `\x1b[3m\x1b[2m > docker run\x1b[0m`, `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`, `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`)
+console.log(`%s \n %s \n %s`, `\x1b[3m\x1b[2m > docker run\x1b[0m`, `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`, `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`);
 
 let processArg = [
-  `run`,
-  `--volume /var/run/docker.sock:/var/run/docker.sock`,
-  `--volume ${applicationHostPath}:/project/application`,
-  `--volume ${applicationHostPath}:/project/scriptManager`,
-  `--env "hostPath=${applicationHostPath}"`,
-  `--env "entrypointConfigurationPath=/project/application/setup/entrypoint/configuration.js"`,
-  `--name ${containerPrefix}`,
-  `${image}`,
-  `${containerCommand}`,
-]
-// spawnSync(processCommand, processArg, { shell: true, stdio: [0,1,2] })
+`run`,
+`--volume /var/run/docker.sock:/var/run/docker.sock`,
+`--volume ${applicationHostPath}:/project/application`,
+`--volume ${applicationHostPath}:/project/scriptManager`,
+`--env "hostPath=${applicationHostPath}"`,
+`--env "entrypointConfigurationPath=/project/application/setup/entrypoint/configuration.js"`,
+`--name ${containerPrefix}`,
+`${image}`,
+`${containerCommand}`];
 
-console.groupEnd()
+
+
+console.groupEnd();
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9kZXByZWNhdGVkL3J1bi5kZXByZWNhdGVkLmpzIl0sIm5hbWVzIjpbIm1lc3NhZ2VfcHJlZml4IiwicGF0aCIsImJhc2VuYW1lIiwiX19maWxlbmFtZSIsImNvbnNvbGUiLCJncm91cCIsImltYWdlIiwiY29udGFpbmVyQ29tbWFuZCIsInByb2Nlc3NDb21tYW5kIiwiY29udGFpbmVyUHJlZml4IiwiYXBwbGljYXRpb25Ib3N0UGF0aCIsIm5vcm1hbGl6ZSIsImpvaW4iLCJfX2Rpcm5hbWUiLCJsb2ciLCJwcm9jZXNzQXJnIiwiZ3JvdXBFbmQiXSwibWFwcGluZ3MiOiI7O0FBRUE7QUFDQSxNQUFNQSxjQUFjLEdBQUksbUJBQWtCQyxjQUFLQyxRQUFMLENBQWNDLFVBQWQsQ0FBMEIscUJBQXBFOztBQUVBQyxPQUFPLENBQUNDLEtBQVIsQ0FBZSxzQkFBZixFQUF1QyxHQUFFTCxjQUFlLEVBQXhELEVBQTRELGdDQUE1RDs7QUFFQSxJQUFJTSxLQUFLLEdBQUcsOENBQVo7QUFDRUMsZ0JBQWdCLEdBQUcsb0RBRHJCO0FBRUVDLGNBQWMsR0FBRyxRQUZuQjtBQUdFQyxlQUFlLEdBQUcsb0JBSHBCO0FBSUVDLG1CQUFtQixHQUFHVCxjQUFLVSxTQUFMLENBQWVWLGNBQUtXLElBQUwsQ0FBVUMsU0FBVixFQUFxQixRQUFyQixDQUFmLENBSnhCOztBQU1BVCxPQUFPLENBQUNVLEdBQVIsQ0FBYSxnQkFBYixFQUErQixvQ0FBL0IsRUFBcUUsaUNBQWdDUixLQUFNLEVBQTNHLEVBQStHLG1DQUFrQ0MsZ0JBQWlCLEVBQWxLOztBQUVBLElBQUlRLFVBQVUsR0FBRztBQUNkLEtBRGM7QUFFZCxvREFGYztBQUdkLFlBQVdMLG1CQUFvQix1QkFIakI7QUFJZCxZQUFXQSxtQkFBb0IseUJBSmpCO0FBS2QsbUJBQWtCQSxtQkFBb0IsR0FMeEI7QUFNZCw0RkFOYztBQU9kLFVBQVNELGVBQWdCLEVBUFg7QUFRZCxHQUFFSCxLQUFNLEVBUk07QUFTZCxHQUFFQyxnQkFBaUIsRUFUTCxDQUFqQjs7OztBQWFBSCxPQUFPLENBQUNZLFFBQVIiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBmb3IgZGV2ZWxvcG1lbnQgdG8gY2hlY2sgdGhlIGltYWdlIG9yIHRyeSB0byBpbnN0YWxsIHBhY2thZ2VzIG9uIGl0IGJlZm9yZSB3cml0dGluZyBpdCB0byB0aGUgY29kZSBvZiB0aGUgYnVpbGQuXHJcbmltcG9ydCB7IHNwYXduLCBzcGF3blN5bmMgfSBmcm9tICdjaGlsZF9wcm9jZXNzJ1xyXG5pbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xyXG5jb25zdCBtZXNzYWdlX3ByZWZpeCA9IGBcXHgxYlszbVxceDFiWzJt4oCiWyR7cGF0aC5iYXNlbmFtZShfX2ZpbGVuYW1lKX0gSlMgc2NyaXB0XTpcXHgxYlswbWBcclxuXHJcbmNvbnNvbGUuZ3JvdXAoYCVzIFxceDFiWzMzbSVzXFx4MWJbMG1gLCBgJHttZXNzYWdlX3ByZWZpeH1gLCBgxpIgcnVuIC0gY29udGFpbmVyIHdpdGggdm9sdW1lc2ApXHJcblxyXG5sZXQgaW1hZ2UgPSAnbXl1c2VyaW5kb2NrZXIvZGVwbG95bWVudC1lbnZpcm9ubWVudDpsYXRlc3QnLFxyXG4gIGNvbnRhaW5lckNvbW1hbmQgPSAnbm9kZSAvcHJvamVjdC9hcHBsaWNhdGlvbi9zb3VyY2UvZW50cnlwb2ludC5qcyBydW4nLFxyXG4gIHByb2Nlc3NDb21tYW5kID0gJ2RvY2tlcicsXHJcbiAgY29udGFpbmVyUHJlZml4ID0gJ3NsZWVwc2NyaXB0TWFuYWdlcicsXHJcbiAgYXBwbGljYXRpb25Ib3N0UGF0aCA9IHBhdGgubm9ybWFsaXplKHBhdGguam9pbihfX2Rpcm5hbWUsICcuLi8uLi8nKSlcclxuXHJcbmNvbnNvbGUubG9nKGAlcyBcXG4gJXMgXFxuICVzYCwgYFxceDFiWzNtXFx4MWJbMm0gPiBkb2NrZXIgcnVuXFx4MWJbMG1gLCBgXFx0XFx4MWJbM21cXHgxYlsybWltYWdlOlxceDFiWzBtICR7aW1hZ2V9YCwgYFxcdFxceDFiWzNtXFx4MWJbMm1jb21tYW5kOlxceDFiWzBtICR7Y29udGFpbmVyQ29tbWFuZH1gKVxyXG5cclxubGV0IHByb2Nlc3NBcmcgPSBbXHJcbiAgYHJ1bmAsXHJcbiAgYC0tdm9sdW1lIC92YXIvcnVuL2RvY2tlci5zb2NrOi92YXIvcnVuL2RvY2tlci5zb2NrYCxcclxuICBgLS12b2x1bWUgJHthcHBsaWNhdGlvbkhvc3RQYXRofTovcHJvamVjdC9hcHBsaWNhdGlvbmAsXHJcbiAgYC0tdm9sdW1lICR7YXBwbGljYXRpb25Ib3N0UGF0aH06L3Byb2plY3Qvc2NyaXB0TWFuYWdlcmAsXHJcbiAgYC0tZW52IFwiaG9zdFBhdGg9JHthcHBsaWNhdGlvbkhvc3RQYXRofVwiYCxcclxuICBgLS1lbnYgXCJlbnRyeXBvaW50Q29uZmlndXJhdGlvblBhdGg9L3Byb2plY3QvYXBwbGljYXRpb24vc2V0dXAvZW50cnlwb2ludC9jb25maWd1cmF0aW9uLmpzXCJgLFxyXG4gIGAtLW5hbWUgJHtjb250YWluZXJQcmVmaXh9YCxcclxuICBgJHtpbWFnZX1gLFxyXG4gIGAke2NvbnRhaW5lckNvbW1hbmR9YCxcclxuXVxyXG4vLyBzcGF3blN5bmMocHJvY2Vzc0NvbW1hbmQsIHByb2Nlc3NBcmcsIHsgc2hlbGw6IHRydWUsIHN0ZGlvOiBbMCwxLDJdIH0pXHJcblxyXG5jb25zb2xlLmdyb3VwRW5kKClcclxuIl19
