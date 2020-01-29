@@ -1,0 +1,1 @@
+childProcess.execSync([``, ``, ``, ``, ``, ``].join(' && \\\n'), {})

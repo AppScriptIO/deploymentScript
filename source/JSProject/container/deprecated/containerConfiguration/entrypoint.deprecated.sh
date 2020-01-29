@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 ## Entrypoints & commands portal/interface
+# Docker configurations for containers using docker-compose, docker cli, or other tools.
 
 # current file parent directory path:
 # also can use - echo "$(dirname "$0")"
