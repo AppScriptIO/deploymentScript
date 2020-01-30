@@ -4,7 +4,7 @@ import filesystem from 'fs'
 import { watchFile, browserLivereload, ManageSubprocess } from '@deployment/nodejsLiveReload'
 const { resolveAndLookupFile, findFileByGlobPattern } = require('@dependency/handleFilesystemOperation')
 const boltProtocolDriver = require('neo4j-driver').v1
-import { memgraphContainer } from '@deployment/deploymentProvisioning'
+import * as memgraphContainer from './container/memgraphContainer.js'
 
 async function clearGraphData() {
   console.groupCollapsed('• Run prerequisite containers:')
