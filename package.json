@@ -3,13 +3,13 @@
 	"main": "./entrypoint/programmaticAPI",
 	"version": "2.2.5",
 	"scripts": {
-		"upgrade": "echo 'Upgrading also workspaces'; yarn workspaces run upgrade",
+		"upgrade": "echo '• Upgrading also workspaces'; yarn workspaces run upgrade",
 		"postinstall": "yarn workspaces run install # always install workspaces, even as a when this module is used as a dependency # important: must be registered on post install, as some package rely on scriptManager binary during installation",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true ./ \".buildAndRelease.moduleProject({})\"",
 		"build": "yarn run scriptManager shouldCompileScript=true ./ \".buildSourceCode.moduleProject({}, {compile:[/**'./test'*/]})\""
 	},
 	"workspaces": [
-		"./source/packageManager/*"
+		"./packageManager/*"
 	],
 	"private": true,
 	"dependencies": {
