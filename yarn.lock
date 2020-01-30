@@ -1040,8 +1040,8 @@
   resolved "https://github.com/AppScriptIO/promiseProperRace#a1ceb5ff9707b78e2d72876955c23f829a0830d5"
 
 "@deployment/buildTool@https://github.com/AppScriptIO/buildTool#semver:^2.x.x":
-  version "2.2.3"
-  resolved "https://github.com/AppScriptIO/buildTool#b581db1a587c7b7d1f264709f70ebbc4ba6ace72"
+  version "2.3.2"
+  resolved "https://github.com/AppScriptIO/buildTool#5dd9c6d4382aaf5fdbf7af76789bc015d84534ed"
   dependencies:
     "@dependency/fragmentIndentationObjectStream" "https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x"
     "@dependency/graphTraversal" "https://github.com/AppScriptIO/graphTraversal#semver:4.x.x"
@@ -1127,8 +1127,8 @@
     sinon "*"
 
 "@deployment/javascriptTranspilation@https://github.com/AppScriptIO/javascriptTranspilation#semver:^2.x.x":
-  version "2.4.1"
-  resolved "https://github.com/AppScriptIO/javascriptTranspilation#ce2c5cfa5d9c9ff2b06fcedad82772ae5201c3bb"
+  version "2.4.3"
+  resolved "https://github.com/AppScriptIO/javascriptTranspilation#4e71c2ca19d9afb15b082f9c04eb3643b124b6d6"
   dependencies:
     "@babel/babel-plugin-functionSentProxyImplementation" "https://github.com/AppScriptIO/babel-plugin-functionSentProxyImplementation#semver:^1.x.x"
     "@babel/cli" "*"

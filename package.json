@@ -1,7 +1,7 @@
 {
 	"name": "@deployment/deploymentScript",
 	"main": "./entrypoint/programmaticAPI",
-	"version": "2.2.5",
+	"version": "2.3.1",
 	"scripts": {
 		"upgrade": "echo '• Upgrading also workspaces'; yarn workspaces run upgrade",
 		"postinstall": "yarn workspaces run install # always install workspaces, even as a when this module is used as a dependency # important: must be registered on post install, as some package rely on scriptManager binary during installation",
@@ -16,8 +16,8 @@
 		"@dependency/entity": "https://github.com/AppScriptIO/entity#semver:^2.x.x",
 		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^4.x.x",
 		"@dependency/graphTraversal-implementation": "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x",
+		"@dependency/handleFilesystemOperation": "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x",
 		"@deployment/buildTool": "https://github.com/AppScriptIO/buildTool#semver:^2.x.x",
-		"@deployment/handleFilesystemOperation": "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x",
 		"@deployment/javascriptTestRunner": "https://github.com/AppScriptIO/javascriptTestRunner#semver:^2.x.x",
 		"@deployment/nodejsLiveReload": "https://github.com/AppScriptIO/nodejsLiveReload#semver:^2.x.x",
 		"apollo-cache-inmemory": "*",
