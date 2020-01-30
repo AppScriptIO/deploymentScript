@@ -1,39 +1,39 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-// https://neo4j.com/developer/docker-run-neo4j/
 
-// APOC http://neo4j-contrib.github.io/neo4j-apoc-procedures/3.4/installation/
-// https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/tag/3.5.0.4
-// USAGE for exporting json database, through using Cepher APOC extensions: `CALL apoc.export.json.all("all.json",{useTypes:true})`
 
-//dump initial config file values:
 
-// docker run --rm --volume=$PWD/temporary/neo4j/conf:/conf neo4j:latest dump-config
-// -v $PWD/temporary/neo4j/conf:/conf \
 
-// mkdir -p $PWD/temporary/neo4j/data
-// mkdir -p $PWD/temporary/neo4j/logs
-// mkdir -p $PWD/temporary/neo4j/conf
-// mkdir -p $PWD/temporary/neo4j/plugins
-// mkdir -p $PWD/temporary/neo4j/import
 
-// -v $PWD/temporary/neo4j/logs:/logs \
-// -v $PWD/temporary/neo4j/plugins:/plugins \
-// -v $PWD/temporary/neo4j/import:/var/lib/neo4j/import/ \
-// -v $PWD/temporary/neo4j/data:/data \
-// -e NEO4J_dbms_security_procedures_unrestricted=apoc.\\\* \
-// -e NEO4J_apoc_export_file_enabled=true \
-// -e NEO4J_apoc_import_file_enabled=true \
-// -e NEO4J_apoc_import_file_use__neo4j__config=true \
 
-export function runDockerContainer() {
-  console.log(`• Running container: neo4j on port 7686`)
-  // TODO: This is a quick automatic starting of dependency container. Provide a better way to handle container dependencies.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function runDockerContainer() {
+  console.log(`• Running container: neo4j on port 7686`);
+
   try {
     childProcess.execSync(
-      [
-        `
+    [
+    `
         if [ ! "$(docker ps -q -f name=neo4j)" ]; then
           if [ "$(docker ps -aq -f status=exited -f name=neo4j)" ]; then
               # cleanup
@@ -47,11 +47,12 @@ export function runDockerContainer() {
             --env NEO4J_AUTH=neo4j/test \
             neo4j:latest
         fi
-        `,
-      ].join(' && \\\n'),
-      childProcessOption,
-    )
+        `].
+    join(' && \\\n'),
+    childProcessOption);
+
   } catch (error) {
-    throw error
+    throw error;
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL25lbzRqQ29udGFpbmVyLmpzIl0sIm5hbWVzIjpbImNoaWxkUHJvY2VzcyIsInJlcXVpcmUiLCJjaGlsZFByb2Nlc3NPcHRpb24iLCJjd2QiLCJfX2Rpcm5hbWUiLCJzaGVsbCIsInN0ZGlvIiwicnVuRG9ja2VyQ29udGFpbmVyIiwiY29uc29sZSIsImxvZyIsImV4ZWNTeW5jIiwiam9pbiIsImVycm9yIl0sIm1hcHBpbmdzIjoiMkhBQUEsTUFBTUEsWUFBWSxHQUFHQyxPQUFPLENBQUMsZUFBRCxDQUE1QjtBQUNBLE1BQU1DLGtCQUFrQixHQUFHLEVBQUVDLEdBQUcsRUFBRUMsU0FBUCxFQUFrQkMsS0FBSyxFQUFFLElBQXpCLEVBQStCQyxLQUFLLEVBQUUsQ0FBQyxDQUFELEVBQUksQ0FBSixFQUFPLENBQVAsQ0FBdEMsRUFBM0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUE0Qk8sU0FBU0Msa0JBQVQsR0FBOEI7QUFDbkNDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLHlDQUFiOztBQUVBLE1BQUk7QUFDRlQsSUFBQUEsWUFBWSxDQUFDVSxRQUFiO0FBQ0U7QUFDRzs7Ozs7Ozs7Ozs7Ozs7U0FESDtBQWdCRUMsSUFBQUEsSUFoQkYsQ0FnQk8sVUFoQlAsQ0FERjtBQWtCRVQsSUFBQUEsa0JBbEJGOztBQW9CRCxHQXJCRCxDQXFCRSxPQUFPVSxLQUFQLEVBQWM7QUFDZCxVQUFNQSxLQUFOO0FBQ0Q7QUFDRiIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IGNoaWxkUHJvY2VzcyA9IHJlcXVpcmUoJ2NoaWxkX3Byb2Nlc3MnKVxyXG5jb25zdCBjaGlsZFByb2Nlc3NPcHRpb24gPSB7IGN3ZDogX19kaXJuYW1lLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9XHJcblxyXG4vLyBodHRwczovL25lbzRqLmNvbS9kZXZlbG9wZXIvZG9ja2VyLXJ1bi1uZW80ai9cclxuXHJcbi8vIEFQT0MgaHR0cDovL25lbzRqLWNvbnRyaWIuZ2l0aHViLmlvL25lbzRqLWFwb2MtcHJvY2VkdXJlcy8zLjQvaW5zdGFsbGF0aW9uL1xyXG4vLyBodHRwczovL2dpdGh1Yi5jb20vbmVvNGotY29udHJpYi9uZW80ai1hcG9jLXByb2NlZHVyZXMvcmVsZWFzZXMvdGFnLzMuNS4wLjRcclxuLy8gVVNBR0UgZm9yIGV4cG9ydGluZyBqc29uIGRhdGFiYXNlLCB0aHJvdWdoIHVzaW5nIENlcGhlciBBUE9DIGV4dGVuc2lvbnM6IGBDQUxMIGFwb2MuZXhwb3J0Lmpzb24uYWxsKFwiYWxsLmpzb25cIix7dXNlVHlwZXM6dHJ1ZX0pYFxyXG5cclxuLy9kdW1wIGluaXRpYWwgY29uZmlnIGZpbGUgdmFsdWVzOlxyXG5cclxuLy8gZG9ja2VyIHJ1biAtLXJtIC0tdm9sdW1lPSRQV0QvdGVtcG9yYXJ5L25lbzRqL2NvbmY6L2NvbmYgbmVvNGo6bGF0ZXN0IGR1bXAtY29uZmlnXHJcbi8vIC12ICRQV0QvdGVtcG9yYXJ5L25lbzRqL2NvbmY6L2NvbmYgXFxcclxuXHJcbi8vIG1rZGlyIC1wICRQV0QvdGVtcG9yYXJ5L25lbzRqL2RhdGFcclxuLy8gbWtkaXIgLXAgJFBXRC90ZW1wb3JhcnkvbmVvNGovbG9nc1xyXG4vLyBta2RpciAtcCAkUFdEL3RlbXBvcmFyeS9uZW80ai9jb25mXHJcbi8vIG1rZGlyIC1wICRQV0QvdGVtcG9yYXJ5L25lbzRqL3BsdWdpbnNcclxuLy8gbWtkaXIgLXAgJFBXRC90ZW1wb3JhcnkvbmVvNGovaW1wb3J0XHJcblxyXG4vLyAtdiAkUFdEL3RlbXBvcmFyeS9uZW80ai9sb2dzOi9sb2dzIFxcXHJcbi8vIC12ICRQV0QvdGVtcG9yYXJ5L25lbzRqL3BsdWdpbnM6L3BsdWdpbnMgXFxcclxuLy8gLXYgJFBXRC90ZW1wb3JhcnkvbmVvNGovaW1wb3J0Oi92YXIvbGliL25lbzRqL2ltcG9ydC8gXFxcclxuLy8gLXYgJFBXRC90ZW1wb3JhcnkvbmVvNGovZGF0YTovZGF0YSBcXFxyXG4vLyAtZSBORU80Sl9kYm1zX3NlY3VyaXR5X3Byb2NlZHVyZXNfdW5yZXN0cmljdGVkPWFwb2MuXFxcXFxcKiBcXFxyXG4vLyAtZSBORU80Sl9hcG9jX2V4cG9ydF9maWxlX2VuYWJsZWQ9dHJ1ZSBcXFxyXG4vLyAtZSBORU80Sl9hcG9jX2ltcG9ydF9maWxlX2VuYWJsZWQ9dHJ1ZSBcXFxyXG4vLyAtZSBORU80Sl9hcG9jX2ltcG9ydF9maWxlX3VzZV9fbmVvNGpfX2NvbmZpZz10cnVlIFxcXHJcblxyXG5leHBvcnQgZnVuY3Rpb24gcnVuRG9ja2VyQ29udGFpbmVyKCkge1xyXG4gIGNvbnNvbGUubG9nKGDigKIgUnVubmluZyBjb250YWluZXI6IG5lbzRqIG9uIHBvcnQgNzY4NmApXHJcbiAgLy8gVE9ETzogVGhpcyBpcyBhIHF1aWNrIGF1dG9tYXRpYyBzdGFydGluZyBvZiBkZXBlbmRlbmN5IGNvbnRhaW5lci4gUHJvdmlkZSBhIGJldHRlciB3YXkgdG8gaGFuZGxlIGNvbnRhaW5lciBkZXBlbmRlbmNpZXMuXHJcbiAgdHJ5IHtcclxuICAgIGNoaWxkUHJvY2Vzcy5leGVjU3luYyhcclxuICAgICAgW1xyXG4gICAgICAgIGBcclxuICAgICAgICBpZiBbICEgXCIkKGRvY2tlciBwcyAtcSAtZiBuYW1lPW5lbzRqKVwiIF07IHRoZW5cclxuICAgICAgICAgIGlmIFsgXCIkKGRvY2tlciBwcyAtYXEgLWYgc3RhdHVzPWV4aXRlZCAtZiBuYW1lPW5lbzRqKVwiIF07IHRoZW5cclxuICAgICAgICAgICAgICAjIGNsZWFudXBcclxuICAgICAgICAgICAgICBkb2NrZXIgcm0gbmVvNGpcclxuICAgICAgICAgIGZpXHJcblxyXG4gICAgICAgICAgZG9ja2VyIHJ1biBcXFxyXG4gICAgICAgICAgICAtLW5hbWUgbmVvNGogXFxcclxuICAgICAgICAgICAgLXAgNzQ3NDo3NDc0IC1wIDc2ODY6NzY4NyAgXFxcclxuICAgICAgICAgICAgLWQgXFxcclxuICAgICAgICAgICAgLS1lbnYgTkVPNEpfQVVUSD1uZW80ai90ZXN0IFxcXHJcbiAgICAgICAgICAgIG5lbzRqOmxhdGVzdFxyXG4gICAgICAgIGZpXHJcbiAgICAgICAgYCxcclxuICAgICAgXS5qb2luKCcgJiYgXFxcXFxcbicpLFxyXG4gICAgICBjaGlsZFByb2Nlc3NPcHRpb24sXHJcbiAgICApXHJcbiAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgIHRocm93IGVycm9yXHJcbiAgfVxyXG59XHJcbiJdfQ==

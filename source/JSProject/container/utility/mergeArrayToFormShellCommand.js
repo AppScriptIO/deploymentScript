@@ -1,1 +1,2 @@
-childProcess.execSync([``, ``, ``, ``, ``, ``].join(' && \\\n'), {})
+"use strict";childProcess.execSync([``, ``, ``, ``, ``, ``].join(' && \\\n'), {});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3V0aWxpdHkvbWVyZ2VBcnJheVRvRm9ybVNoZWxsQ29tbWFuZC5qcyJdLCJuYW1lcyI6WyJjaGlsZFByb2Nlc3MiLCJleGVjU3luYyIsImpvaW4iXSwibWFwcGluZ3MiOiJhQUFBQSxZQUFZLENBQUNDLFFBQWIsQ0FBc0IsQ0FBRSxFQUFGLEVBQU0sRUFBTixFQUFVLEVBQVYsRUFBYyxFQUFkLEVBQWtCLEVBQWxCLEVBQXNCLEVBQXRCLEVBQXlCQyxJQUF6QixDQUE4QixVQUE5QixDQUF0QixFQUFpRSxFQUFqRSIsInNvdXJjZXNDb250ZW50IjpbImNoaWxkUHJvY2Vzcy5leGVjU3luYyhbYGAsIGBgLCBgYCwgYGAsIGBgLCBgYF0uam9pbignICYmIFxcXFxcXG4nKSwge30pXG4iXX0=

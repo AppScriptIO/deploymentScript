@@ -1,31 +1,32 @@
-{
-  const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
-  console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ container manager - container with volumes & requested entrypoint script`)
+"use strict";{
+  const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`;
+  console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ container manager - container with volumes & requested entrypoint script`);
 }
 
 {
-  const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
-  console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ run - container with volumes`)
-  console.log(`%s \n %s \n %s`, `\x1b[3m\x1b[2m > docker run\x1b[0m`, `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`, `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`)
-  console.groupEnd()
+  const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`;
+  console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ run - container with volumes`);
+  console.log(`%s \n %s \n %s`, `\x1b[3m\x1b[2m > docker run\x1b[0m`, `\t\x1b[3m\x1b[2mimage:\x1b[0m ${image}`, `\t\x1b[3m\x1b[2mcommand:\x1b[0m ${containerCommand}`);
+  console.groupEnd();
 }
 
 {
-  const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`
-  console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ build`)
+  const message_prefix = `\x1b[3m\x1b[2m•[${path.basename(__filename)} JS script]:\x1b[0m`;
+  console.group(`%s \x1b[33m%s\x1b[0m`, `${message_prefix}`, `ƒ build`);
   console.log(
-    `%s \n %s \n %s \n %s \n %s `,
-    `\x1b[3m\x1b[2m > ${processCommand} up \x1b[0m`,
-    `\t\x1b[3m\x1b[2mimage:\x1b[0m ${dockerImage}`,
-    `\t\x1b[3m\x1b[2mdockerComposeYmlPath:\x1b[0m ${dockerComposeFilePath}`,
-    `\t\x1b[3m\x1b[2mserviceName:\x1b[0m ${serviceName}`,
-    `\t\x1b[3m\x1b[2mprojectName:\x1b[0m ${projectName}`,
-  )
+  `%s \n %s \n %s \n %s \n %s `,
+  `\x1b[3m\x1b[2m > ${processCommand} up \x1b[0m`,
+  `\t\x1b[3m\x1b[2mimage:\x1b[0m ${dockerImage}`,
+  `\t\x1b[3m\x1b[2mdockerComposeYmlPath:\x1b[0m ${dockerComposeFilePath}`,
+  `\t\x1b[3m\x1b[2mserviceName:\x1b[0m ${serviceName}`,
+  `\t\x1b[3m\x1b[2mprojectName:\x1b[0m ${projectName}`);
+
   console.log(
-    `%s \n %s \n %s`,
-    `\x1b[3m\x1b[2m > docker-compose down\x1b[0m \x1b[3m\x1b[2m(stop  running containers) output\x1b[0m`,
-    `\t\x1b[3m\x1b[2mfile path:\x1b[0m ${dockerComposeFilePath}`,
-    `\t\x1b[3m\x1b[2mprojectName:\x1b[0m ${projectName}`,
-  )
-  console.groupEnd()
+  `%s \n %s \n %s`,
+  `\x1b[3m\x1b[2m > docker-compose down\x1b[0m \x1b[3m\x1b[2m(stop  running containers) output\x1b[0m`,
+  `\t\x1b[3m\x1b[2mfile path:\x1b[0m ${dockerComposeFilePath}`,
+  `\t\x1b[3m\x1b[2mprojectName:\x1b[0m ${projectName}`);
+
+  console.groupEnd();
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3V0aWxpdHkvbG9nTWVzc2FnZUNvbG9yaW5nLmpzIl0sIm5hbWVzIjpbIm1lc3NhZ2VfcHJlZml4IiwicGF0aCIsImJhc2VuYW1lIiwiX19maWxlbmFtZSIsImNvbnNvbGUiLCJncm91cCIsImxvZyIsImltYWdlIiwiY29udGFpbmVyQ29tbWFuZCIsImdyb3VwRW5kIiwicHJvY2Vzc0NvbW1hbmQiLCJkb2NrZXJJbWFnZSIsImRvY2tlckNvbXBvc2VGaWxlUGF0aCIsInNlcnZpY2VOYW1lIiwicHJvamVjdE5hbWUiXSwibWFwcGluZ3MiOiJhQUFBO0FBQ0UsUUFBTUEsY0FBYyxHQUFJLG1CQUFrQkMsSUFBSSxDQUFDQyxRQUFMLENBQWNDLFVBQWQsQ0FBMEIscUJBQXBFO0FBQ0FDLEVBQUFBLE9BQU8sQ0FBQ0MsS0FBUixDQUFlLHNCQUFmLEVBQXVDLEdBQUVMLGNBQWUsRUFBeEQsRUFBNEQsNEVBQTVEO0FBQ0Q7O0FBRUQ7QUFDRSxRQUFNQSxjQUFjLEdBQUksbUJBQWtCQyxJQUFJLENBQUNDLFFBQUwsQ0FBY0MsVUFBZCxDQUEwQixxQkFBcEU7QUFDQUMsRUFBQUEsT0FBTyxDQUFDQyxLQUFSLENBQWUsc0JBQWYsRUFBdUMsR0FBRUwsY0FBZSxFQUF4RCxFQUE0RCxnQ0FBNUQ7QUFDQUksRUFBQUEsT0FBTyxDQUFDRSxHQUFSLENBQWEsZ0JBQWIsRUFBK0Isb0NBQS9CLEVBQXFFLGlDQUFnQ0MsS0FBTSxFQUEzRyxFQUErRyxtQ0FBa0NDLGdCQUFpQixFQUFsSztBQUNBSixFQUFBQSxPQUFPLENBQUNLLFFBQVI7QUFDRDs7QUFFRDtBQUNFLFFBQU1ULGNBQWMsR0FBSSxtQkFBa0JDLElBQUksQ0FBQ0MsUUFBTCxDQUFjQyxVQUFkLENBQTBCLHFCQUFwRTtBQUNBQyxFQUFBQSxPQUFPLENBQUNDLEtBQVIsQ0FBZSxzQkFBZixFQUF1QyxHQUFFTCxjQUFlLEVBQXhELEVBQTRELFNBQTVEO0FBQ0FJLEVBQUFBLE9BQU8sQ0FBQ0UsR0FBUjtBQUNHLCtCQURIO0FBRUcsc0JBQW1CSSxjQUFlLGFBRnJDO0FBR0csbUNBQWdDQyxXQUFZLEVBSC9DO0FBSUcsa0RBQStDQyxxQkFBc0IsRUFKeEU7QUFLRyx5Q0FBc0NDLFdBQVksRUFMckQ7QUFNRyx5Q0FBc0NDLFdBQVksRUFOckQ7O0FBUUFWLEVBQUFBLE9BQU8sQ0FBQ0UsR0FBUjtBQUNHLGtCQURIO0FBRUcsc0dBRkg7QUFHRyx1Q0FBb0NNLHFCQUFzQixFQUg3RDtBQUlHLHlDQUFzQ0UsV0FBWSxFQUpyRDs7QUFNQVYsRUFBQUEsT0FBTyxDQUFDSyxRQUFSO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJ7XG4gIGNvbnN0IG1lc3NhZ2VfcHJlZml4ID0gYFxceDFiWzNtXFx4MWJbMm3igKJbJHtwYXRoLmJhc2VuYW1lKF9fZmlsZW5hbWUpfSBKUyBzY3JpcHRdOlxceDFiWzBtYFxuICBjb25zb2xlLmdyb3VwKGAlcyBcXHgxYlszM20lc1xceDFiWzBtYCwgYCR7bWVzc2FnZV9wcmVmaXh9YCwgYMaSIGNvbnRhaW5lciBtYW5hZ2VyIC0gY29udGFpbmVyIHdpdGggdm9sdW1lcyAmIHJlcXVlc3RlZCBlbnRyeXBvaW50IHNjcmlwdGApXG59XG5cbntcbiAgY29uc3QgbWVzc2FnZV9wcmVmaXggPSBgXFx4MWJbM21cXHgxYlsybeKAolske3BhdGguYmFzZW5hbWUoX19maWxlbmFtZSl9IEpTIHNjcmlwdF06XFx4MWJbMG1gXG4gIGNvbnNvbGUuZ3JvdXAoYCVzIFxceDFiWzMzbSVzXFx4MWJbMG1gLCBgJHttZXNzYWdlX3ByZWZpeH1gLCBgxpIgcnVuIC0gY29udGFpbmVyIHdpdGggdm9sdW1lc2ApXG4gIGNvbnNvbGUubG9nKGAlcyBcXG4gJXMgXFxuICVzYCwgYFxceDFiWzNtXFx4MWJbMm0gPiBkb2NrZXIgcnVuXFx4MWJbMG1gLCBgXFx0XFx4MWJbM21cXHgxYlsybWltYWdlOlxceDFiWzBtICR7aW1hZ2V9YCwgYFxcdFxceDFiWzNtXFx4MWJbMm1jb21tYW5kOlxceDFiWzBtICR7Y29udGFpbmVyQ29tbWFuZH1gKVxuICBjb25zb2xlLmdyb3VwRW5kKClcbn1cblxue1xuICBjb25zdCBtZXNzYWdlX3ByZWZpeCA9IGBcXHgxYlszbVxceDFiWzJt4oCiWyR7cGF0aC5iYXNlbmFtZShfX2ZpbGVuYW1lKX0gSlMgc2NyaXB0XTpcXHgxYlswbWBcbiAgY29uc29sZS5ncm91cChgJXMgXFx4MWJbMzNtJXNcXHgxYlswbWAsIGAke21lc3NhZ2VfcHJlZml4fWAsIGDGkiBidWlsZGApXG4gIGNvbnNvbGUubG9nKFxuICAgIGAlcyBcXG4gJXMgXFxuICVzIFxcbiAlcyBcXG4gJXMgYCxcbiAgICBgXFx4MWJbM21cXHgxYlsybSA+ICR7cHJvY2Vzc0NvbW1hbmR9IHVwIFxceDFiWzBtYCxcbiAgICBgXFx0XFx4MWJbM21cXHgxYlsybWltYWdlOlxceDFiWzBtICR7ZG9ja2VySW1hZ2V9YCxcbiAgICBgXFx0XFx4MWJbM21cXHgxYlsybWRvY2tlckNvbXBvc2VZbWxQYXRoOlxceDFiWzBtICR7ZG9ja2VyQ29tcG9zZUZpbGVQYXRofWAsXG4gICAgYFxcdFxceDFiWzNtXFx4MWJbMm1zZXJ2aWNlTmFtZTpcXHgxYlswbSAke3NlcnZpY2VOYW1lfWAsXG4gICAgYFxcdFxceDFiWzNtXFx4MWJbMm1wcm9qZWN0TmFtZTpcXHgxYlswbSAke3Byb2plY3ROYW1lfWAsXG4gIClcbiAgY29uc29sZS5sb2coXG4gICAgYCVzIFxcbiAlcyBcXG4gJXNgLFxuICAgIGBcXHgxYlszbVxceDFiWzJtID4gZG9ja2VyLWNvbXBvc2UgZG93blxceDFiWzBtIFxceDFiWzNtXFx4MWJbMm0oc3RvcCAgcnVubmluZyBjb250YWluZXJzKSBvdXRwdXRcXHgxYlswbWAsXG4gICAgYFxcdFxceDFiWzNtXFx4MWJbMm1maWxlIHBhdGg6XFx4MWJbMG0gJHtkb2NrZXJDb21wb3NlRmlsZVBhdGh9YCxcbiAgICBgXFx0XFx4MWJbM21cXHgxYlsybXByb2plY3ROYW1lOlxceDFiWzBtICR7cHJvamVjdE5hbWV9YCxcbiAgKVxuICBjb25zb2xlLmdyb3VwRW5kKClcbn1cbiJdfQ==

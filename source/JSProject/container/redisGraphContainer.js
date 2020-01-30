@@ -1,12 +1,13 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-export function runDockerContainer() {
-  console.log(`• Running container: redisgraph on port 6379`)
-  // TODO: This is a quick automatic starting of dependency container. Provide a better way to handle container dependencies.
+function runDockerContainer() {
+  console.log(`• Running container: redisgraph on port 6379`);
+
   try {
-    childProcess.execSync('docker run -p 6379:6379 -it --rm redislabs/redisgraph:latest', childProcessOption)
+    childProcess.execSync('docker run -p 6379:6379 -it --rm redislabs/redisgraph:latest', childProcessOption);
   } catch (error) {
-    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`);
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3JlZGlzR3JhcGhDb250YWluZXIuanMiXSwibmFtZXMiOlsiY2hpbGRQcm9jZXNzIiwicmVxdWlyZSIsImNoaWxkUHJvY2Vzc09wdGlvbiIsImN3ZCIsIl9fZGlybmFtZSIsInNoZWxsIiwic3RkaW8iLCJydW5Eb2NrZXJDb250YWluZXIiLCJjb25zb2xlIiwibG9nIiwiZXhlY1N5bmMiLCJlcnJvciJdLCJtYXBwaW5ncyI6IjJIQUFBLE1BQU1BLFlBQVksR0FBR0MsT0FBTyxDQUFDLGVBQUQsQ0FBNUI7QUFDQSxNQUFNQyxrQkFBa0IsR0FBRyxFQUFFQyxHQUFHLEVBQUVDLFNBQVAsRUFBa0JDLEtBQUssRUFBRSxJQUF6QixFQUErQkMsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFJLENBQUosRUFBTyxDQUFQLENBQXRDLEVBQTNCOztBQUVPLFNBQVNDLGtCQUFULEdBQThCO0FBQ25DQyxFQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSw4Q0FBYjs7QUFFQSxNQUFJO0FBQ0ZULElBQUFBLFlBQVksQ0FBQ1UsUUFBYixDQUFzQiw4REFBdEIsRUFBc0ZSLGtCQUF0RjtBQUNELEdBRkQsQ0FFRSxPQUFPUyxLQUFQLEVBQWM7QUFDZEgsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsK0ZBQWI7QUFDRDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzID0gcmVxdWlyZSgnY2hpbGRfcHJvY2VzcycpXG5jb25zdCBjaGlsZFByb2Nlc3NPcHRpb24gPSB7IGN3ZDogX19kaXJuYW1lLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9XG5cbmV4cG9ydCBmdW5jdGlvbiBydW5Eb2NrZXJDb250YWluZXIoKSB7XG4gIGNvbnNvbGUubG9nKGDigKIgUnVubmluZyBjb250YWluZXI6IHJlZGlzZ3JhcGggb24gcG9ydCA2Mzc5YClcbiAgLy8gVE9ETzogVGhpcyBpcyBhIHF1aWNrIGF1dG9tYXRpYyBzdGFydGluZyBvZiBkZXBlbmRlbmN5IGNvbnRhaW5lci4gUHJvdmlkZSBhIGJldHRlciB3YXkgdG8gaGFuZGxlIGNvbnRhaW5lciBkZXBlbmRlbmNpZXMuXG4gIHRyeSB7XG4gICAgY2hpbGRQcm9jZXNzLmV4ZWNTeW5jKCdkb2NrZXIgcnVuIC1wIDYzNzk6NjM3OSAtaXQgLS1ybSByZWRpc2xhYnMvcmVkaXNncmFwaDpsYXRlc3QnLCBjaGlsZFByb2Nlc3NPcHRpb24pXG4gIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgY29uc29sZS5sb2coYOKAoiBTZWVtcyBsaWtlIHRoZSBjb250YWluZXIgaXMgYWxyZWFkeSBydW5uaW5nIGZyb20gYSBwcmV2aW91cyBzZXNzaW9uLCBpZ25vcmUgcHJldmlvdXMgZXJyb3IuYClcbiAgfVxufVxuIl19
