@@ -1,18 +1,19 @@
-// Convert an object of Key-String pair to ann array of strings `--env <key>=<value>` for passing process.env to docker run command in child process.
-export function convertObjectToDockerEnvFlag(
-  envObject, // Object of key - string pairs
-) {
-  let dockerEnvStringArray = []
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.convertObjectToDockerEnvFlag = convertObjectToDockerEnvFlag;
+function convertObjectToDockerEnvFlag(
+envObject)
+{
+  let dockerEnvStringArray = [];
   Object.entries(envObject).forEach(([key, value]) => {
-    dockerEnvStringArray.push(`--env "${escapeWithBackslash(key)}=${escapeWithBackslash(value)}"`) // escape special characters
-  })
+    dockerEnvStringArray.push(`--env "${escapeWithBackslash(key)}=${escapeWithBackslash(value)}"`);
+  });
 
-  return dockerEnvStringArray
+  return dockerEnvStringArray;
 }
 
 function escapeWithBackslash(string) {
-  // escape using JSON.stringify
-  let jsonString = JSON.stringify(String(string))
-  let escapedString = jsonString.substring(1, jsonString.length - 1)
-  return escapedString
+
+  let jsonString = JSON.stringify(String(string));
+  let escapedString = jsonString.substring(1, jsonString.length - 1);
+  return escapedString;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3V0aWxpdHkvY29udmVydE9iamVjdFRvRG9ja2VyRW52RmxhZy5qcyJdLCJuYW1lcyI6WyJjb252ZXJ0T2JqZWN0VG9Eb2NrZXJFbnZGbGFnIiwiZW52T2JqZWN0IiwiZG9ja2VyRW52U3RyaW5nQXJyYXkiLCJPYmplY3QiLCJlbnRyaWVzIiwiZm9yRWFjaCIsImtleSIsInZhbHVlIiwicHVzaCIsImVzY2FwZVdpdGhCYWNrc2xhc2giLCJzdHJpbmciLCJqc29uU3RyaW5nIiwiSlNPTiIsInN0cmluZ2lmeSIsIlN0cmluZyIsImVzY2FwZWRTdHJpbmciLCJzdWJzdHJpbmciLCJsZW5ndGgiXSwibWFwcGluZ3MiOiI7QUFDTyxTQUFTQSw0QkFBVDtBQUNMQyxTQURLO0FBRUw7QUFDQSxNQUFJQyxvQkFBb0IsR0FBRyxFQUEzQjtBQUNBQyxFQUFBQSxNQUFNLENBQUNDLE9BQVAsQ0FBZUgsU0FBZixFQUEwQkksT0FBMUIsQ0FBa0MsQ0FBQyxDQUFDQyxHQUFELEVBQU1DLEtBQU4sQ0FBRCxLQUFrQjtBQUNsREwsSUFBQUEsb0JBQW9CLENBQUNNLElBQXJCLENBQTJCLFVBQVNDLG1CQUFtQixDQUFDSCxHQUFELENBQU0sSUFBR0csbUJBQW1CLENBQUNGLEtBQUQsQ0FBUSxHQUEzRjtBQUNELEdBRkQ7O0FBSUEsU0FBT0wsb0JBQVA7QUFDRDs7QUFFRCxTQUFTTyxtQkFBVCxDQUE2QkMsTUFBN0IsRUFBcUM7O0FBRW5DLE1BQUlDLFVBQVUsR0FBR0MsSUFBSSxDQUFDQyxTQUFMLENBQWVDLE1BQU0sQ0FBQ0osTUFBRCxDQUFyQixDQUFqQjtBQUNBLE1BQUlLLGFBQWEsR0FBR0osVUFBVSxDQUFDSyxTQUFYLENBQXFCLENBQXJCLEVBQXdCTCxVQUFVLENBQUNNLE1BQVgsR0FBb0IsQ0FBNUMsQ0FBcEI7QUFDQSxTQUFPRixhQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBDb252ZXJ0IGFuIG9iamVjdCBvZiBLZXktU3RyaW5nIHBhaXIgdG8gYW5uIGFycmF5IG9mIHN0cmluZ3MgYC0tZW52IDxrZXk+PTx2YWx1ZT5gIGZvciBwYXNzaW5nIHByb2Nlc3MuZW52IHRvIGRvY2tlciBydW4gY29tbWFuZCBpbiBjaGlsZCBwcm9jZXNzLlxuZXhwb3J0IGZ1bmN0aW9uIGNvbnZlcnRPYmplY3RUb0RvY2tlckVudkZsYWcoXG4gIGVudk9iamVjdCwgLy8gT2JqZWN0IG9mIGtleSAtIHN0cmluZyBwYWlyc1xuKSB7XG4gIGxldCBkb2NrZXJFbnZTdHJpbmdBcnJheSA9IFtdXG4gIE9iamVjdC5lbnRyaWVzKGVudk9iamVjdCkuZm9yRWFjaCgoW2tleSwgdmFsdWVdKSA9PiB7XG4gICAgZG9ja2VyRW52U3RyaW5nQXJyYXkucHVzaChgLS1lbnYgXCIke2VzY2FwZVdpdGhCYWNrc2xhc2goa2V5KX09JHtlc2NhcGVXaXRoQmFja3NsYXNoKHZhbHVlKX1cImApIC8vIGVzY2FwZSBzcGVjaWFsIGNoYXJhY3RlcnNcbiAgfSlcblxuICByZXR1cm4gZG9ja2VyRW52U3RyaW5nQXJyYXlcbn1cblxuZnVuY3Rpb24gZXNjYXBlV2l0aEJhY2tzbGFzaChzdHJpbmcpIHtcbiAgLy8gZXNjYXBlIHVzaW5nIEpTT04uc3RyaW5naWZ5XG4gIGxldCBqc29uU3RyaW5nID0gSlNPTi5zdHJpbmdpZnkoU3RyaW5nKHN0cmluZykpXG4gIGxldCBlc2NhcGVkU3RyaW5nID0ganNvblN0cmluZy5zdWJzdHJpbmcoMSwganNvblN0cmluZy5sZW5ndGggLSAxKVxuICByZXR1cm4gZXNjYXBlZFN0cmluZ1xufVxuIl19
