@@ -3,7 +3,7 @@
     "main": ".",
     "version": "0.0.0",
     "scripts": {
-        "preinstall": "echo '• Running script for installing LibGit2...'; node --eval \"let provision = require('@deployment/deploymentProvisioning'); provision.nodegit.install()\""
+        "preinstall": "echo '• Running script for installing LibGit2...'; node --eval \"let provision = require('@deployment/deploymentProvisioning'); provision.nodegit.install({shouldThrow: false})\""
     },
     "dependencies": {
         "nodegit": "^0.25.*"
