@@ -4,11 +4,11 @@ import filesystem from 'fs'
 import { watchFile, browserLivereload, ManageSubprocess } from '@deployment/nodejsLiveReload'
 const { resolveAndLookupFile, findFileByGlobPattern } = require('@dependency/handleFilesystemOperation')
 const boltProtocolDriver = require('neo4j-driver').v1
-import * as memgraphContainer from './container/memgraphContainer.js'
+import * as container from './container'
 
 async function clearGraphData() {
   console.groupCollapsed('• Run prerequisite containers:')
-  memgraphContainer.runDockerContainer() // temporary solution
+  container.memgraph.runDockerContainer() // temporary solution
   console.groupEnd()
   // Delete all nodes in the in-memory database
   console.log('• Cleared graph database.')

@@ -11,6 +11,4 @@ export * as buildSourceCode from './JSProject/buildSourceCode.js'
 export * as test from './JSProject/test.js'
 export * as run from './JSProject/run.js'
 
-export * as memgraphContainer from './JSProject/container/memgraphContainer.js'
-export * as neo4jContainer from './JSProject/container/neo4jContainer.js'
-export * as redisGraphContainer from './JSProject/container/redisGraphContainer.js'
+export * as container from './JSProject/container'
