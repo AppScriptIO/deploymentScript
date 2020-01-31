@@ -1,10 +1,10 @@
 import { createGithubBranchedRelease } from './release'
 import { moduleProject as buildModuleProject, webappProject as buildWebappProject } from './buildSourceCode.js'
 import { bumpVersion } from './packageVersion'
-import * as memgraphContainer from './container/memgraphContainer.js'
+import * as container from './container'
 
 export async function moduleProject({ api, tagName }) {
-  memgraphContainer.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
+  container.memgraph.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
   let version = await bumpVersion({ api })
   await createGithubBranchedRelease({
     api,
@@ -14,7 +14,7 @@ export async function moduleProject({ api, tagName }) {
 }
 
 export async function webappProject({ api, tagName }) {
-  memgraphContainer.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
+  container.memgraph.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
   let version = await bumpVersion({ api })
   await createGithubBranchedRelease({
     api,
