@@ -14,23 +14,27 @@ export async function runApplication({ api /* supplied by scriptManager */ } = {
   let executableCommand = [
     'docker',
     `run`,
+
+    // `--name ${'project'}`,
+    `--interactive --tty`, // allocate a terminal - this allows for interacting with the container process.
     `--rm`, // automatically remove after container exists.
-    // `--interactive --tty`, // allocate a terminal - this allows for interacting with the container process.
+    `--workdir ${'/project'}`,
+
     `--volume ${rootPath}:${'/project'}`,
     `--volume /var/run/docker.sock:/var/run/docker.sock`,
+    `--volume /d:/d`,
     // `--volume ${operatingSystem.homedir()}/.ssh:/project/.ssh`,
+
     // `--network=${networkName}`,
     // `--network-alias ${networkAlais}`,
-    `-P`, // Publish all exposed ports to the host interfaces
-    // `--env applicationPathOnHostMachine=${applicationPathOnHostMachine}`,
-    // `--env sshUsername=${operatingSystem.userInfo().username}`,
-    // `--env PWD=${workingDirectoryInContainer_PWD}`, // pass PWD absolute path as in container (convert host machine path to container path)
-    // `--env configurationPath=${configurationAbsoluteContainerPath}`, // pass the absolute path of the configuration file
-    `--workdir ${'/project'}`,
-    `--name ${'project'}`,
-    // 'myuserindocker/deployment-environment:simple_NodeDockerCompose' // this container should have docker client & docker-compose installed in.
-    `${'node:latest'}`, // 'myuserindocker/deployment-environment:latest' || 'node:latest'
-    `${'ls -al ./'}`,
+    `--add-host memgraph:172.17.0.3`,
+
+    // `-P`, // Publish all exposed ports to the host interfaces
+    `-p 8080:8080 -p 8081:8081`,
+
+    // 'myuserindocker/deployment-environment:latest' // 'myuserindocker/deployment-environment:simple_NodeDockerCompose' /* this container should have docker client & docker-compose installed in.*/ // `--env configurationPath=${configurationAbsoluteContainerPath}`, // pass the absolute path of the configuration file // `--env PWD=${workingDirectoryInContainer_PWD}`, // pass PWD absolute path as in container (convert host machine path to container path) // `--env sshUsername=${operatingSystem.userInfo().username}`, // `--env applicationPathOnHostMachine=${applicationPathOnHostMachine}`,
+    `${'node:latest'}`,
+    `yarn run run-pureCommandInContainer`,
   ]
 
   let option = {
@@ -43,6 +47,7 @@ export async function runApplication({ api /* supplied by scriptManager */ } = {
       // DEPLOYMENT: 'development',
     }),
   }
+  console.log(`• docker command: "${executableCommand.join(' ')}"`)
   const [command, ...commandArgument] = executableCommand
   spawnSync(command, commandArgument, option)
 }

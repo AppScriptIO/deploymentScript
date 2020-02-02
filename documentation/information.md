@@ -25,6 +25,8 @@ Note: To deal with circular dependencies that refuse to install because of previ
 - When running inside container, docker client communicates with MobeyLinuxVM on Windows host machine, and the volume paths will be related or referencing to the hyper-v MobyLinuxVM vm. In it here is a folder /host_mount/c that corresponds to the Widnows host filesystem drive. 
     In case of Docker for Windows, the path is a Windows path. While the path sent from a running container, should be refering to the hyper-v MobyLinuxVM (inside created by Docker for Windows are /host_mnt/c, with symlinks /c & /C).
 - when using `localhost` chrome shows the files in folders, while using `0.0.0.0` files appear as separated. `0.0.0.0` allows access from any port (could be useful in containers as external connections not always referred to localhost it seems.)
+- IMPORTATNT: In WSL1, the symlinks work between Windows & WSL1, but do not work on native Linux (e.g. containers). And the opposite is true.
+      WSL2 (not released yet - insiders build) seems that it will make symlinks work between WSL2 and native linux (containers), as it uses a light native linux vm. While Windows symlinks won't work with WSL2. 
 
 __
 

@@ -939,14 +939,12 @@
     to-fast-properties "^2.0.0"
 
 "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^2.x.x":
-  version "2.0.2"
-  resolved "https://github.com/AppScriptIO/entity#a8c5af1e3d7b78b4ed81aff9f8e9f19a51f67101"
+  version "2.0.3"
+  resolved "https://github.com/AppScriptIO/entity#9865009ef5e201223f8614a6918fba39d1eb223b"
   dependencies:
     "@dependency/handleJSNativeDataStructure" "https://github.com/AppScriptIO/handleJSNativeDataStructure#semver:^2.x.x"
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
-    deepmerge "^4.2.2"
     lodash "^4.17.11"
-    merge-anything "^2.4.4"
 
 "@dependency/fragmentIndentationObjectStream@https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x":
   version "1.0.3"
@@ -1015,16 +1013,16 @@
     multistream "^2.1.1"
 
 "@dependency/handleModuleSystem@http://github.com/AppScriptIO/handleModuleSystem#semver:^2.x.x":
-  version "2.0.3"
-  uid "97082d027dd3d7e931c1925cee50bc709720f4b6"
-  resolved "http://github.com/AppScriptIO/handleModuleSystem#97082d027dd3d7e931c1925cee50bc709720f4b6"
+  version "2.0.4"
+  uid "06cd3b7e5f3ab5a9ec57bc36afb72a3fe2d66227"
+  resolved "http://github.com/AppScriptIO/handleModuleSystem#06cd3b7e5f3ab5a9ec57bc36afb72a3fe2d66227"
   dependencies:
     "@dependency/handleFilesystemOperation" "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x"
     del "^3.0.0"
 
 "@dependency/handleModuleSystem@https://github.com/AppScriptIO/handleModuleSystem#semver:^2.x.x":
-  version "2.0.3"
-  resolved "https://github.com/AppScriptIO/handleModuleSystem#97082d027dd3d7e931c1925cee50bc709720f4b6"
+  version "2.0.4"
+  resolved "https://github.com/AppScriptIO/handleModuleSystem#06cd3b7e5f3ab5a9ec57bc36afb72a3fe2d66227"
   dependencies:
     "@dependency/handleFilesystemOperation" "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x"
     del "^3.0.0"
@@ -7177,22 +7175,6 @@ node-modules-regexp@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
 
-node-pre-gyp@*:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.14.0.tgz#9a0596533b877289bcad4e143982ca3d904ddc83"
-  integrity sha512-+CvDC7ZttU/sSt9rFjix/P05iS43qHCOOGzcr3Ry99bXG7VX953+vFyEuph/tfqoYu8dttBkE86JSKBO2OzcxA==
-  dependencies:
-    detect-libc "^1.0.2"
-    mkdirp "^0.5.1"
-    needle "^2.2.1"
-    nopt "^4.0.1"
-    npm-packlist "^1.1.6"
-    npmlog "^4.0.2"
-    rc "^1.2.7"
-    rimraf "^2.6.1"
-    semver "^5.3.0"
-    tar "^4.4.2"
-
 node-pre-gyp@^0.13.0:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.13.0.tgz#df9ab7b68dd6498137717838e4f92a33fc9daa42"
@@ -8679,9 +8661,9 @@ rimraf@2.6.3:
     glob "^7.1.3"
 
 rollup@^1.3.0:
-  version "1.30.1"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-1.30.1.tgz#3fd28d6198beb2f3cd1640732047d5ec16c2d3a0"
-  integrity sha512-Uus8mwQXwaO+ZVoNwBcXKhT0AvycFCBW/W8VZtkpVGsotRllWk9oldfCjqWmTnFRI0y7x6BnEqSqc65N+/YdBw==
+  version "1.31.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-1.31.0.tgz#e2a87212e96aa7850f3eb53fdd02cf89f2d2fe9a"
+  integrity sha512-9C6ovSyNeEwvuRuUUmsTpJcXac1AwSL1a3x+O5lpmQKZqi5mmrjauLeqIjvREC+yNRR8fPdzByojDng+af3nVw==
   dependencies:
     "@types/estree" "*"
     "@types/node" "*"
@@ -9581,7 +9563,7 @@ tar-stream@^2.0.0:
     inherits "^2.0.3"
     readable-stream "^3.1.1"
 
-tar@^4, tar@^4.4.2, tar@^4.4.8:
+tar@^4, tar@^4.4.8:
   version "4.4.13"
   resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.13.tgz#43b364bc52888d555298637b10d60790254ab525"
   integrity sha512-w2VwSrBoHa5BsSyH+KxEqeQBAllHhccyMFVHtGtdMpF4W7IRWfZjFiQceJPChOeTsSDVUpER2T8FA93pr0L+QA==

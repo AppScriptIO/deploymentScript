@@ -19,8 +19,11 @@
 }
 
 {
+  ;`docker pull myuserindocker/deployment-environment:latest` // pull image
+  ;['docker', `network create ${networkName}`]
   /** docker-compose */
   ;`docker-compose -f ${ymlFile} up -d --no-build --force-recreate --abort-on-container-exit ${serviceName}`
+  ;['docker-compose', `-f ${ymlFile}`, `--project-name ${projectName}`, `down`] // stop and remove containers related to project name.
   ;`docker-compose -f ${ymlFile} build --no-cache ${serviceName}`
   ;[
     'docker-compose',
@@ -30,12 +33,7 @@
     `--entrypoint '${containerCommand}'`, // `node script.js`
     `${serviceName}`,
   ]
-  ;['docker-compose', `-f ${ymlFile}`, `--project-name ${projectName}`, `down`] // stop and remove containers related to project name.
   ;`docker-compose -f $dockerComposeFilePath pull containerDeploymentManagement` // pull previously built image
-  ;`docker pull myuserindocker/deployment-environment:latest` // pull image
-
-  /** docker network */
-  ;['docker', `network create ${networkName}`]
 }
 
 // Check if docker image exists

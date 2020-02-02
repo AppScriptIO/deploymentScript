@@ -1,1 +1,0 @@
-childProcess.execSync([``, ``, ``, ``, ``, ``].join(' && \\\n'), {})
