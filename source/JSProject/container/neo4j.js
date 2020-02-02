@@ -29,7 +29,6 @@ const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
 
 export function runDockerContainer() {
   console.log(`• Running container: neo4j on port 7686`)
-  // TODO: This is a quick automatic starting of dependency container. Provide a better way to handle container dependencies.
   try {
     childProcess.execSync(
       [
