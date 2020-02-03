@@ -1,27 +1,28 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-export function runDockerContainer() {
+function runDockerContainer() {
   try {
     let executableCommand = [
-      `docker volume create portainer_data`,
-      [
-        'docker',
-        'run',
-        '--name portainer',
-        '--restart always', // always restart even after docker restart
-        '-p 9000:9000',
-        '--volume /var/run/docker.sock:/var/run/docker.sock',
-        '--volume portainer_data:/data', // named volume is created in the contaxt of Docker directory of the host filesystem
-        '-d portainer/portainer',
-        '-H unix:///var/run/docker.sock --no-auth', // disbale internal password mechanism that is used by portainer for extra security. i.e. no required password for logging into admin interface.
-      ].join(' '),
-    ]
+    `docker volume create portainer_data`,
+    [
+    'docker',
+    'run',
+    '--name portainer',
+    '--restart always',
+    '-p 9000:9000',
+    '--volume /var/run/docker.sock:/var/run/docker.sock',
+    '--volume portainer_data:/data',
+    '-d portainer/portainer',
+    '-H unix:///var/run/docker.sock --no-auth'].
+    join(' ')];
 
-    let command = executableCommand.join(' && \\\n')
-    console.log(`• Running container: portainer container on port 9000 - Command: \n"${command}"`)
-    childProcess.execSync(command, childProcessOption)
+
+    let command = executableCommand.join(' && \\\n');
+    console.log(`• Running container: portainer container on port 9000 - Command: \n"${command}"`);
+    childProcess.execSync(command, childProcessOption);
   } catch (error) {
-    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`);
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3BvcnRhaW5lci5qcyJdLCJuYW1lcyI6WyJjaGlsZFByb2Nlc3MiLCJyZXF1aXJlIiwiY2hpbGRQcm9jZXNzT3B0aW9uIiwiY3dkIiwiX19kaXJuYW1lIiwic2hlbGwiLCJzdGRpbyIsInJ1bkRvY2tlckNvbnRhaW5lciIsImV4ZWN1dGFibGVDb21tYW5kIiwiam9pbiIsImNvbW1hbmQiLCJjb25zb2xlIiwibG9nIiwiZXhlY1N5bmMiLCJlcnJvciJdLCJtYXBwaW5ncyI6IjJIQUFBLE1BQU1BLFlBQVksR0FBR0MsT0FBTyxDQUFDLGVBQUQsQ0FBNUI7QUFDQSxNQUFNQyxrQkFBa0IsR0FBRyxFQUFFQyxHQUFHLEVBQUVDLFNBQVAsRUFBa0JDLEtBQUssRUFBRSxJQUF6QixFQUErQkMsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFJLENBQUosRUFBTyxDQUFQLENBQXRDLEVBQTNCOztBQUVPLFNBQVNDLGtCQUFULEdBQThCO0FBQ25DLE1BQUk7QUFDRixRQUFJQyxpQkFBaUIsR0FBRztBQUNyQix5Q0FEcUI7QUFFdEI7QUFDRSxZQURGO0FBRUUsU0FGRjtBQUdFLHNCQUhGO0FBSUUsc0JBSkY7QUFLRSxrQkFMRjtBQU1FLHdEQU5GO0FBT0UsbUNBUEY7QUFRRSw0QkFSRjtBQVNFLDhDQVRGO0FBVUVDLElBQUFBLElBVkYsQ0FVTyxHQVZQLENBRnNCLENBQXhCOzs7QUFlQSxRQUFJQyxPQUFPLEdBQUdGLGlCQUFpQixDQUFDQyxJQUFsQixDQUF1QixVQUF2QixDQUFkO0FBQ0FFLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLHVFQUFzRUYsT0FBUSxHQUEzRjtBQUNBVixJQUFBQSxZQUFZLENBQUNhLFFBQWIsQ0FBc0JILE9BQXRCLEVBQStCUixrQkFBL0I7QUFDRCxHQW5CRCxDQW1CRSxPQUFPWSxLQUFQLEVBQWM7QUFDZEgsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsK0ZBQWI7QUFDRDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzID0gcmVxdWlyZSgnY2hpbGRfcHJvY2VzcycpXG5jb25zdCBjaGlsZFByb2Nlc3NPcHRpb24gPSB7IGN3ZDogX19kaXJuYW1lLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9XG5cbmV4cG9ydCBmdW5jdGlvbiBydW5Eb2NrZXJDb250YWluZXIoKSB7XG4gIHRyeSB7XG4gICAgbGV0IGV4ZWN1dGFibGVDb21tYW5kID0gW1xuICAgICAgYGRvY2tlciB2b2x1bWUgY3JlYXRlIHBvcnRhaW5lcl9kYXRhYCxcbiAgICAgIFtcbiAgICAgICAgJ2RvY2tlcicsXG4gICAgICAgICdydW4nLFxuICAgICAgICAnLS1uYW1lIHBvcnRhaW5lcicsXG4gICAgICAgICctLXJlc3RhcnQgYWx3YXlzJywgLy8gYWx3YXlzIHJlc3RhcnQgZXZlbiBhZnRlciBkb2NrZXIgcmVzdGFydFxuICAgICAgICAnLXAgOTAwMDo5MDAwJyxcbiAgICAgICAgJy0tdm9sdW1lIC92YXIvcnVuL2RvY2tlci5zb2NrOi92YXIvcnVuL2RvY2tlci5zb2NrJyxcbiAgICAgICAgJy0tdm9sdW1lIHBvcnRhaW5lcl9kYXRhOi9kYXRhJywgLy8gbmFtZWQgdm9sdW1lIGlzIGNyZWF0ZWQgaW4gdGhlIGNvbnRheHQgb2YgRG9ja2VyIGRpcmVjdG9yeSBvZiB0aGUgaG9zdCBmaWxlc3lzdGVtXG4gICAgICAgICctZCBwb3J0YWluZXIvcG9ydGFpbmVyJyxcbiAgICAgICAgJy1IIHVuaXg6Ly8vdmFyL3J1bi9kb2NrZXIuc29jayAtLW5vLWF1dGgnLCAvLyBkaXNiYWxlIGludGVybmFsIHBhc3N3b3JkIG1lY2hhbmlzbSB0aGF0IGlzIHVzZWQgYnkgcG9ydGFpbmVyIGZvciBleHRyYSBzZWN1cml0eS4gaS5lLiBubyByZXF1aXJlZCBwYXNzd29yZCBmb3IgbG9nZ2luZyBpbnRvIGFkbWluIGludGVyZmFjZS5cbiAgICAgIF0uam9pbignICcpLFxuICAgIF1cblxuICAgIGxldCBjb21tYW5kID0gZXhlY3V0YWJsZUNvbW1hbmQuam9pbignICYmIFxcXFxcXG4nKVxuICAgIGNvbnNvbGUubG9nKGDigKIgUnVubmluZyBjb250YWluZXI6IHBvcnRhaW5lciBjb250YWluZXIgb24gcG9ydCA5MDAwIC0gQ29tbWFuZDogXFxuXCIke2NvbW1hbmR9XCJgKVxuICAgIGNoaWxkUHJvY2Vzcy5leGVjU3luYyhjb21tYW5kLCBjaGlsZFByb2Nlc3NPcHRpb24pXG4gIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgY29uc29sZS5sb2coYOKAoiBTZWVtcyBsaWtlIHRoZSBjb250YWluZXIgaXMgYWxyZWFkeSBydW5uaW5nIGZyb20gYSBwcmV2aW91cyBzZXNzaW9uLCBpZ25vcmUgcHJldmlvdXMgZXJyb3IuYClcbiAgfVxufVxuIl19
