@@ -7,7 +7,7 @@ import assert from 'assert'
 const resolve = require('resolve') // use 'resolve' module to allow passing 'preserve symlinks' option that is not supported by require.resolve module.
 import operatingSystem from 'os'
 
-export async function runApplication({ api /* supplied by scriptManager */ } = {}) {
+export async function runApplication({ api /* supplied by scriptManager */, scriptCommandName } = {}) {
   const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
     rootPath = api.project.configuration.rootPath
 
@@ -34,7 +34,7 @@ export async function runApplication({ api /* supplied by scriptManager */ } = {
 
     // 'myuserindocker/deployment-environment:latest' // 'myuserindocker/deployment-environment:simple_NodeDockerCompose' /* this container should have docker client & docker-compose installed in.*/ // `--env configurationPath=${configurationAbsoluteContainerPath}`, // pass the absolute path of the configuration file // `--env PWD=${workingDirectoryInContainer_PWD}`, // pass PWD absolute path as in container (convert host machine path to container path) // `--env sshUsername=${operatingSystem.userInfo().username}`, // `--env applicationPathOnHostMachine=${applicationPathOnHostMachine}`,
     `${'node:latest'}`,
-    `yarn run run-pureCommandInContainer`,
+    `yarn run ${scriptCommandName}`,
   ]
 
   let option = {
