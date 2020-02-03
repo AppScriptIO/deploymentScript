@@ -6,13 +6,13 @@ const { resolveAndLookupFile, findFileByGlobPattern } = require('@dependency/han
 const boltProtocolDriver = require('neo4j-driver').v1
 import * as container from './container'
 
-async function clearGraphData() {
+async function clearGraphData({ memgraph = {} } = {}) {
   console.groupCollapsed('• Run prerequisite containers:')
   container.memgraph.runDockerContainer() // temporary solution
   console.groupEnd()
   // Delete all nodes in the in-memory database
   console.log('• Cleared graph database.')
-  const url = { protocol: 'bolt', hostname: 'localhost', port: 7687 },
+  const url = { protocol: 'bolt', hostname: memgraph.host || 'localhost', port: memgraph.port || 7687 },
     authentication = { username: 'neo4j', password: 'test' }
   const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password))
   let session = await graphDBDriver.session()
@@ -40,7 +40,7 @@ const setTimeout = ({ timeout = 10000 } = {}) => setTimeout(() => console.log('s
     - start browser proxy livereload server. 
     - register watch actions: affected groups result in reloading of server &/or browser.
 */
-module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
+module.exports = async function({ api /* supplied by scriptManager */, application = [] } = {}) {
   const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
     rootPath = api.project.configuration.rootPath
   let rootServiceConfig = api.project.configuration.configuration?.apiGateway?.service.find(item => item.subdomain == null /*Root service*/)
@@ -53,8 +53,8 @@ module.exports = async function({ api /* supplied by scriptManager */ } = {}) {
   // Application
   let manageSubprocess = new ManageSubprocess({ cliAdapterPath: applicationPath })
   const runApplication = async () => {
-    await clearGraphData() // run prerequesite container and clear graph
-    manageSubprocess.runInSubprocess()
+    await clearGraphData({ memgraph: application[1]?.memgraph }) // run prerequesite container and clear graph
+    manageSubprocess.runInSubprocess(...application)
   }
 
   // Browser control
