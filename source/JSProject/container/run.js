@@ -33,7 +33,7 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
     `-p 8080:8080 -p 8081:8081`,
 
     // 'myuserindocker/deployment-environment:latest' // 'myuserindocker/deployment-environment:simple_NodeDockerCompose' /* this container should have docker client & docker-compose installed in.*/ // `--env configurationPath=${configurationAbsoluteContainerPath}`, // pass the absolute path of the configuration file // `--env PWD=${workingDirectoryInContainer_PWD}`, // pass PWD absolute path as in container (convert host machine path to container path) // `--env sshUsername=${operatingSystem.userInfo().username}`, // `--env applicationPathOnHostMachine=${applicationPathOnHostMachine}`,
-    `${'node:latest'}`,
+    `${'node:current'}`, // nodejs 12 to support nodegit
     `yarn run ${scriptCommandName}`,
   ]
 
