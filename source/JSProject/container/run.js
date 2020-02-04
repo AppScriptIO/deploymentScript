@@ -7,16 +7,22 @@ import assert from 'assert'
 const resolve = require('resolve') // use 'resolve' module to allow passing 'preserve symlinks' option that is not supported by require.resolve module.
 import operatingSystem from 'os'
 
-export async function runApplication({ api /* supplied by scriptManager */, scriptCommandName } = {}) {
+export async function runApplication({ api /* supplied by scriptManager */, scriptCommandName, scriptCommand = '/bin/bash' } = {}) {
   const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
     rootPath = api.project.configuration.rootPath
+
+  let containerCommand = scriptCommandName ? `yarn run ${scriptCommandName}` : scriptCommand
 
   let executableCommand = [
     'docker',
     `run`,
 
     // `--name ${'project'}`,
-    `--interactive --tty`, // allocate a terminal - this allows for interacting with the container process.
+
+    // --experimental-modules --input-type=commonj
+    '--init', // Fixes signal handlers & reaping (process of eliminating zombie processes).  https://github.com/krallin/tini https://github.com/docker/cli/pull/1841
+    '--sig-proxy', // pass signals
+    `--interactive --tty`, // allocate a terminal - this allows for interacting with the container process. tty = Unix/Linux terminal access handling using modem based connection (allows input from terminal), iteractive = accepts input from host.
     `--rm`, // automatically remove after container exists.
     `--workdir ${'/project'}`,
 
@@ -35,7 +41,7 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
 
     // 'myuserindocker/deployment-environment:latest' // 'myuserindocker/deployment-environment:simple_NodeDockerCompose' /* this container should have docker client & docker-compose installed in.*/ // `--env configurationPath=${configurationAbsoluteContainerPath}`, // pass the absolute path of the configuration file // `--env PWD=${workingDirectoryInContainer_PWD}`, // pass PWD absolute path as in container (convert host machine path to container path) // `--env sshUsername=${operatingSystem.userInfo().username}`, // `--env applicationPathOnHostMachine=${applicationPathOnHostMachine}`,
     `${'node:current'}`, // nodejs 12 to support nodegit
-    `yarn run ${scriptCommandName}`,
+    containerCommand,
   ]
 
   let option = {
@@ -48,6 +54,7 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
       // DEPLOYMENT: 'development',
     }),
   }
+  console.log('container command' + ': \n', containerCommand)
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   const [command, ...commandArgument] = executableCommand
   spawnSync(command, commandArgument, option)
