@@ -25,9 +25,10 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
     `--volume /d:/d`,
     // `--volume ${operatingSystem.homedir()}/.ssh:/project/.ssh`,
 
-    // `--network=${networkName}`,
-    // `--network-alias ${networkAlais}`,
-    `--add-host memgraph:172.17.0.3`,
+    // container name is registered by Docker automatically for non default networks as hostnames in other containers (default bridge network will not use hostname DNS), allowing access to the memgraph container through it's name. (default network doesn't support aliases)
+    `--network=${'shared'}`,
+    `--network-alias ${'application'}`, // make container discoverable by another hostname in addition to the container name for specific network.
+    // `--add-host memgraph:172.17.0.3`,
 
     // `-P`, // Publish all exposed ports to the host interfaces
     `-p 8080:8080 -p 8081:8081`,

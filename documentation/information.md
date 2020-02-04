@@ -27,7 +27,8 @@ Note: To deal with circular dependencies that refuse to install because of previ
 - when using `localhost` chrome shows the files in folders, while using `0.0.0.0` files appear as separated. `0.0.0.0` allows access from any port (could be useful in containers as external connections not always referred to localhost it seems.)
 - IMPORTATNT: In WSL1, the symlinks work between Windows & WSL1, but do not work on native Linux (e.g. containers). And the opposite is true.
       WSL2 (not released yet - insiders build) seems that it will make symlinks work between WSL2 and native linux (containers), as it uses a light native linux vm. While Windows symlinks won't work with WSL2. 
-
+- DNS proxy for local development allowing access to containers using hostname: https://stackoverflow.com/questions/37242217/access-docker-container-from-host-using-containers-name
+  `Containers on the default bridge network can only access each other by IP addresses, unless you use the --link option, which is considered legacy. On a user-defined bridge network, containers can resolve each other by name or alias.`
 __
 
 ### 🔑 License: [MIT](/.github/LICENSE)
