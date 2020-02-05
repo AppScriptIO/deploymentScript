@@ -14,7 +14,8 @@ export function runDockerContainer() {
         '--volume /var/run/docker.sock:/var/run/docker.sock',
         '--volume portainer_data:/data', // named volume is created in the contaxt of Docker directory of the host filesystem
         '-d portainer/portainer',
-        '-H unix:///var/run/docker.sock --no-auth', // disbale internal password mechanism that is used by portainer for extra security. i.e. no required password for logging into admin interface.
+        // '-H unix:///var/run/docker.sock', // -H flag and the tcp:// protocol to connect to a remote Docker environment
+        '--no-auth', // disbale internal password mechanism that is used by portainer for extra security. i.e. no required password for logging into admin interface.
       ].join(' '),
     ]
 

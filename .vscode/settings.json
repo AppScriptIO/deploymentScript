@@ -55,20 +55,7 @@
         "editor.background": "#000000",
         "sideBar.background": "#000000",
         "editor.selectionBackground": "#135564",
-        "editor.selectionHighlightBorder": "#135564",
-        "activityBar.background": "#ca3f12",
-        "activityBar.activeBorder": "#12cd40",
-        "activityBar.foreground": "#e7e7e7",
-        "activityBar.inactiveForeground": "#e7e7e799",
-        "activityBarBadge.background": "#12cd40",
-        "activityBarBadge.foreground": "#15202b",
-        "titleBar.activeBackground": "#ca3f12",
-        "titleBar.inactiveBackground": "#ca3f1299",
-        "titleBar.activeForeground": "#e7e7e7",
-        "titleBar.inactiveForeground": "#e7e7e799",
-        "statusBar.background": "#ca3f12",
-        "statusBarItem.hoverBackground": "#eb5424",
-        "statusBar.foreground": "#e7e7e7"
+        "editor.selectionHighlightBorder": "#135564"
     },
     "peacock.color": "#eb5424",
     "editor.codeActionsOnSave": {
