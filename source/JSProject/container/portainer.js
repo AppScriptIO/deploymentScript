@@ -9,12 +9,14 @@ export function runDockerContainer() {
         'docker',
         'run',
         '--name portainer',
-        '--restart always', // always restart even after docker restart
+        // [ISSUE] Docker WSL2 engine failes to start and integrate with WSl2 when portainer container auto starts.
+        // '--restart always', // always restart even after docker restart
         '-p 9000:9000',
+        //!IMPORTANT: [ISSUE] attaching socket seems to be unsupported in preview versions of WSl2, it works but seems to cause problems between docker integration with WSL2 on restart.
         '--volume /var/run/docker.sock:/var/run/docker.sock',
         '--volume portainer_data:/data', // named volume is created in the contaxt of Docker directory of the host filesystem
         '-d portainer/portainer',
-        // '-H unix:///var/run/docker.sock', // -H flag and the tcp:// protocol to connect to a remote Docker environment
+        '-H unix:///var/run/docker.sock', // -H flag and the tcp:// protocol to connect to a remote Docker environment
         '--no-auth', // disbale internal password mechanism that is used by portainer for extra security. i.e. no required password for logging into admin interface.
       ].join(' '),
     ]

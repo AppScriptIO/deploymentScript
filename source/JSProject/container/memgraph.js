@@ -20,6 +20,7 @@ export function runDockerContainer({
   // when using network alias the container hostname should be added to the hosts manually for each container in the network
   // NOTE:  `--network-alias` works only when --network option is provided, and doesn't work for default bridge network. Additionally the alias is network bound, i.e. specifically to a single network.
   let command = [
+    // !IMPORTANT: [Seems to cause issues with docker WSL2] --restart always
     `docker create --name memgraph-shared --network shared --network-alias ${localDNSHostname} --publish 7687:7687 --restart always memgraph `,
     'docker network connect bridge memgraph-shared', // connect to default bridge network.
     `docker start memgraph-shared`,
