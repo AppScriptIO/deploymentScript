@@ -1,23 +1,24 @@
-{
-  /** docker-compose */
-  ;`docker-compose -f ${ymlFile} up -d --no-build --force-recreate --abort-on-container-exit ${serviceName}`
-  ;['docker-compose', `-f ${ymlFile}`, `--project-name ${projectName}`, `down`] // stop and remove containers related to project name.
-  ;`docker-compose -f ${ymlFile} build --no-cache ${serviceName}`
-  ;[
-    'docker-compose',
-    `-f ${ymlFile}`,
-    `--project-name ${containerPrefix}`,
-    `run --service-ports --use-aliases`, // --service-ports is required when using run command, it allows mapping of ports to host as set in yml file.
-    `--entrypoint '${containerCommand}'`,
-    `${serviceName}`,
-  ]
-  ;`docker-compose -f $dockerComposeFilePath pull containerDeploymentManagement` // pull previously built image
+"use strict";{
+
+  ;`docker-compose -f ${ymlFile} up -d --no-build --force-recreate --abort-on-container-exit ${serviceName}`;
+  ['docker-compose', `-f ${ymlFile}`, `--project-name ${projectName}`, `down`];
+  `docker-compose -f ${ymlFile} build --no-cache ${serviceName}`;
+  [
+  'docker-compose',
+  `-f ${ymlFile}`,
+  `--project-name ${containerPrefix}`,
+  `run --service-ports --use-aliases`,
+  `--entrypoint '${containerCommand}'`,
+  `${serviceName}`];
+
+  `docker-compose -f $dockerComposeFilePath pull containerDeploymentManagement`;
 }
 
-// Check if docker image exists
+
 ;`
   dockerImage=myuserindocker/deployment-environment:latest;
   if [[ "$(docker images -q $dockerImage 2> /dev/null)" == "" ]]; then
       dockerImage=node:latest
   fi;
-`
+`;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3RlbXBvcmFyeS5qcyJdLCJuYW1lcyI6WyJ5bWxGaWxlIiwic2VydmljZU5hbWUiLCJwcm9qZWN0TmFtZSIsImNvbnRhaW5lclByZWZpeCIsImNvbnRhaW5lckNvbW1hbmQiXSwibWFwcGluZ3MiOiJhQUFBOztBQUVFLEdBQUUscUJBQW9CQSxPQUFRLGdFQUErREMsV0FBWSxFQUF4RztBQUNBLEdBQUMsZ0JBQUQsRUFBb0IsTUFBS0QsT0FBUSxFQUFqQyxFQUFxQyxrQkFBaUJFLFdBQVksRUFBbEUsRUFBc0UsTUFBdEU7QUFDQyx1QkFBb0JGLE9BQVEscUJBQW9CQyxXQUFZLEVBQTdEO0FBQ0E7QUFDQyxrQkFERDtBQUVFLFFBQUtELE9BQVEsRUFGZjtBQUdFLG9CQUFpQkcsZUFBZ0IsRUFIbkM7QUFJRSxxQ0FKRjtBQUtFLG1CQUFnQkMsZ0JBQWlCLEdBTG5DO0FBTUUsS0FBRUgsV0FBWSxFQU5oQjs7QUFRQywrRUFBRDtBQUNGOzs7QUFHRCxDQUFFOzs7OztDQUFEIiwic291cmNlc0NvbnRlbnQiOlsie1xuICAvKiogZG9ja2VyLWNvbXBvc2UgKi9cbiAgO2Bkb2NrZXItY29tcG9zZSAtZiAke3ltbEZpbGV9IHVwIC1kIC0tbm8tYnVpbGQgLS1mb3JjZS1yZWNyZWF0ZSAtLWFib3J0LW9uLWNvbnRhaW5lci1leGl0ICR7c2VydmljZU5hbWV9YFxuICA7Wydkb2NrZXItY29tcG9zZScsIGAtZiAke3ltbEZpbGV9YCwgYC0tcHJvamVjdC1uYW1lICR7cHJvamVjdE5hbWV9YCwgYGRvd25gXSAvLyBzdG9wIGFuZCByZW1vdmUgY29udGFpbmVycyByZWxhdGVkIHRvIHByb2plY3QgbmFtZS5cbiAgO2Bkb2NrZXItY29tcG9zZSAtZiAke3ltbEZpbGV9IGJ1aWxkIC0tbm8tY2FjaGUgJHtzZXJ2aWNlTmFtZX1gXG4gIDtbXG4gICAgJ2RvY2tlci1jb21wb3NlJyxcbiAgICBgLWYgJHt5bWxGaWxlfWAsXG4gICAgYC0tcHJvamVjdC1uYW1lICR7Y29udGFpbmVyUHJlZml4fWAsXG4gICAgYHJ1biAtLXNlcnZpY2UtcG9ydHMgLS11c2UtYWxpYXNlc2AsIC8vIC0tc2VydmljZS1wb3J0cyBpcyByZXF1aXJlZCB3aGVuIHVzaW5nIHJ1biBjb21tYW5kLCBpdCBhbGxvd3MgbWFwcGluZyBvZiBwb3J0cyB0byBob3N0IGFzIHNldCBpbiB5bWwgZmlsZS5cbiAgICBgLS1lbnRyeXBvaW50ICcke2NvbnRhaW5lckNvbW1hbmR9J2AsXG4gICAgYCR7c2VydmljZU5hbWV9YCxcbiAgXVxuICA7YGRvY2tlci1jb21wb3NlIC1mICRkb2NrZXJDb21wb3NlRmlsZVBhdGggcHVsbCBjb250YWluZXJEZXBsb3ltZW50TWFuYWdlbWVudGAgLy8gcHVsbCBwcmV2aW91c2x5IGJ1aWx0IGltYWdlXG59XG5cbi8vIENoZWNrIGlmIGRvY2tlciBpbWFnZSBleGlzdHNcbjtgXG4gIGRvY2tlckltYWdlPW15dXNlcmluZG9ja2VyL2RlcGxveW1lbnQtZW52aXJvbm1lbnQ6bGF0ZXN0O1xuICBpZiBbWyBcIiQoZG9ja2VyIGltYWdlcyAtcSAkZG9ja2VySW1hZ2UgMj4gL2Rldi9udWxsKVwiID09IFwiXCIgXV07IHRoZW5cbiAgICAgIGRvY2tlckltYWdlPW5vZGU6bGF0ZXN0XG4gIGZpO1xuYFxuIl19

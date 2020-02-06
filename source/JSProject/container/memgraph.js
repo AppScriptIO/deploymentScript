@@ -1,56 +1,57 @@
-const childProcess = require('child_process')
-import isPortReachable from 'is-port-reachable'
-const boltProtocolDriver = require('neo4j-driver').v1
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;exports.clearGraphData = clearGraphData;
+var _isPortReachable = _interopRequireDefault(require("is-port-reachable"));const childProcess = require('child_process');
+const boltProtocolDriver = require('neo4j-driver').v1;
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-// Volumes for memgraph container:
-// `-v mg_lib:/var/lib/memgraph -v mg_log:/var/log/memgraph -v mg_etc:/etc/memgraph`
-export function runDockerContainer({
-  localDNSHostname = 'memgraph' /** name in which other containers can access the container through in a custom network (as default doesn't support accessing using hostname) */,
-} = {}) {
+
+
+function runDockerContainer({
+  localDNSHostname = 'memgraph' } =
+{}) {
   try {
-    // create network
+
     childProcess.execSync(
-      `docker network create --driver bridge shared`, // use a custom network instead of the default bridge
-      childProcessOption,
-    )
+    `docker network create --driver bridge shared`,
+    childProcessOption);
+
   } catch (error) {
-    console.log(`• Seems like the network already exists.`)
-    // console.log(error) // log error and continue. Usually network already exists.
+    console.log(`• Seems like the network already exists.`);
+
   }
 
-  // when using network alias the container hostname should be added to the hosts manually for each container in the network
-  // NOTE:  `--network-alias` works only when --network option is provided, and doesn't work for default bridge network. Additionally the alias is network bound, i.e. specifically to a single network.
-  let command = [
-    // !IMPORTANT: [Seems to cause issues with docker WSL2] --restart always
-    `docker create --name memgraph-shared --network shared --network-alias ${localDNSHostname} --publish 7687:7687 --restart always memgraph `,
-    'docker network connect bridge memgraph-shared', // connect to default bridge network.
-    `docker start memgraph-shared`,
-  ].join(' && \\\n')
 
-  console.log(`• Running container: memgraph on port 7687`)
-  console.log(`$ ${command}`)
+
+  let command = [
+
+  `docker create --name memgraph-shared --network shared --network-alias ${localDNSHostname} --publish 7687:7687 --restart always memgraph `,
+  'docker network connect bridge memgraph-shared',
+  `docker start memgraph-shared`].
+  join(' && \\\n');
+
+  console.log(`• Running container: memgraph on port 7687`);
+  console.log(`$ ${command}`);
 
   try {
-    childProcess.execSync(command, childProcessOption)
+    childProcess.execSync(command, childProcessOption);
   } catch (error) {
-    console.log(error)
-    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
+    console.log(error);
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`);
   }
 }
 
-export async function clearGraphData({ memgraph = {} } = {}) {
-  const url = { protocol: 'bolt', hostname: memgraph.host || 'localhost', port: memgraph.port || 7687 }
-  if (!(await isPortReachable(url.port, { host: url.hostname }))) {
-    console.groupCollapsed('• Run prerequisite containers:')
-    runDockerContainer()
-    console.groupEnd()
+async function clearGraphData({ memgraph = {} } = {}) {
+  const url = { protocol: 'bolt', hostname: memgraph.host || 'localhost', port: memgraph.port || 7687 };
+  if (!(await (0, _isPortReachable.default)(url.port, { host: url.hostname }))) {
+    console.groupCollapsed('• Run prerequisite containers:');
+    runDockerContainer();
+    console.groupEnd();
   }
-  // Delete all nodes in the in-memory database
-  console.log('• Cleared graph database.')
-  const authentication = { username: 'neo4j', password: 'test' }
-  const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password))
-  let session = await graphDBDriver.session()
-  let result = await session.run(`match (n) detach delete n`)
-  session.close()
+
+  console.log('• Cleared graph database.');
+  const authentication = { username: 'neo4j', password: 'test' };
+  const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password));
+  let session = await graphDBDriver.session();
+  let result = await session.run(`match (n) detach delete n`);
+  session.close();
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL21lbWdyYXBoLmpzIl0sIm5hbWVzIjpbImNoaWxkUHJvY2VzcyIsInJlcXVpcmUiLCJib2x0UHJvdG9jb2xEcml2ZXIiLCJ2MSIsImNoaWxkUHJvY2Vzc09wdGlvbiIsImN3ZCIsIl9fZGlybmFtZSIsInNoZWxsIiwic3RkaW8iLCJydW5Eb2NrZXJDb250YWluZXIiLCJsb2NhbEROU0hvc3RuYW1lIiwiZXhlY1N5bmMiLCJlcnJvciIsImNvbnNvbGUiLCJsb2ciLCJjb21tYW5kIiwiam9pbiIsImNsZWFyR3JhcGhEYXRhIiwibWVtZ3JhcGgiLCJ1cmwiLCJwcm90b2NvbCIsImhvc3RuYW1lIiwiaG9zdCIsInBvcnQiLCJncm91cENvbGxhcHNlZCIsImdyb3VwRW5kIiwiYXV0aGVudGljYXRpb24iLCJ1c2VybmFtZSIsInBhc3N3b3JkIiwiZ3JhcGhEQkRyaXZlciIsImRyaXZlciIsImF1dGgiLCJiYXNpYyIsInNlc3Npb24iLCJyZXN1bHQiLCJydW4iLCJjbG9zZSJdLCJtYXBwaW5ncyI6IjtBQUNBLDRFQURBLE1BQU1BLFlBQVksR0FBR0MsT0FBTyxDQUFDLGVBQUQsQ0FBNUI7QUFFQSxNQUFNQyxrQkFBa0IsR0FBR0QsT0FBTyxDQUFDLGNBQUQsQ0FBUCxDQUF3QkUsRUFBbkQ7QUFDQSxNQUFNQyxrQkFBa0IsR0FBRyxFQUFFQyxHQUFHLEVBQUVDLFNBQVAsRUFBa0JDLEtBQUssRUFBRSxJQUF6QixFQUErQkMsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFJLENBQUosRUFBTyxDQUFQLENBQXRDLEVBQTNCOzs7O0FBSU8sU0FBU0Msa0JBQVQsQ0FBNEI7QUFDakNDLEVBQUFBLGdCQUFnQixHQUFHLFVBRGM7QUFFL0IsRUFGRyxFQUVDO0FBQ04sTUFBSTs7QUFFRlYsSUFBQUEsWUFBWSxDQUFDVyxRQUFiO0FBQ0csa0RBREg7QUFFRVAsSUFBQUEsa0JBRkY7O0FBSUQsR0FORCxDQU1FLE9BQU9RLEtBQVAsRUFBYztBQUNkQyxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSwwQ0FBYjs7QUFFRDs7OztBQUlELE1BQUlDLE9BQU8sR0FBRzs7QUFFWCwyRUFBd0VMLGdCQUFpQixpREFGOUU7QUFHWixpREFIWTtBQUlYLGdDQUpXO0FBS1pNLEVBQUFBLElBTFksQ0FLUCxVQUxPLENBQWQ7O0FBT0FILEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLDRDQUFiO0FBQ0FELEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLEtBQUlDLE9BQVEsRUFBekI7O0FBRUEsTUFBSTtBQUNGZixJQUFBQSxZQUFZLENBQUNXLFFBQWIsQ0FBc0JJLE9BQXRCLEVBQStCWCxrQkFBL0I7QUFDRCxHQUZELENBRUUsT0FBT1EsS0FBUCxFQUFjO0FBQ2RDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZRixLQUFaO0FBQ0FDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLCtGQUFiO0FBQ0Q7QUFDRjs7QUFFTSxlQUFlRyxjQUFmLENBQThCLEVBQUVDLFFBQVEsR0FBRyxFQUFiLEtBQW9CLEVBQWxELEVBQXNEO0FBQzNELFFBQU1DLEdBQUcsR0FBRyxFQUFFQyxRQUFRLEVBQUUsTUFBWixFQUFvQkMsUUFBUSxFQUFFSCxRQUFRLENBQUNJLElBQVQsSUFBaUIsV0FBL0MsRUFBNERDLElBQUksRUFBRUwsUUFBUSxDQUFDSyxJQUFULElBQWlCLElBQW5GLEVBQVo7QUFDQSxNQUFJLEVBQUUsTUFBTSw4QkFBZ0JKLEdBQUcsQ0FBQ0ksSUFBcEIsRUFBMEIsRUFBRUQsSUFBSSxFQUFFSCxHQUFHLENBQUNFLFFBQVosRUFBMUIsQ0FBUixDQUFKLEVBQWdFO0FBQzlEUixJQUFBQSxPQUFPLENBQUNXLGNBQVIsQ0FBdUIsZ0NBQXZCO0FBQ0FmLElBQUFBLGtCQUFrQjtBQUNsQkksSUFBQUEsT0FBTyxDQUFDWSxRQUFSO0FBQ0Q7O0FBRURaLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLDJCQUFaO0FBQ0EsUUFBTVksY0FBYyxHQUFHLEVBQUVDLFFBQVEsRUFBRSxPQUFaLEVBQXFCQyxRQUFRLEVBQUUsTUFBL0IsRUFBdkI7QUFDQSxRQUFNQyxhQUFhLEdBQUczQixrQkFBa0IsQ0FBQzRCLE1BQW5CLENBQTJCLEdBQUVYLEdBQUcsQ0FBQ0MsUUFBUyxNQUFLRCxHQUFHLENBQUNFLFFBQVMsSUFBR0YsR0FBRyxDQUFDSSxJQUFLLEVBQXhFLEVBQTJFckIsa0JBQWtCLENBQUM2QixJQUFuQixDQUF3QkMsS0FBeEIsQ0FBOEJOLGNBQWMsQ0FBQ0MsUUFBN0MsRUFBdURELGNBQWMsQ0FBQ0UsUUFBdEUsQ0FBM0UsQ0FBdEI7QUFDQSxNQUFJSyxPQUFPLEdBQUcsTUFBTUosYUFBYSxDQUFDSSxPQUFkLEVBQXBCO0FBQ0EsTUFBSUMsTUFBTSxHQUFHLE1BQU1ELE9BQU8sQ0FBQ0UsR0FBUixDQUFhLDJCQUFiLENBQW5CO0FBQ0FGLEVBQUFBLE9BQU8sQ0FBQ0csS0FBUjtBQUNEIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzID0gcmVxdWlyZSgnY2hpbGRfcHJvY2VzcycpXG5pbXBvcnQgaXNQb3J0UmVhY2hhYmxlIGZyb20gJ2lzLXBvcnQtcmVhY2hhYmxlJ1xuY29uc3QgYm9sdFByb3RvY29sRHJpdmVyID0gcmVxdWlyZSgnbmVvNGotZHJpdmVyJykudjFcbmNvbnN0IGNoaWxkUHJvY2Vzc09wdGlvbiA9IHsgY3dkOiBfX2Rpcm5hbWUsIHNoZWxsOiB0cnVlLCBzdGRpbzogWzAsIDEsIDJdIH1cblxuLy8gVm9sdW1lcyBmb3IgbWVtZ3JhcGggY29udGFpbmVyOlxuLy8gYC12IG1nX2xpYjovdmFyL2xpYi9tZW1ncmFwaCAtdiBtZ19sb2c6L3Zhci9sb2cvbWVtZ3JhcGggLXYgbWdfZXRjOi9ldGMvbWVtZ3JhcGhgXG5leHBvcnQgZnVuY3Rpb24gcnVuRG9ja2VyQ29udGFpbmVyKHtcbiAgbG9jYWxETlNIb3N0bmFtZSA9ICdtZW1ncmFwaCcgLyoqIG5hbWUgaW4gd2hpY2ggb3RoZXIgY29udGFpbmVycyBjYW4gYWNjZXNzIHRoZSBjb250YWluZXIgdGhyb3VnaCBpbiBhIGN1c3RvbSBuZXR3b3JrIChhcyBkZWZhdWx0IGRvZXNuJ3Qgc3VwcG9ydCBhY2Nlc3NpbmcgdXNpbmcgaG9zdG5hbWUpICovLFxufSA9IHt9KSB7XG4gIHRyeSB7XG4gICAgLy8gY3JlYXRlIG5ldHdvcmtcbiAgICBjaGlsZFByb2Nlc3MuZXhlY1N5bmMoXG4gICAgICBgZG9ja2VyIG5ldHdvcmsgY3JlYXRlIC0tZHJpdmVyIGJyaWRnZSBzaGFyZWRgLCAvLyB1c2UgYSBjdXN0b20gbmV0d29yayBpbnN0ZWFkIG9mIHRoZSBkZWZhdWx0IGJyaWRnZVxuICAgICAgY2hpbGRQcm9jZXNzT3B0aW9uLFxuICAgIClcbiAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICBjb25zb2xlLmxvZyhg4oCiIFNlZW1zIGxpa2UgdGhlIG5ldHdvcmsgYWxyZWFkeSBleGlzdHMuYClcbiAgICAvLyBjb25zb2xlLmxvZyhlcnJvcikgLy8gbG9nIGVycm9yIGFuZCBjb250aW51ZS4gVXN1YWxseSBuZXR3b3JrIGFscmVhZHkgZXhpc3RzLlxuICB9XG5cbiAgLy8gd2hlbiB1c2luZyBuZXR3b3JrIGFsaWFzIHRoZSBjb250YWluZXIgaG9zdG5hbWUgc2hvdWxkIGJlIGFkZGVkIHRvIHRoZSBob3N0cyBtYW51YWxseSBmb3IgZWFjaCBjb250YWluZXIgaW4gdGhlIG5ldHdvcmtcbiAgLy8gTk9URTogIGAtLW5ldHdvcmstYWxpYXNgIHdvcmtzIG9ubHkgd2hlbiAtLW5ldHdvcmsgb3B0aW9uIGlzIHByb3ZpZGVkLCBhbmQgZG9lc24ndCB3b3JrIGZvciBkZWZhdWx0IGJyaWRnZSBuZXR3b3JrLiBBZGRpdGlvbmFsbHkgdGhlIGFsaWFzIGlzIG5ldHdvcmsgYm91bmQsIGkuZS4gc3BlY2lmaWNhbGx5IHRvIGEgc2luZ2xlIG5ldHdvcmsuXG4gIGxldCBjb21tYW5kID0gW1xuICAgIC8vICFJTVBPUlRBTlQ6IFtTZWVtcyB0byBjYXVzZSBpc3N1ZXMgd2l0aCBkb2NrZXIgV1NMMl0gLS1yZXN0YXJ0IGFsd2F5c1xuICAgIGBkb2NrZXIgY3JlYXRlIC0tbmFtZSBtZW1ncmFwaC1zaGFyZWQgLS1uZXR3b3JrIHNoYXJlZCAtLW5ldHdvcmstYWxpYXMgJHtsb2NhbEROU0hvc3RuYW1lfSAtLXB1Ymxpc2ggNzY4Nzo3Njg3IC0tcmVzdGFydCBhbHdheXMgbWVtZ3JhcGggYCxcbiAgICAnZG9ja2VyIG5ldHdvcmsgY29ubmVjdCBicmlkZ2UgbWVtZ3JhcGgtc2hhcmVkJywgLy8gY29ubmVjdCB0byBkZWZhdWx0IGJyaWRnZSBuZXR3b3JrLlxuICAgIGBkb2NrZXIgc3RhcnQgbWVtZ3JhcGgtc2hhcmVkYCxcbiAgXS5qb2luKCcgJiYgXFxcXFxcbicpXG5cbiAgY29uc29sZS5sb2coYOKAoiBSdW5uaW5nIGNvbnRhaW5lcjogbWVtZ3JhcGggb24gcG9ydCA3Njg3YClcbiAgY29uc29sZS5sb2coYCQgJHtjb21tYW5kfWApXG5cbiAgdHJ5IHtcbiAgICBjaGlsZFByb2Nlc3MuZXhlY1N5bmMoY29tbWFuZCwgY2hpbGRQcm9jZXNzT3B0aW9uKVxuICB9IGNhdGNoIChlcnJvcikge1xuICAgIGNvbnNvbGUubG9nKGVycm9yKVxuICAgIGNvbnNvbGUubG9nKGDigKIgU2VlbXMgbGlrZSB0aGUgY29udGFpbmVyIGlzIGFscmVhZHkgcnVubmluZyBmcm9tIGEgcHJldmlvdXMgc2Vzc2lvbiwgaWdub3JlIHByZXZpb3VzIGVycm9yLmApXG4gIH1cbn1cblxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGNsZWFyR3JhcGhEYXRhKHsgbWVtZ3JhcGggPSB7fSB9ID0ge30pIHtcbiAgY29uc3QgdXJsID0geyBwcm90b2NvbDogJ2JvbHQnLCBob3N0bmFtZTogbWVtZ3JhcGguaG9zdCB8fCAnbG9jYWxob3N0JywgcG9ydDogbWVtZ3JhcGgucG9ydCB8fCA3Njg3IH1cbiAgaWYgKCEoYXdhaXQgaXNQb3J0UmVhY2hhYmxlKHVybC5wb3J0LCB7IGhvc3Q6IHVybC5ob3N0bmFtZSB9KSkpIHtcbiAgICBjb25zb2xlLmdyb3VwQ29sbGFwc2VkKCfigKIgUnVuIHByZXJlcXVpc2l0ZSBjb250YWluZXJzOicpXG4gICAgcnVuRG9ja2VyQ29udGFpbmVyKClcbiAgICBjb25zb2xlLmdyb3VwRW5kKClcbiAgfVxuICAvLyBEZWxldGUgYWxsIG5vZGVzIGluIHRoZSBpbi1tZW1vcnkgZGF0YWJhc2VcbiAgY29uc29sZS5sb2coJ+KAoiBDbGVhcmVkIGdyYXBoIGRhdGFiYXNlLicpXG4gIGNvbnN0IGF1dGhlbnRpY2F0aW9uID0geyB1c2VybmFtZTogJ25lbzRqJywgcGFzc3dvcmQ6ICd0ZXN0JyB9XG4gIGNvbnN0IGdyYXBoREJEcml2ZXIgPSBib2x0UHJvdG9jb2xEcml2ZXIuZHJpdmVyKGAke3VybC5wcm90b2NvbH06Ly8ke3VybC5ob3N0bmFtZX06JHt1cmwucG9ydH1gLCBib2x0UHJvdG9jb2xEcml2ZXIuYXV0aC5iYXNpYyhhdXRoZW50aWNhdGlvbi51c2VybmFtZSwgYXV0aGVudGljYXRpb24ucGFzc3dvcmQpKVxuICBsZXQgc2Vzc2lvbiA9IGF3YWl0IGdyYXBoREJEcml2ZXIuc2Vzc2lvbigpXG4gIGxldCByZXN1bHQgPSBhd2FpdCBzZXNzaW9uLnJ1bihgbWF0Y2ggKG4pIGRldGFjaCBkZWxldGUgbmApXG4gIHNlc3Npb24uY2xvc2UoKVxufVxuIl19

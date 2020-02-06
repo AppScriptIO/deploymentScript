@@ -1,24 +1,25 @@
-import { createGithubBranchedRelease } from './release'
-import { moduleProject as buildModuleProject, webappProject as buildWebappProject } from './buildSourceCode.js'
-import { bumpVersion } from './packageVersion'
-import * as container from './container'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.moduleProject = moduleProject;exports.webappProject = webappProject;var _release = require("./release");
+var _buildSourceCode = require("./buildSourceCode.js");
+var _packageVersion = require("./packageVersion");
+var container = _interopRequireWildcard(require("./container"));
 
-export async function moduleProject({ api, tagName }) {
-  container.memgraph.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
-  let version = await bumpVersion({ api })
-  await createGithubBranchedRelease({
+async function moduleProject({ api, tagName }) {
+  container.memgraph.runDockerContainer();
+  let version = await (0, _packageVersion.bumpVersion)({ api });
+  await (0, _release.createGithubBranchedRelease)({
     api,
     tagName: tagName || version,
-    buildCallback: () => buildModuleProject({ api }),
-  })
+    buildCallback: () => (0, _buildSourceCode.moduleProject)({ api }) });
+
 }
 
-export async function webappProject({ api, tagName }) {
-  container.memgraph.runDockerContainer() // run memgraph container for usage in buildTool graphTraversal module.
-  let version = await bumpVersion({ api })
-  await createGithubBranchedRelease({
+async function webappProject({ api, tagName }) {
+  container.memgraph.runDockerContainer();
+  let version = await (0, _packageVersion.bumpVersion)({ api });
+  await (0, _release.createGithubBranchedRelease)({
     api,
     tagName: version,
-    buildCallback: () => buildWebappProject({ api }),
-  })
+    buildCallback: () => (0, _buildSourceCode.webappProject)({ api }) });
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvYnVpbGRBbmRSZWxlYXNlLmpzIl0sIm5hbWVzIjpbIm1vZHVsZVByb2plY3QiLCJhcGkiLCJ0YWdOYW1lIiwiY29udGFpbmVyIiwibWVtZ3JhcGgiLCJydW5Eb2NrZXJDb250YWluZXIiLCJ2ZXJzaW9uIiwiYnVpbGRDYWxsYmFjayIsIndlYmFwcFByb2plY3QiXSwibWFwcGluZ3MiOiI4T0FBQTtBQUNBO0FBQ0E7QUFDQTs7QUFFTyxlQUFlQSxhQUFmLENBQTZCLEVBQUVDLEdBQUYsRUFBT0MsT0FBUCxFQUE3QixFQUErQztBQUNwREMsRUFBQUEsU0FBUyxDQUFDQyxRQUFWLENBQW1CQyxrQkFBbkI7QUFDQSxNQUFJQyxPQUFPLEdBQUcsTUFBTSxpQ0FBWSxFQUFFTCxHQUFGLEVBQVosQ0FBcEI7QUFDQSxRQUFNLDBDQUE0QjtBQUNoQ0EsSUFBQUEsR0FEZ0M7QUFFaENDLElBQUFBLE9BQU8sRUFBRUEsT0FBTyxJQUFJSSxPQUZZO0FBR2hDQyxJQUFBQSxhQUFhLEVBQUUsTUFBTSxvQ0FBbUIsRUFBRU4sR0FBRixFQUFuQixDQUhXLEVBQTVCLENBQU47O0FBS0Q7O0FBRU0sZUFBZU8sYUFBZixDQUE2QixFQUFFUCxHQUFGLEVBQU9DLE9BQVAsRUFBN0IsRUFBK0M7QUFDcERDLEVBQUFBLFNBQVMsQ0FBQ0MsUUFBVixDQUFtQkMsa0JBQW5CO0FBQ0EsTUFBSUMsT0FBTyxHQUFHLE1BQU0saUNBQVksRUFBRUwsR0FBRixFQUFaLENBQXBCO0FBQ0EsUUFBTSwwQ0FBNEI7QUFDaENBLElBQUFBLEdBRGdDO0FBRWhDQyxJQUFBQSxPQUFPLEVBQUVJLE9BRnVCO0FBR2hDQyxJQUFBQSxhQUFhLEVBQUUsTUFBTSxvQ0FBbUIsRUFBRU4sR0FBRixFQUFuQixDQUhXLEVBQTVCLENBQU47O0FBS0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBjcmVhdGVHaXRodWJCcmFuY2hlZFJlbGVhc2UgfSBmcm9tICcuL3JlbGVhc2UnXHJcbmltcG9ydCB7IG1vZHVsZVByb2plY3QgYXMgYnVpbGRNb2R1bGVQcm9qZWN0LCB3ZWJhcHBQcm9qZWN0IGFzIGJ1aWxkV2ViYXBwUHJvamVjdCB9IGZyb20gJy4vYnVpbGRTb3VyY2VDb2RlLmpzJ1xyXG5pbXBvcnQgeyBidW1wVmVyc2lvbiB9IGZyb20gJy4vcGFja2FnZVZlcnNpb24nXHJcbmltcG9ydCAqIGFzIGNvbnRhaW5lciBmcm9tICcuL2NvbnRhaW5lcidcclxuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBtb2R1bGVQcm9qZWN0KHsgYXBpLCB0YWdOYW1lIH0pIHtcclxuICBjb250YWluZXIubWVtZ3JhcGgucnVuRG9ja2VyQ29udGFpbmVyKCkgLy8gcnVuIG1lbWdyYXBoIGNvbnRhaW5lciBmb3IgdXNhZ2UgaW4gYnVpbGRUb29sIGdyYXBoVHJhdmVyc2FsIG1vZHVsZS5cclxuICBsZXQgdmVyc2lvbiA9IGF3YWl0IGJ1bXBWZXJzaW9uKHsgYXBpIH0pXHJcbiAgYXdhaXQgY3JlYXRlR2l0aHViQnJhbmNoZWRSZWxlYXNlKHtcclxuICAgIGFwaSxcclxuICAgIHRhZ05hbWU6IHRhZ05hbWUgfHwgdmVyc2lvbixcclxuICAgIGJ1aWxkQ2FsbGJhY2s6ICgpID0+IGJ1aWxkTW9kdWxlUHJvamVjdCh7IGFwaSB9KSxcclxuICB9KVxyXG59XHJcblxyXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gd2ViYXBwUHJvamVjdCh7IGFwaSwgdGFnTmFtZSB9KSB7XHJcbiAgY29udGFpbmVyLm1lbWdyYXBoLnJ1bkRvY2tlckNvbnRhaW5lcigpIC8vIHJ1biBtZW1ncmFwaCBjb250YWluZXIgZm9yIHVzYWdlIGluIGJ1aWxkVG9vbCBncmFwaFRyYXZlcnNhbCBtb2R1bGUuXHJcbiAgbGV0IHZlcnNpb24gPSBhd2FpdCBidW1wVmVyc2lvbih7IGFwaSB9KVxyXG4gIGF3YWl0IGNyZWF0ZUdpdGh1YkJyYW5jaGVkUmVsZWFzZSh7XHJcbiAgICBhcGksXHJcbiAgICB0YWdOYW1lOiB2ZXJzaW9uLFxyXG4gICAgYnVpbGRDYWxsYmFjazogKCkgPT4gYnVpbGRXZWJhcHBQcm9qZWN0KHsgYXBpIH0pLFxyXG4gIH0pXHJcbn1cclxuIl19

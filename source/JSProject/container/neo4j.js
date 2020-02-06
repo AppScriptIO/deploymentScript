@@ -1,38 +1,38 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-// https://neo4j.com/developer/docker-run-neo4j/
 
-// APOC http://neo4j-contrib.github.io/neo4j-apoc-procedures/3.4/installation/
-// https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/tag/3.5.0.4
-// USAGE for exporting json database, through using Cepher APOC extensions: `CALL apoc.export.json.all("all.json",{useTypes:true})`
 
-//dump initial config file values:
 
-// docker run --rm --volume=$PWD/temporary/neo4j/conf:/conf neo4j:latest dump-config
-// -v $PWD/temporary/neo4j/conf:/conf \
 
-// mkdir -p $PWD/temporary/neo4j/data
-// mkdir -p $PWD/temporary/neo4j/logs
-// mkdir -p $PWD/temporary/neo4j/conf
-// mkdir -p $PWD/temporary/neo4j/plugins
-// mkdir -p $PWD/temporary/neo4j/import
 
-// -v $PWD/temporary/neo4j/logs:/logs \
-// -v $PWD/temporary/neo4j/plugins:/plugins \
-// -v $PWD/temporary/neo4j/import:/var/lib/neo4j/import/ \
-// -v $PWD/temporary/neo4j/data:/data \
-// -e NEO4J_dbms_security_procedures_unrestricted=apoc.\\\* \
-// -e NEO4J_apoc_export_file_enabled=true \
-// -e NEO4J_apoc_import_file_enabled=true \
-// -e NEO4J_apoc_import_file_use__neo4j__config=true \
 
-export function runDockerContainer() {
-  console.log(`• Running container: neo4j on port 7686`)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function runDockerContainer() {
+  console.log(`• Running container: neo4j on port 7686`);
   try {
     childProcess.execSync(
-      [
-        `
+    [
+    `
         if [ ! "$(docker ps -q -f name=neo4j)" ]; then
           if [ "$(docker ps -aq -f status=exited -f name=neo4j)" ]; then
               # cleanup
@@ -46,11 +46,12 @@ export function runDockerContainer() {
             --env NEO4J_AUTH=neo4j/test \
             neo4j:latest
         fi
-        `,
-      ].join(' && \\\n'),
-      childProcessOption,
-    )
+        `].
+    join(' && \\\n'),
+    childProcessOption);
+
   } catch (error) {
-    throw error
+    throw error;
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL25lbzRqLmpzIl0sIm5hbWVzIjpbImNoaWxkUHJvY2VzcyIsInJlcXVpcmUiLCJjaGlsZFByb2Nlc3NPcHRpb24iLCJjd2QiLCJfX2Rpcm5hbWUiLCJzaGVsbCIsInN0ZGlvIiwicnVuRG9ja2VyQ29udGFpbmVyIiwiY29uc29sZSIsImxvZyIsImV4ZWNTeW5jIiwiam9pbiIsImVycm9yIl0sIm1hcHBpbmdzIjoiMkhBQUEsTUFBTUEsWUFBWSxHQUFHQyxPQUFPLENBQUMsZUFBRCxDQUE1QjtBQUNBLE1BQU1DLGtCQUFrQixHQUFHLEVBQUVDLEdBQUcsRUFBRUMsU0FBUCxFQUFrQkMsS0FBSyxFQUFFLElBQXpCLEVBQStCQyxLQUFLLEVBQUUsQ0FBQyxDQUFELEVBQUksQ0FBSixFQUFPLENBQVAsQ0FBdEMsRUFBM0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUE0Qk8sU0FBU0Msa0JBQVQsR0FBOEI7QUFDbkNDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLHlDQUFiO0FBQ0EsTUFBSTtBQUNGVCxJQUFBQSxZQUFZLENBQUNVLFFBQWI7QUFDRTtBQUNHOzs7Ozs7Ozs7Ozs7OztTQURIO0FBZ0JFQyxJQUFBQSxJQWhCRixDQWdCTyxVQWhCUCxDQURGO0FBa0JFVCxJQUFBQSxrQkFsQkY7O0FBb0JELEdBckJELENBcUJFLE9BQU9VLEtBQVAsRUFBYztBQUNkLFVBQU1BLEtBQU47QUFDRDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzID0gcmVxdWlyZSgnY2hpbGRfcHJvY2VzcycpXHJcbmNvbnN0IGNoaWxkUHJvY2Vzc09wdGlvbiA9IHsgY3dkOiBfX2Rpcm5hbWUsIHNoZWxsOiB0cnVlLCBzdGRpbzogWzAsIDEsIDJdIH1cclxuXHJcbi8vIGh0dHBzOi8vbmVvNGouY29tL2RldmVsb3Blci9kb2NrZXItcnVuLW5lbzRqL1xyXG5cclxuLy8gQVBPQyBodHRwOi8vbmVvNGotY29udHJpYi5naXRodWIuaW8vbmVvNGotYXBvYy1wcm9jZWR1cmVzLzMuNC9pbnN0YWxsYXRpb24vXHJcbi8vIGh0dHBzOi8vZ2l0aHViLmNvbS9uZW80ai1jb250cmliL25lbzRqLWFwb2MtcHJvY2VkdXJlcy9yZWxlYXNlcy90YWcvMy41LjAuNFxyXG4vLyBVU0FHRSBmb3IgZXhwb3J0aW5nIGpzb24gZGF0YWJhc2UsIHRocm91Z2ggdXNpbmcgQ2VwaGVyIEFQT0MgZXh0ZW5zaW9uczogYENBTEwgYXBvYy5leHBvcnQuanNvbi5hbGwoXCJhbGwuanNvblwiLHt1c2VUeXBlczp0cnVlfSlgXHJcblxyXG4vL2R1bXAgaW5pdGlhbCBjb25maWcgZmlsZSB2YWx1ZXM6XHJcblxyXG4vLyBkb2NrZXIgcnVuIC0tcm0gLS12b2x1bWU9JFBXRC90ZW1wb3JhcnkvbmVvNGovY29uZjovY29uZiBuZW80ajpsYXRlc3QgZHVtcC1jb25maWdcclxuLy8gLXYgJFBXRC90ZW1wb3JhcnkvbmVvNGovY29uZjovY29uZiBcXFxyXG5cclxuLy8gbWtkaXIgLXAgJFBXRC90ZW1wb3JhcnkvbmVvNGovZGF0YVxyXG4vLyBta2RpciAtcCAkUFdEL3RlbXBvcmFyeS9uZW80ai9sb2dzXHJcbi8vIG1rZGlyIC1wICRQV0QvdGVtcG9yYXJ5L25lbzRqL2NvbmZcclxuLy8gbWtkaXIgLXAgJFBXRC90ZW1wb3JhcnkvbmVvNGovcGx1Z2luc1xyXG4vLyBta2RpciAtcCAkUFdEL3RlbXBvcmFyeS9uZW80ai9pbXBvcnRcclxuXHJcbi8vIC12ICRQV0QvdGVtcG9yYXJ5L25lbzRqL2xvZ3M6L2xvZ3MgXFxcclxuLy8gLXYgJFBXRC90ZW1wb3JhcnkvbmVvNGovcGx1Z2luczovcGx1Z2lucyBcXFxyXG4vLyAtdiAkUFdEL3RlbXBvcmFyeS9uZW80ai9pbXBvcnQ6L3Zhci9saWIvbmVvNGovaW1wb3J0LyBcXFxyXG4vLyAtdiAkUFdEL3RlbXBvcmFyeS9uZW80ai9kYXRhOi9kYXRhIFxcXHJcbi8vIC1lIE5FTzRKX2RibXNfc2VjdXJpdHlfcHJvY2VkdXJlc191bnJlc3RyaWN0ZWQ9YXBvYy5cXFxcXFwqIFxcXHJcbi8vIC1lIE5FTzRKX2Fwb2NfZXhwb3J0X2ZpbGVfZW5hYmxlZD10cnVlIFxcXHJcbi8vIC1lIE5FTzRKX2Fwb2NfaW1wb3J0X2ZpbGVfZW5hYmxlZD10cnVlIFxcXHJcbi8vIC1lIE5FTzRKX2Fwb2NfaW1wb3J0X2ZpbGVfdXNlX19uZW80al9fY29uZmlnPXRydWUgXFxcclxuXHJcbmV4cG9ydCBmdW5jdGlvbiBydW5Eb2NrZXJDb250YWluZXIoKSB7XHJcbiAgY29uc29sZS5sb2coYOKAoiBSdW5uaW5nIGNvbnRhaW5lcjogbmVvNGogb24gcG9ydCA3Njg2YClcclxuICB0cnkge1xyXG4gICAgY2hpbGRQcm9jZXNzLmV4ZWNTeW5jKFxyXG4gICAgICBbXHJcbiAgICAgICAgYFxyXG4gICAgICAgIGlmIFsgISBcIiQoZG9ja2VyIHBzIC1xIC1mIG5hbWU9bmVvNGopXCIgXTsgdGhlblxyXG4gICAgICAgICAgaWYgWyBcIiQoZG9ja2VyIHBzIC1hcSAtZiBzdGF0dXM9ZXhpdGVkIC1mIG5hbWU9bmVvNGopXCIgXTsgdGhlblxyXG4gICAgICAgICAgICAgICMgY2xlYW51cFxyXG4gICAgICAgICAgICAgIGRvY2tlciBybSBuZW80alxyXG4gICAgICAgICAgZmlcclxuXHJcbiAgICAgICAgICBkb2NrZXIgcnVuIFxcXHJcbiAgICAgICAgICAgIC0tbmFtZSBuZW80aiBcXFxyXG4gICAgICAgICAgICAtcCA3NDc0Ojc0NzQgLXAgNzY4Njo3Njg3ICBcXFxyXG4gICAgICAgICAgICAtZCBcXFxyXG4gICAgICAgICAgICAtLWVudiBORU80Sl9BVVRIPW5lbzRqL3Rlc3QgXFxcclxuICAgICAgICAgICAgbmVvNGo6bGF0ZXN0XHJcbiAgICAgICAgZmlcclxuICAgICAgICBgLFxyXG4gICAgICBdLmpvaW4oJyAmJiBcXFxcXFxuJyksXHJcbiAgICAgIGNoaWxkUHJvY2Vzc09wdGlvbixcclxuICAgIClcclxuICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgdGhyb3cgZXJyb3JcclxuICB9XHJcbn1cclxuIl19
