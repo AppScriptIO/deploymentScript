@@ -1,4 +1,6 @@
 const childProcess = require('child_process')
+import isPortReachable from 'is-port-reachable'
+const boltProtocolDriver = require('neo4j-driver').v1
 const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
 
 // Volumes for memgraph container:
@@ -35,4 +37,20 @@ export function runDockerContainer({
     console.log(error)
     console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
   }
+}
+
+export async function clearGraphData({ memgraph = {} } = {}) {
+  const url = { protocol: 'bolt', hostname: memgraph.host || 'localhost', port: memgraph.port || 7687 }
+  if (!(await isPortReachable(url.port, { host: url.hostname }))) {
+    console.groupCollapsed('• Run prerequisite containers:')
+    runDockerContainer()
+    console.groupEnd()
+  }
+  // Delete all nodes in the in-memory database
+  console.log('• Cleared graph database.')
+  const authentication = { username: 'neo4j', password: 'test' }
+  const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password))
+  let session = await graphDBDriver.session()
+  let result = await session.run(`match (n) detach delete n`)
+  session.close()
 }

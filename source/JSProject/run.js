@@ -3,29 +3,7 @@ import assert from 'assert'
 import filesystem from 'fs'
 import { watchFile, browserLivereload, ManageSubprocess } from '@deployment/nodejsLiveReload'
 const { resolveAndLookupFile, findFileByGlobPattern } = require('@dependency/handleFilesystemOperation')
-const boltProtocolDriver = require('neo4j-driver').v1
 import * as container from './container'
-
-async function clearGraphData({ memgraph = {} } = {}) {
-  console.groupCollapsed('• Run prerequisite containers:')
-  container.memgraph.runDockerContainer() // temporary solution
-  console.groupEnd()
-  // Delete all nodes in the in-memory database
-  console.log('• Cleared graph database.')
-  const url = { protocol: 'bolt', hostname: memgraph.host || 'localhost', port: memgraph.port || 7687 },
-    authentication = { username: 'neo4j', password: 'test' }
-  const graphDBDriver = boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password))
-  let session = await graphDBDriver.session()
-  let result = await session.run(`match (n) detach delete n`)
-  session.close()
-}
-
-function setInterval({ interval = 1000 } = {}) {
-  // (function endlessProcess() { process.nextTick(endlessProcess) })() // Readable solution but it utilizes all available CPU. https://stackoverflow.com/questions/39082527/how-to-prevent-the-nodejs-event-loop-from-exiting
-  console.log(`Executing interval in ${__filename}. NodeJS version: ${JSON.stringify(process.versions)}`)
-  setInterval(() => console.info('Sleeping...'), interval)
-}
-const setTimeout = ({ timeout = 10000 } = {}) => setTimeout(() => console.log('setTimeout command ended. The process will exit now.'), timeout)
 
 /*
   Run webapp project: 
@@ -53,7 +31,7 @@ module.exports = async function({ api /* supplied by scriptManager */, applicati
   // Application
   let manageSubprocess = new ManageSubprocess({ cliAdapterPath: applicationPath })
   const runApplication = async () => {
-    await clearGraphData({ memgraph: application[1]?.memgraph }) // run prerequesite container and clear graph
+    await container.memgraph.clearGraphData({ memgraph: application[1]?.memgraph }) // run prerequesite container and clear graph
     manageSubprocess.runInSubprocess(...application)
   }
 

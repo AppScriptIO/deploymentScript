@@ -33,6 +33,7 @@
 		"git-url-parse": "^*",
 		"graphql": "*",
 		"graphql-tag": "*",
+		"is-port-reachable": "^3.0.0",
 		"js-yaml": "^3.13.1",
 		"jsonfile": "*",
 		"lodash": "*",

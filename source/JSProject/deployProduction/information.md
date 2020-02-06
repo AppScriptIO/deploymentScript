@@ -1,0 +1,1 @@
+- Check also `@deployment/appDeploymentLifecycle' for more production scripts.

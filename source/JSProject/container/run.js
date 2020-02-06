@@ -45,18 +45,36 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
     containerCommand,
   ]
 
+  console.log('container command' + ': \n', containerCommand)
+  console.log(`• docker command: "${executableCommand.join(' ')}"`)
+
   let option = {
     cwd: rootPath,
     detached: false,
     shell: true,
     stdio: [0, 1, 2],
-    //! important: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
+    // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
     env: Object.assign({}, process.env, {
       // DEPLOYMENT: 'development',
     }),
   }
-  console.log('container command' + ': \n', containerCommand)
-  console.log(`• docker command: "${executableCommand.join(' ')}"`)
   const [command, ...commandArgument] = executableCommand
   spawnSync(command, commandArgument, option)
+
+  // let childProcess = spawn(processCommand, processCommandArgs, processOption)
+  // childProcess.on('error', err => throw err)
+  // childProcess.on('exit', () => console.log(`PID: Child ${childProcess.pid} terminated.`))
+  // // childProcess.unref() // prevent parent from waiting to child process and un reference child from parent's event loop. When child process is referenced it forces the parent to wait for the child to exit before exiting itself.
+  // childProcess.on('exit', () => {
+  //   spawnSync('docker', [`kill ${containerName}`], {
+  //     detached: false,
+  //     shell: true,
+  //     stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+  //     env: process.env, // pass environment variables like process.env.PWD to spawn process
+  //   })
+  // })
+  // process.on('SIGINT', () => {
+  //   // when docker is using `-it` option this event won't be fired in this process, as the SIGINT signal is passed directly to the docker container.
+  //   childProcess.kill('SIGINT')
+  // })
 }
