@@ -1,7 +1,7 @@
 {
 	"name": "@deployment/deploymentScript",
 	"main": "./entrypoint/programmaticAPI",
-	"version": "2.3.4",
+	"version": "2.3.5",
 	"scripts": {
 		"upgrade": "echo '• Upgrading also workspaces'; yarn workspaces run upgrade",
 		"postinstall": "yarn workspaces run install --force # always install workspaces, even as a when this module is used as a dependency # important: must be registered on post install, as some package rely on scriptManager binary during installation",
