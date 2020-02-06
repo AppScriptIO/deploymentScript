@@ -1,11 +1,12 @@
-import * as dockerode from 'dockerode'
-import * as jsYaml from 'js-yaml'
 import { execSync, spawn, spawnSync } from 'child_process'
+import operatingSystem from 'os'
 import path from 'path'
 import filesystem from 'fs'
 import assert from 'assert'
-const resolve = require('resolve') // use 'resolve' module to allow passing 'preserve symlinks' option that is not supported by require.resolve module.
-import operatingSystem from 'os'
+import resolve from 'resolve' // use 'resolve' module to allow passing 'preserve symlinks' option that is not supported by require.resolve module.
+import * as dockerode from 'dockerode'
+import * as jsYaml from 'js-yaml'
+const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code') // while developing, allow dependency symlinks to work in containers.
 
 export async function runApplication({ api /* supplied by scriptManager */, scriptCommandName, scriptCommand = '/bin/bash' } = {}) {
   const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
@@ -26,9 +27,9 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
     `--rm`, // automatically remove after container exists.
     `--workdir ${'/project'}`,
 
+    `--volume ${developmentCodeFolder}:${developmentCodeFolder}`,
     `--volume ${rootPath}:${'/project'}`,
     `--volume /var/run/docker.sock:/var/run/docker.sock`,
-    `--volume /d:/d`,
     // `--volume ${operatingSystem.homedir()}/.ssh:/project/.ssh`,
 
     // container name is registered by Docker automatically for non default networks as hostnames in other containers (default bridge network will not use hostname DNS), allowing access to the memgraph container through it's name. (default network doesn't support aliases)
