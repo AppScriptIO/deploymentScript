@@ -69,11 +69,23 @@ export async function dockerCli({ api /* supplied by scriptManager */, scriptCom
   spawnSync(command, commandArgument, option)
 }
 
+// compose options https://docs.docker.com/compose/compose-file/#entrypoint
+// compose command options https://docs.docker.com/compose/reference/overview/
 export async function dockerComposeCli({ api /* supplied by scriptManager */, scriptCommand = '/bin/bash' } = {}) {
   const targetProjectConf = api.project.configuration.configuration,
     rootPath = api.project.configuration.rootPath,
     targetTemporaryFolder = path.join(rootPath, 'temporary'),
     containerProjectPath = rootPath
+    let option = {
+      cwd: rootPath,
+      detached: false,
+      shell: true,
+      stdio: [0, 1, 2],
+      // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
+      env: Object.assign({}, process.env, {
+        // DEPLOYMENT: 'development',
+      }),
+    }
 
   let portList = [
     ...targetProjectConf.apiGateway.service.map(item => item.port).filter(item => item),
@@ -87,18 +99,20 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
       9902,
     ],
   ]
-  let object = {
+  let serviceConfig = {
     version: '3.7',
+    
     networks: {
       internal: {
         driver: 'bridge', // network dirver:  bridge for the same host, while overlay is for swarm hosts.
       },
-      external: { external: true },
     },
+
     services: {
       application: {
         image: 'node:current',
 
+        // export ports to host machine:
         // to change port interface (ip) use "127.0.0.1:80:80"
         ports: portList.map(port => {
           return {
@@ -117,10 +131,10 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
         ],
 
         networks: {
-          external: {
+          internal: {
             aliases: ['application'],
           },
-        },
+        },   
 
         working_dir: rootPath,
         // IMPORTANT: if executed with command `/bin/sh -c ''`, as default docker does, the interrupt signals will not be passed to the running process and thus will not abort the containers. Therefore /bin/bash -c should be used, or ENTRYPOINT instead of COMMAND will use bash by default.
@@ -135,42 +149,74 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
         tty: true,
         stdin_open: true,
       },
+
+      memgraph: {
+        image: 'memgraph:latest',
+
+        // export ports to host machine:
+        ports: [
+          {
+            target: 7687,
+            // published: 7687,
+          }
+        ],
+
+        networks: {
+          internal: {
+            aliases: ['memgraph'],
+          },
+        },   
+      }
     },
   }
 
-  let yamlConfig = jsYaml.dump(object, { lineWidth: Infinity, noCompatMode: true }),
+  // convert service configuration into yaml file in temporary location, to be used later with docker-compose.
+  let yamlConfig = jsYaml.dump(serviceConfig, { lineWidth: Infinity, noCompatMode: true }),
     yamlFile = path.join(targetTemporaryFolder, 'dockerCompose.yaml')
   filesystem.writeFileSync(yamlFile, yamlConfig)
 
-  let executableCommand = [
-    [
-      // compose options https://docs.docker.com/compose/compose-file/#entrypoint
-      // compose command options https://docs.docker.com/compose/reference/overview/
-      `docker-compose --file ${yamlFile} --project-name application --log-level INFO`,
+  let dockerComposeCommand = `docker-compose --file ${yamlFile} --project-name webappProject --log-level INFO`
 
-      // `up --detach --no-build --force-recreate --abort-on-container-exit`
-      // `build --no-cache ${serviceName}`
-      // `pull containerDeploymentManagement` // pull previously built image
-
-      // --service-ports is required when using run command, it allows mapping of ports to host as set in yml file.
-      `run --rm --service-ports --use-aliases application`, // allows attaching to the container
-    ].join(' '),
-  ]
-
-  let option = {
-    cwd: rootPath,
-    detached: false,
-    shell: true,
-    stdio: [0, 1, 2],
-    // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
-    env: Object.assign({}, process.env, {
-      // DEPLOYMENT: 'development',
-    }),
+  {    
+    // Note: necessary step as recreating services will use previously created volumes (e.g. database anonymous volume)
+    // stop and remove containers and volumes related to project name from previous running
+    let executableCommand = [[
+      dockerComposeCommand, 
+      'down --volumes' // remove volumes attached to containers.
+    ].join(' ')]
+    const [command, ...commandArgument] = executableCommand
+    spawnSync(command, commandArgument, option)
   }
+
+  let executableCommand = [[
+    dockerComposeCommand,
+
+    // run: allows attaching to the container
+    // service-ports allows mapping of ports to host as set in yml file.
+    // `run --rm --service-ports --use-aliases application`, 
+
+    // up
+    // --detach
+    `up --no-build --force-recreate --abort-on-container-exit --always-recreate-deps`
+  ].join(' ')]
+
   console.log('container command' + ': \n', scriptCommand)
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   const [command, ...commandArgument] = executableCommand
   spawnSync(command, commandArgument, option)
 
-  // ['docker-compose', `-f ${ymlFile}`, `--project-name ${projectName}`, `down`] // stop and remove containers related to project name.
+  // down: allows to remove containers in addition to stopping them.
+  // TODO: Doesn't work, seems related to the signal transmition to the process through container commands.
+  process.on('SIGINT', (code, signal) => {
+    console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
+    // stop and remove containers related to project name.
+    let executableCommand = [[
+      dockerComposeCommand, 
+      'down' 
+      // --volumes //remove volumes attached to containers.
+    ].join(' ')]
+    const [command, ...commandArgument] = executableCommand
+    spawnSync(command, commandArgument, option)
+  })
+
 }

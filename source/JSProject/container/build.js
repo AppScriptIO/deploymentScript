@@ -34,3 +34,11 @@
 
 // WORKDIR $PROJECT
 // ENTRYPOINT $PROJECT/run.sh
+
+
+
+
+
+// docker-compose 
+  // `build --no-cache ${serviceName}`
+  // `pull containerDeploymentManagement` // pull previously built image
