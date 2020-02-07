@@ -6,13 +6,14 @@ import assert from 'assert'
 import resolve from 'resolve' // use 'resolve' module to allow passing 'preserve symlinks' option that is not supported by require.resolve module.
 import * as dockerode from 'dockerode'
 import * as jsYaml from 'js-yaml'
-const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code') // while developing, allow dependency symlinks to work in containers.
+// while developing, allow dependency symlinks to work in containers.
+const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code'),
+  yarnLinkFolrder = path.join(operatingSystem.homedir(), '.config')
 
-export async function runApplication({ api /* supplied by scriptManager */, scriptCommandName, scriptCommand = '/bin/bash' } = {}) {
+export async function dockerCli({ api /* supplied by scriptManager */, scriptCommand = '/bin/bash' } = {}) {
   const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
-    rootPath = api.project.configuration.rootPath
-
-  let containerCommand = scriptCommandName ? `yarn run ${scriptCommandName}` : scriptCommand
+    rootPath = api.project.configuration.rootPath,
+    containerProjectPath = rootPath
 
   let executableCommand = [
     'docker',
@@ -25,27 +26,33 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
     '--sig-proxy', // pass signals
     `--interactive --tty`, // allocate a terminal - this allows for interacting with the container process. tty = Unix/Linux terminal access handling using modem based connection (allows input from terminal), iteractive = accepts input from host.
     `--rm`, // automatically remove after container exists.
-    `--workdir ${'/project'}`,
+    `--workdir ${containerProjectPath}`,
 
+    `--volume ${rootPath}:${containerProjectPath}`,
+    // local development related paths
     `--volume ${developmentCodeFolder}:${developmentCodeFolder}`,
-    `--volume ${rootPath}:${'/project'}`,
+    `--volume ${yarnLinkFolrder}:${yarnLinkFolrder}`,
     `--volume /var/run/docker.sock:/var/run/docker.sock`,
     // `--volume ${operatingSystem.homedir()}/.ssh:/project/.ssh`,
 
     // container name is registered by Docker automatically for non default networks as hostnames in other containers (default bridge network will not use hostname DNS), allowing access to the memgraph container through it's name. (default network doesn't support aliases)
-    `--network=${'shared'}`,
+    `--network=${'external'}`,
     `--network-alias ${'application'}`, // make container discoverable by another hostname in addition to the container name for specific network.
     // `--add-host memgraph:172.17.0.3`,
 
     // `-P`, // Publish all exposed ports to the host interfaces
-    `-p 8080:8080 -p 8081:8081`,
+    `-p 443:443 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p 8084:8084 -p 8085:8085`, //services ports
+    `-p 9229:9229`, // Nodejs's remote debugger
+    `-p 9090:9090 -p 9901:9901 -p 9902:9902`, // Browsersync livereload
 
-    // 'myuserindocker/deployment-environment:latest' // 'myuserindocker/deployment-environment:simple_NodeDockerCompose' /* this container should have docker client & docker-compose installed in.*/ // `--env configurationPath=${configurationAbsoluteContainerPath}`, // pass the absolute path of the configuration file // `--env PWD=${workingDirectoryInContainer_PWD}`, // pass PWD absolute path as in container (convert host machine path to container path) // `--env sshUsername=${operatingSystem.userInfo().username}`, // `--env applicationPathOnHostMachine=${applicationPathOnHostMachine}`,
+    /*  'myuserindocker/deployment-environment:latest'
+        'myuserindocker/deployment-environment:simple_NodeDockerCompose'
+        this container should have docker client & docker-compose installed in.*/
     `${'node:current'}`, // nodejs 12 to support nodegit
-    containerCommand,
+    scriptCommand,
   ]
 
-  console.log('container command' + ': \n', containerCommand)
+  console.log('container command' + ': \n', scriptCommand)
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
 
   let option = {
@@ -60,21 +67,110 @@ export async function runApplication({ api /* supplied by scriptManager */, scri
   }
   const [command, ...commandArgument] = executableCommand
   spawnSync(command, commandArgument, option)
+}
 
-  // let childProcess = spawn(processCommand, processCommandArgs, processOption)
-  // childProcess.on('error', err => throw err)
-  // childProcess.on('exit', () => console.log(`PID: Child ${childProcess.pid} terminated.`))
-  // // childProcess.unref() // prevent parent from waiting to child process and un reference child from parent's event loop. When child process is referenced it forces the parent to wait for the child to exit before exiting itself.
-  // childProcess.on('exit', () => {
-  //   spawnSync('docker', [`kill ${containerName}`], {
-  //     detached: false,
-  //     shell: true,
-  //     stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-  //     env: process.env, // pass environment variables like process.env.PWD to spawn process
-  //   })
-  // })
-  // process.on('SIGINT', () => {
-  //   // when docker is using `-it` option this event won't be fired in this process, as the SIGINT signal is passed directly to the docker container.
-  //   childProcess.kill('SIGINT')
-  // })
+export async function dockerComposeCli({ api /* supplied by scriptManager */, scriptCommand = '/bin/bash' } = {}) {
+  const targetProjectConf = api.project.configuration.configuration,
+    rootPath = api.project.configuration.rootPath,
+    targetTemporaryFolder = path.join(rootPath, 'temporary'),
+    containerProjectPath = rootPath
+
+  let portList = [
+    ...targetProjectConf.apiGateway.service.map(item => item.port).filter(item => item),
+    // Additional development ports
+    ...[
+      // Nodejs's remote debugger
+      9229,
+      // Browsersync livereload
+      9090,
+      9901,
+      9902,
+    ],
+  ]
+  let object = {
+    version: '3.7',
+    networks: {
+      internal: {
+        driver: 'bridge', // network dirver:  bridge for the same host, while overlay is for swarm hosts.
+      },
+      external: { external: true },
+    },
+    services: {
+      application: {
+        image: 'node:current',
+
+        // to change port interface (ip) use "127.0.0.1:80:80"
+        ports: portList.map(port => {
+          return {
+            target: port,
+            published: port,
+            // mode: 'host',
+          }
+        }),
+
+        volumes: [
+          `${rootPath}:${containerProjectPath}`,
+          // local development related paths
+          `${developmentCodeFolder}:${developmentCodeFolder}`,
+          `${yarnLinkFolrder}:${yarnLinkFolrder}`,
+          `/var/run/docker.sock:/var/run/docker.sock`,
+        ],
+
+        networks: {
+          external: {
+            aliases: ['application'],
+          },
+        },
+
+        working_dir: rootPath,
+        // IMPORTANT: if executed with command `/bin/sh -c ''`, as default docker does, the interrupt signals will not be passed to the running process and thus will not abort the containers. Therefore /bin/bash -c should be used, or ENTRYPOINT instead of COMMAND will use bash by default.
+        // IMPORTANT: node --eval doesn't pass signals correctly in docker command, but wrapping it through npm scripts (yarn run <script name>) adds functionality.
+        command: scriptCommand,
+        // entrypoint:
+        //   // ['node', `--eval`, `require(process.cwd()).application({},{memgraph:{host:'memgraph'}})`] || ['yarn', 'run', 'run-configuredForContainer'] ||
+        //   `${scriptCommand}`.split(' ').filter(item => item.length /*Remove empty values*/), // `/bin/bash -c "ls -al"`
+
+        // https://docs.docker.com/compose/compose-file/#domainname-hostname-ipc-mac_address-privileged-read_only-shm_size-stdin_open-tty-user-working_dir
+        // works only with docker-compose run but doesn't work for some reason with docker-compose up (stuck on 'attaching <serviceName>..')
+        tty: true,
+        stdin_open: true,
+      },
+    },
+  }
+
+  let yamlConfig = jsYaml.dump(object, { lineWidth: Infinity, noCompatMode: true }),
+    yamlFile = path.join(targetTemporaryFolder, 'dockerCompose.yaml')
+  filesystem.writeFileSync(yamlFile, yamlConfig)
+
+  let executableCommand = [
+    [
+      // compose options https://docs.docker.com/compose/compose-file/#entrypoint
+      // compose command options https://docs.docker.com/compose/reference/overview/
+      `docker-compose --file ${yamlFile} --project-name application --log-level INFO`,
+
+      // `up --detach --no-build --force-recreate --abort-on-container-exit`
+      // `build --no-cache ${serviceName}`
+      // `pull containerDeploymentManagement` // pull previously built image
+
+      // --service-ports is required when using run command, it allows mapping of ports to host as set in yml file.
+      `run --rm --service-ports --use-aliases application`, // allows attaching to the container
+    ].join(' '),
+  ]
+
+  let option = {
+    cwd: rootPath,
+    detached: false,
+    shell: true,
+    stdio: [0, 1, 2],
+    // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
+    env: Object.assign({}, process.env, {
+      // DEPLOYMENT: 'development',
+    }),
+  }
+  console.log('container command' + ': \n', scriptCommand)
+  console.log(`• docker command: "${executableCommand.join(' ')}"`)
+  const [command, ...commandArgument] = executableCommand
+  spawnSync(command, commandArgument, option)
+
+  // ['docker-compose', `-f ${ymlFile}`, `--project-name ${projectName}`, `down`] // stop and remove containers related to project name.
 }
