@@ -7,20 +7,6 @@ import { generate as generateDockerFile } from 'dockerfile-generator'
 import modifyJson from 'jsonfile'
 import { paramCase as convertToParamCase } from 'param-case'
 
-// .yaml
-
-// buildImage:
-//   build:
-//       context: ../../../ # change context to project's root folder.
-//       dockerfile: /project/application/dependency/appDeploymentLifecycle/deploymentContainer/service.dockerfile
-//       args:
-//           - DEPLOYMENT=${DEPLOYMENT:-production}
-//           - DISTRIBUTION=${DISTRIBUTION}
-//   image: myuserindocker/${imageName}:latest # tag for created/built image # name of local image to be built
-
-// docker-compose
-// `pull containerDeploymentManagement` // pull previously built image
-
 export async function dockerBuildImage({ api /* supplied by scriptManager */ } = {}) {
   const targetProjectConf = api.project.configuration.configuration,
     targetProjectRoot = api.project.configuration.rootPath,
@@ -62,8 +48,11 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
 
   // --output --label
   let dockerBuildContext = targetProjectRoot
+  // name of local image to be built
   let imageName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) |> convertToParamCase // package name `@namespace/packageName` => `packageName` => docker image name param case `package-name`
-  let executableCommand = [['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag ${imageName}:${packageConfig.version} ${targetProjectConf.directory.distribution}`].join(' ')]
+  let executableCommand = [
+    ['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag myuserindocker/${imageName}:${packageConfig.version} ${targetProjectConf.directory.distribution}`].join(' '),
+  ]
 
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   let option = {
