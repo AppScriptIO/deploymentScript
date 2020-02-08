@@ -1,46 +1,47 @@
-const { installModuleMultiple } = require('@dependency/handleModuleSystem')
-const fs = require('fs')
-const path = require('path')
+"use strict";const { installModuleMultiple } = require('@dependency/handleModuleSystem');
+const fs = require('fs');
+const path = require('path');
 
-// TODO: implement finding repositories & automatic fixing and installation of node_modules of multiple packages.
-const installPathArray = []
-// fs.readdir(path.join(__dirname, '../Dependency'), function (err, files) {
-//     //handling error
-//     if (err) {
-//         return console.log('Unable to scan directory: ' + err);
-//     }
-//     //listing all files using forEach
-//     files.forEach(function (file) {
-//         // Do whatever you want to do with the file
-//         installPathArray.push(path.resolve(path.join(path.join(__dirname, '../Dependency'), file)));
-//     });
-// });
-// fs.readdir(path.join(__dirname, '../DeploymentTool'), function (err, files) {
-//     //handling error
-//     if (err) {
-//         return console.log('Unable to scan directory: ' + err);
-//     }
-//     //listing all files using forEach
-//     files.forEach(function (file) {
-//         // Do whatever you want to do with the file
-//         installPathArray.push(path.resolve(path.join(path.join(__dirname, '../DeploymentTool'), file)));
-//     });
-// });
-// fs.readdir(path.join(__dirname, '../Service'), function (err, files) {
-//     //handling error
-//     if (err) {
-//         return console.log('Unable to scan directory: ' + err);
-//     }
-//     //listing all files using forEach
-//     files.forEach(function (file) {
-//         // Do whatever you want to do with the file
-//         installPathArray.push(path.resolve(path.join(path.join(__dirname, '../Service'), file)));
-//     });
 
-// });
+const installPathArray = [];
 
-// setTimeout(() => {
-//       console.log(installPathArray)
 
-// }, 3000);
-installModuleMultiple({ installPathArray })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+installModuleMultiple({ installPathArray });
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvcGFja2FnZU1haW50ZW5hbmNlLmpzIl0sIm5hbWVzIjpbImluc3RhbGxNb2R1bGVNdWx0aXBsZSIsInJlcXVpcmUiLCJmcyIsInBhdGgiLCJpbnN0YWxsUGF0aEFycmF5Il0sIm1hcHBpbmdzIjoiYUFBQSxNQUFNLEVBQUVBLHFCQUFGLEtBQTRCQyxPQUFPLENBQUMsZ0NBQUQsQ0FBekM7QUFDQSxNQUFNQyxFQUFFLEdBQUdELE9BQU8sQ0FBQyxJQUFELENBQWxCO0FBQ0EsTUFBTUUsSUFBSSxHQUFHRixPQUFPLENBQUMsTUFBRCxDQUFwQjs7O0FBR0EsTUFBTUcsZ0JBQWdCLEdBQUcsRUFBekI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUF3Q0FKLHFCQUFxQixDQUFDLEVBQUVJLGdCQUFGLEVBQUQsQ0FBckIiLCJzb3VyY2VzQ29udGVudCI6WyJjb25zdCB7IGluc3RhbGxNb2R1bGVNdWx0aXBsZSB9ID0gcmVxdWlyZSgnQGRlcGVuZGVuY3kvaGFuZGxlTW9kdWxlU3lzdGVtJylcbmNvbnN0IGZzID0gcmVxdWlyZSgnZnMnKVxuY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKVxuXG4vLyBUT0RPOiBpbXBsZW1lbnQgZmluZGluZyByZXBvc2l0b3JpZXMgJiBhdXRvbWF0aWMgZml4aW5nIGFuZCBpbnN0YWxsYXRpb24gb2Ygbm9kZV9tb2R1bGVzIG9mIG11bHRpcGxlIHBhY2thZ2VzLlxuY29uc3QgaW5zdGFsbFBhdGhBcnJheSA9IFtdXG4vLyBmcy5yZWFkZGlyKHBhdGguam9pbihfX2Rpcm5hbWUsICcuLi9EZXBlbmRlbmN5JyksIGZ1bmN0aW9uIChlcnIsIGZpbGVzKSB7XG4vLyAgICAgLy9oYW5kbGluZyBlcnJvclxuLy8gICAgIGlmIChlcnIpIHtcbi8vICAgICAgICAgcmV0dXJuIGNvbnNvbGUubG9nKCdVbmFibGUgdG8gc2NhbiBkaXJlY3Rvcnk6ICcgKyBlcnIpO1xuLy8gICAgIH1cbi8vICAgICAvL2xpc3RpbmcgYWxsIGZpbGVzIHVzaW5nIGZvckVhY2hcbi8vICAgICBmaWxlcy5mb3JFYWNoKGZ1bmN0aW9uIChmaWxlKSB7XG4vLyAgICAgICAgIC8vIERvIHdoYXRldmVyIHlvdSB3YW50IHRvIGRvIHdpdGggdGhlIGZpbGVcbi8vICAgICAgICAgaW5zdGFsbFBhdGhBcnJheS5wdXNoKHBhdGgucmVzb2x2ZShwYXRoLmpvaW4ocGF0aC5qb2luKF9fZGlybmFtZSwgJy4uL0RlcGVuZGVuY3knKSwgZmlsZSkpKTtcbi8vICAgICB9KTtcbi8vIH0pO1xuLy8gZnMucmVhZGRpcihwYXRoLmpvaW4oX19kaXJuYW1lLCAnLi4vRGVwbG95bWVudFRvb2wnKSwgZnVuY3Rpb24gKGVyciwgZmlsZXMpIHtcbi8vICAgICAvL2hhbmRsaW5nIGVycm9yXG4vLyAgICAgaWYgKGVycikge1xuLy8gICAgICAgICByZXR1cm4gY29uc29sZS5sb2coJ1VuYWJsZSB0byBzY2FuIGRpcmVjdG9yeTogJyArIGVycik7XG4vLyAgICAgfVxuLy8gICAgIC8vbGlzdGluZyBhbGwgZmlsZXMgdXNpbmcgZm9yRWFjaFxuLy8gICAgIGZpbGVzLmZvckVhY2goZnVuY3Rpb24gKGZpbGUpIHtcbi8vICAgICAgICAgLy8gRG8gd2hhdGV2ZXIgeW91IHdhbnQgdG8gZG8gd2l0aCB0aGUgZmlsZVxuLy8gICAgICAgICBpbnN0YWxsUGF0aEFycmF5LnB1c2gocGF0aC5yZXNvbHZlKHBhdGguam9pbihwYXRoLmpvaW4oX19kaXJuYW1lLCAnLi4vRGVwbG95bWVudFRvb2wnKSwgZmlsZSkpKTtcbi8vICAgICB9KTtcbi8vIH0pO1xuLy8gZnMucmVhZGRpcihwYXRoLmpvaW4oX19kaXJuYW1lLCAnLi4vU2VydmljZScpLCBmdW5jdGlvbiAoZXJyLCBmaWxlcykge1xuLy8gICAgIC8vaGFuZGxpbmcgZXJyb3Jcbi8vICAgICBpZiAoZXJyKSB7XG4vLyAgICAgICAgIHJldHVybiBjb25zb2xlLmxvZygnVW5hYmxlIHRvIHNjYW4gZGlyZWN0b3J5OiAnICsgZXJyKTtcbi8vICAgICB9XG4vLyAgICAgLy9saXN0aW5nIGFsbCBmaWxlcyB1c2luZyBmb3JFYWNoXG4vLyAgICAgZmlsZXMuZm9yRWFjaChmdW5jdGlvbiAoZmlsZSkge1xuLy8gICAgICAgICAvLyBEbyB3aGF0ZXZlciB5b3Ugd2FudCB0byBkbyB3aXRoIHRoZSBmaWxlXG4vLyAgICAgICAgIGluc3RhbGxQYXRoQXJyYXkucHVzaChwYXRoLnJlc29sdmUocGF0aC5qb2luKHBhdGguam9pbihfX2Rpcm5hbWUsICcuLi9TZXJ2aWNlJyksIGZpbGUpKSk7XG4vLyAgICAgfSk7XG5cbi8vIH0pO1xuXG4vLyBzZXRUaW1lb3V0KCgpID0+IHtcbi8vICAgICAgIGNvbnNvbGUubG9nKGluc3RhbGxQYXRoQXJyYXkpXG5cbi8vIH0sIDMwMDApO1xuaW5zdGFsbE1vZHVsZU11bHRpcGxlKHsgaW5zdGFsbFBhdGhBcnJheSB9KVxuIl19
