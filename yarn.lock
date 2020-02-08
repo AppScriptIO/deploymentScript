@@ -951,9 +951,9 @@
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#c1fb724c0e1fdcf62de7d3c6ea5bc8f1fbe35c53"
 
 "@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:4.x.x", "@dependency/graphTraversal-implementation@https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x":
-  version "4.2.4"
-  uid "1a9e39a5b6cd1ee0502190622783cfc115f1ee00"
-  resolved "https://github.com/AppScriptIO/graphTraversal-implementation#1a9e39a5b6cd1ee0502190622783cfc115f1ee00"
+  version "4.2.5"
+  uid "46032a63aa382a5d44713d5b53a922f8d6c0651f"
+  resolved "https://github.com/AppScriptIO/graphTraversal-implementation#46032a63aa382a5d44713d5b53a922f8d6c0651f"
   dependencies:
     neo4j-driver "^1.7.5"
     redisgraph.js "^1.1.4"
@@ -961,21 +961,25 @@
     uuid "*"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:4.x.x", "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^4.x.x":
-  version "4.2.4"
-  uid d36825678ddcd69c65d92f6fc2c2b235901779ca
-  resolved "https://github.com/AppScriptIO/graphTraversal#d36825678ddcd69c65d92f6fc2c2b235901779ca"
+  version "4.2.5"
+  uid a8fd0293fd5b7886d2d656e227d43905056f1443
+  resolved "https://github.com/AppScriptIO/graphTraversal#a8fd0293fd5b7886d2d656e227d43905056f1443"
   dependencies:
     "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^2.x.x"
     "@dependency/graphTraversal-implementation" "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x"
+    "@dependency/handleEventLoop" "https://github.com/AppScriptIO/handleEventLoop#semver:^1.x.x"
     "@dependency/handleJSNativeDataStructure" "https://github.com/AppScriptIO/handleJSNativeDataStructure#semver:^2.x.x"
-    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
-    "@dependency/promiseProperRace" "https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x"
+    "@dependency/handlePrototypeDelegation" "https://github.com/AppScriptIO/handlePrototypeDelegation#semver:^1.x.x"
     underscore "^1.9.1"
 
+"@dependency/handleEventLoop@https://github.com/AppScriptIO/handleEventLoop#semver:^1.x.x":
+  version "1.0.5"
+  resolved "https://github.com/AppScriptIO/handleEventLoop#ba7c2f47f8273b23fcd76aa855d34ce079513622"
+
 "@dependency/handleFilesystemOperation@http://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x":
-  version "2.0.9"
-  uid c9706d990ad6c599fc04376efd102f4dfd259df4
-  resolved "http://github.com/AppScriptIO/handleFilesystemOperation#c9706d990ad6c599fc04376efd102f4dfd259df4"
+  version "2.0.10"
+  uid e0ef99f21108ff5fa0d3f9a57a874424d2401c5d
+  resolved "http://github.com/AppScriptIO/handleFilesystemOperation#e0ef99f21108ff5fa0d3f9a57a874424d2401c5d"
   dependencies:
     "@deployment/deploymentProvisioning" "https://github.com/AppScriptIO/deploymentProvisioning#semver:^2.x.x"
     glob "^7.1.6"
@@ -990,8 +994,8 @@
     vinyl-fs "*"
 
 "@dependency/handleFilesystemOperation@https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x":
-  version "2.0.9"
-  resolved "https://github.com/AppScriptIO/handleFilesystemOperation#c9706d990ad6c599fc04376efd102f4dfd259df4"
+  version "2.0.10"
+  resolved "https://github.com/AppScriptIO/handleFilesystemOperation#e0ef99f21108ff5fa0d3f9a57a874424d2401c5d"
   dependencies:
     "@deployment/deploymentProvisioning" "https://github.com/AppScriptIO/deploymentProvisioning#semver:^2.x.x"
     glob "^7.1.6"
@@ -1006,24 +1010,24 @@
     vinyl-fs "*"
 
 "@dependency/handleJSNativeDataStructure@https://github.com/AppScriptIO/handleJSNativeDataStructure#semver:^2.x.x":
-  version "2.0.5"
-  resolved "https://github.com/AppScriptIO/handleJSNativeDataStructure#d7639c67eda6400721cb0e7535b839326496a742"
+  version "2.0.6"
+  resolved "https://github.com/AppScriptIO/handleJSNativeDataStructure#a81cb14fa3c71fcc1b6e388ff05ed18e3156bba2"
   dependencies:
     deepmerge "^4.2.2"
     merge-anything "^2.4.4"
     multistream "^2.1.1"
 
 "@dependency/handleModuleSystem@http://github.com/AppScriptIO/handleModuleSystem#semver:^2.x.x":
-  version "2.0.4"
-  uid "06cd3b7e5f3ab5a9ec57bc36afb72a3fe2d66227"
-  resolved "http://github.com/AppScriptIO/handleModuleSystem#06cd3b7e5f3ab5a9ec57bc36afb72a3fe2d66227"
+  version "2.0.5"
+  uid abbb0d163b721196070fadcd73531476c36eedae
+  resolved "http://github.com/AppScriptIO/handleModuleSystem#abbb0d163b721196070fadcd73531476c36eedae"
   dependencies:
     "@dependency/handleFilesystemOperation" "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x"
     del "^3.0.0"
 
 "@dependency/handleModuleSystem@https://github.com/AppScriptIO/handleModuleSystem#semver:^2.x.x":
-  version "2.0.4"
-  resolved "https://github.com/AppScriptIO/handleModuleSystem#06cd3b7e5f3ab5a9ec57bc36afb72a3fe2d66227"
+  version "2.0.5"
+  resolved "https://github.com/AppScriptIO/handleModuleSystem#abbb0d163b721196070fadcd73531476c36eedae"
   dependencies:
     "@dependency/handleFilesystemOperation" "https://github.com/AppScriptIO/handleFilesystemOperation#semver:^2.x.x"
     del "^3.0.0"
@@ -1032,6 +1036,10 @@
   version "1.0.2"
   resolved "https://github.com/AppScriptIO/handleProcess#00855c003066b98523e814926b1d3a4d0b9549a3"
 
+"@dependency/handlePrototypeDelegation@https://github.com/AppScriptIO/handlePrototypeDelegation#semver:^1.x.x":
+  version "1.1.3"
+  resolved "https://github.com/AppScriptIO/handlePrototypeDelegation#badcb48ecf211684423c1c24ecdefa23c874a467"
+
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
   version "1.1.2"
   resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#1b539de65eb0b21326fa9bf09236c7dcd256eadb"
@@ -1039,10 +1047,6 @@
 "@dependency/parseKeyValuePairSeparatedBySymbol@https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#semver:^1.x.x":
   version "1.0.3"
   resolved "https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#d5f718c96b2eddccc40de069c2ebfe6f6d766c73"
-
-"@dependency/promiseProperRace@https://github.com/AppScriptIO/promiseProperRace#semver:^1.x.x":
-  version "1.0.3"
-  resolved "https://github.com/AppScriptIO/promiseProperRace#a1ceb5ff9707b78e2d72876955c23f829a0830d5"
 
 "@deployment/buildTool@https://github.com/AppScriptIO/buildTool#semver:^2.x.x":
   version "2.3.6"
@@ -7213,6 +7217,22 @@ node-modules-regexp@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
 
+node-pre-gyp@*:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.14.0.tgz#9a0596533b877289bcad4e143982ca3d904ddc83"
+  integrity sha512-+CvDC7ZttU/sSt9rFjix/P05iS43qHCOOGzcr3Ry99bXG7VX953+vFyEuph/tfqoYu8dttBkE86JSKBO2OzcxA==
+  dependencies:
+    detect-libc "^1.0.2"
+    mkdirp "^0.5.1"
+    needle "^2.2.1"
+    nopt "^4.0.1"
+    npm-packlist "^1.1.6"
+    npmlog "^4.0.2"
+    rc "^1.2.7"
+    rimraf "^2.6.1"
+    semver "^5.3.0"
+    tar "^4.4.2"
+
 node-pre-gyp@^0.13.0:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.13.0.tgz#df9ab7b68dd6498137717838e4f92a33fc9daa42"
@@ -9609,7 +9629,7 @@ tar-stream@^2.0.0:
     inherits "^2.0.3"
     readable-stream "^3.1.1"
 
-tar@^4, tar@^4.4.8:
+tar@^4, tar@^4.4.2, tar@^4.4.8:
   version "4.4.13"
   resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.13.tgz#43b364bc52888d555298637b10d60790254ab525"
   integrity sha512-w2VwSrBoHa5BsSyH+KxEqeQBAllHhccyMFVHtGtdMpF4W7IRWfZjFiQceJPChOeTsSDVUpER2T8FA93pr0L+QA==
