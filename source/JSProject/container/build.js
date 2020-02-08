@@ -21,7 +21,7 @@ import { paramCase as convertToParamCase } from 'param-case'
 // docker-compose
 // `pull containerDeploymentManagement` // pull previously built image
 
-export async function dockerBuild({ api /* supplied by scriptManager */ } = {}) {
+export async function dockerBuildImage({ api /* supplied by scriptManager */ } = {}) {
   const targetProjectConf = api.project.configuration.configuration,
     targetProjectRoot = api.project.configuration.rootPath,
     targetPackagePath = path.join(targetProjectRoot, 'package.json'),
@@ -30,31 +30,42 @@ export async function dockerBuild({ api /* supplied by scriptManager */ } = {}) 
 
   let packageConfig = modifyJson.readFileSync(targetPackagePath)
 
-  let dockerFileConfig = {
-    from: 'node:current',
-    // run: ['apt-get update -y && apt-get upgrade -y'],
-
-    // Environment Variables & Arguments
-    // default value is override if build argument is specified in docker compose.
-    // args: ['PROJECT=/project', 'DEPLOYMENT=production'],
-    // env: { PROJECT: '/project', DEPLOYMENT: 'production', EMAIL: '', LETSENCRYPT_PORT: '' },
-
-    copy: {
-      [targetProjectConf.directory.distribution]: '/project',
-    },
-
-    working_dir: '/project',
-    entrypoint: 'yarn run run',
-  }
+  let dockerFileConfig = [
+    await generateDockerFile({
+      // first stage - installation of package.json dependencies.
+      from: 'node:current AS stage1',
+      copy: {
+        ['./']: '/project',
+      },
+      working_dir: '/project',
+      // run: ['apt-get update -y && apt-get upgrade -y'],
+      run: ['yarn', 'install', '--production'],
+    }),
+    await generateDockerFile({
+      from: 'node:current',
+      // Environment Variables & Arguments
+      // default value is override if build argument is specified in docker compose.
+      // args: ['PROJECT=/project', 'DEPLOYMENT=production'],
+      // env: { PROJECT: '/project', DEPLOYMENT: 'production', EMAIL: '', LETSENCRYPT_PORT: '' },
+      copy: {
+        ['--from=stage1 /project']: '/project', // should copy code with node_modules installed from previous build stage.
+      },
+      working_dir: '/project',
+      // entrypoint is for executable path only, and the arguments passed through command part. https://medium.com/@oprearocks/how-to-properly-override-the-entrypoint-using-docker-run-2e081e5feb9d
+      entrypoint: 'yarn',
+      cmd: ['run', 'run'],
+    }),
+  ].join('\n')
   // generate and write docker file from configs.
   let dockerFile = path.join(targetTemporaryFolder, 'build.dockerfile')
-  filesystem.writeFileSync(dockerFile, await generateDockerFile(dockerFileConfig))
+  filesystem.writeFileSync(dockerFile, dockerFileConfig)
 
   // --output --label
   let dockerBuildContext = targetProjectRoot
   let imageName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) |> convertToParamCase // package name `@namespace/packageName` => `packageName` => docker image name param case `package-name`
-  let executableCommand = [['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag ${imageName}:${packageConfig.version} ${dockerBuildContext}`].join(' ')]
+  let executableCommand = [['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag ${imageName}:${packageConfig.version} ${targetProjectConf.directory.distribution}`].join(' ')]
 
+  console.log(`• docker command: "${executableCommand.join(' ')}"`)
   let option = {
     cwd: targetProjectRoot,
     detached: false,
