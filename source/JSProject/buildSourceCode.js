@@ -1,52 +1,53 @@
-import filesystem from 'fs'
-import path from 'path'
-import { build } from '@deployment/buildTool'
-import * as container from './container'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.webappProject = webappProject;exports.moduleProject = moduleProject;
 
-// build process for webapps relying on appscript module.
-export async function webappProject(
+var _buildTool = require("@deployment/buildTool");
+var container = _interopRequireWildcard(require("./container"));
+
+
+async function webappProject(
+{
+
+  api,
+  entryNodeKey,
+  memgraph },
+
+...args)
+{
+  await container.memgraph.clearGraphData({ memgraph });
+
+  await (0, _buildTool.build)(
   {
-    // adapter for working with target function interface of `scriptManager`.
-    api /* supplied by scriptManager */,
-    entryNodeKey,
-    memgraph,
-  },
-  ...args
-) {
-  await container.memgraph.clearGraphData({ memgraph }) // clear database and load graph data:
+    api,
+    targetProject: api.project,
+    entryNodeKey: entryNodeKey || '58c15cc8-6f40-4d0b-815a-0b8594aeb972',
+    taskContextName: 'webappProjectTask',
+    memgraph },
 
-  await build(
-    {
-      api,
-      targetProject: api.project,
-      entryNodeKey: entryNodeKey || '58c15cc8-6f40-4d0b-815a-0b8594aeb972',
-      taskContextName: 'webappProjectTask', // graph tasks traversal entrypoint
-      memgraph,
-    },
-    ...args,
-  ).catch(console.error)
+  ...args).
+  catch(console.error);
 }
 
-// build process for Javascript module repositories
-export async function moduleProject(
-  {
-    // adapter for working with target function interface of `scriptManager`.
-    api /* supplied by scriptManager */,
-    entryNodeKey,
-    memgraph,
-  },
-  ...args
-) {
-  await container.memgraph.clearGraphData({ memgraph }) // clear database and load graph data:
 
-  await build(
-    {
-      api,
-      targetProject: api.project,
-      entryNodeKey: entryNodeKey || '171d18f8-9d25-4483-aeb9-a29c9fbed6ac',
-      taskContextName: 'moduleProjectTask', // graph tasks traversal entrypoint
-      memgraph,
-    },
-    ...args,
-  ).catch(console.error)
+async function moduleProject(
+{
+
+  api,
+  entryNodeKey,
+  memgraph },
+
+...args)
+{
+  await container.memgraph.clearGraphData({ memgraph });
+
+  await (0, _buildTool.build)(
+  {
+    api,
+    targetProject: api.project,
+    entryNodeKey: entryNodeKey || '171d18f8-9d25-4483-aeb9-a29c9fbed6ac',
+    taskContextName: 'moduleProjectTask',
+    memgraph },
+
+  ...args).
+  catch(console.error);
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvYnVpbGRTb3VyY2VDb2RlLmpzIl0sIm5hbWVzIjpbIndlYmFwcFByb2plY3QiLCJhcGkiLCJlbnRyeU5vZGVLZXkiLCJtZW1ncmFwaCIsImFyZ3MiLCJjb250YWluZXIiLCJjbGVhckdyYXBoRGF0YSIsInRhcmdldFByb2plY3QiLCJwcm9qZWN0IiwidGFza0NvbnRleHROYW1lIiwiY2F0Y2giLCJjb25zb2xlIiwiZXJyb3IiLCJtb2R1bGVQcm9qZWN0Il0sIm1hcHBpbmdzIjoiOztBQUVBO0FBQ0E7OztBQUdPLGVBQWVBLGFBQWY7QUFDTDs7QUFFRUMsRUFBQUEsR0FGRjtBQUdFQyxFQUFBQSxZQUhGO0FBSUVDLEVBQUFBLFFBSkYsRUFESzs7QUFPTCxHQUFHQyxJQVBFO0FBUUw7QUFDQSxRQUFNQyxTQUFTLENBQUNGLFFBQVYsQ0FBbUJHLGNBQW5CLENBQWtDLEVBQUVILFFBQUYsRUFBbEMsQ0FBTjs7QUFFQSxRQUFNO0FBQ0o7QUFDRUYsSUFBQUEsR0FERjtBQUVFTSxJQUFBQSxhQUFhLEVBQUVOLEdBQUcsQ0FBQ08sT0FGckI7QUFHRU4sSUFBQUEsWUFBWSxFQUFFQSxZQUFZLElBQUksc0NBSGhDO0FBSUVPLElBQUFBLGVBQWUsRUFBRSxtQkFKbkI7QUFLRU4sSUFBQUEsUUFMRixFQURJOztBQVFKLEtBQUdDLElBUkM7QUFTSk0sRUFBQUEsS0FUSSxDQVNFQyxPQUFPLENBQUNDLEtBVFYsQ0FBTjtBQVVEOzs7QUFHTSxlQUFlQyxhQUFmO0FBQ0w7O0FBRUVaLEVBQUFBLEdBRkY7QUFHRUMsRUFBQUEsWUFIRjtBQUlFQyxFQUFBQSxRQUpGLEVBREs7O0FBT0wsR0FBR0MsSUFQRTtBQVFMO0FBQ0EsUUFBTUMsU0FBUyxDQUFDRixRQUFWLENBQW1CRyxjQUFuQixDQUFrQyxFQUFFSCxRQUFGLEVBQWxDLENBQU47O0FBRUEsUUFBTTtBQUNKO0FBQ0VGLElBQUFBLEdBREY7QUFFRU0sSUFBQUEsYUFBYSxFQUFFTixHQUFHLENBQUNPLE9BRnJCO0FBR0VOLElBQUFBLFlBQVksRUFBRUEsWUFBWSxJQUFJLHNDQUhoQztBQUlFTyxJQUFBQSxlQUFlLEVBQUUsbUJBSm5CO0FBS0VOLElBQUFBLFFBTEYsRUFESTs7QUFRSixLQUFHQyxJQVJDO0FBU0pNLEVBQUFBLEtBVEksQ0FTRUMsT0FBTyxDQUFDQyxLQVRWLENBQU47QUFVRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xyXG5pbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xyXG5pbXBvcnQgeyBidWlsZCB9IGZyb20gJ0BkZXBsb3ltZW50L2J1aWxkVG9vbCdcclxuaW1wb3J0ICogYXMgY29udGFpbmVyIGZyb20gJy4vY29udGFpbmVyJ1xyXG5cclxuLy8gYnVpbGQgcHJvY2VzcyBmb3Igd2ViYXBwcyByZWx5aW5nIG9uIGFwcHNjcmlwdCBtb2R1bGUuXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiB3ZWJhcHBQcm9qZWN0KFxyXG4gIHtcclxuICAgIC8vIGFkYXB0ZXIgZm9yIHdvcmtpbmcgd2l0aCB0YXJnZXQgZnVuY3Rpb24gaW50ZXJmYWNlIG9mIGBzY3JpcHRNYW5hZ2VyYC5cclxuICAgIGFwaSAvKiBzdXBwbGllZCBieSBzY3JpcHRNYW5hZ2VyICovLFxyXG4gICAgZW50cnlOb2RlS2V5LFxyXG4gICAgbWVtZ3JhcGgsXHJcbiAgfSxcclxuICAuLi5hcmdzXHJcbikge1xyXG4gIGF3YWl0IGNvbnRhaW5lci5tZW1ncmFwaC5jbGVhckdyYXBoRGF0YSh7IG1lbWdyYXBoIH0pIC8vIGNsZWFyIGRhdGFiYXNlIGFuZCBsb2FkIGdyYXBoIGRhdGE6XHJcblxyXG4gIGF3YWl0IGJ1aWxkKFxyXG4gICAge1xyXG4gICAgICBhcGksXHJcbiAgICAgIHRhcmdldFByb2plY3Q6IGFwaS5wcm9qZWN0LFxyXG4gICAgICBlbnRyeU5vZGVLZXk6IGVudHJ5Tm9kZUtleSB8fCAnNThjMTVjYzgtNmY0MC00ZDBiLTgxNWEtMGI4NTk0YWViOTcyJyxcclxuICAgICAgdGFza0NvbnRleHROYW1lOiAnd2ViYXBwUHJvamVjdFRhc2snLCAvLyBncmFwaCB0YXNrcyB0cmF2ZXJzYWwgZW50cnlwb2ludFxyXG4gICAgICBtZW1ncmFwaCxcclxuICAgIH0sXHJcbiAgICAuLi5hcmdzLFxyXG4gICkuY2F0Y2goY29uc29sZS5lcnJvcilcclxufVxyXG5cclxuLy8gYnVpbGQgcHJvY2VzcyBmb3IgSmF2YXNjcmlwdCBtb2R1bGUgcmVwb3NpdG9yaWVzXHJcbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBtb2R1bGVQcm9qZWN0KFxyXG4gIHtcclxuICAgIC8vIGFkYXB0ZXIgZm9yIHdvcmtpbmcgd2l0aCB0YXJnZXQgZnVuY3Rpb24gaW50ZXJmYWNlIG9mIGBzY3JpcHRNYW5hZ2VyYC5cclxuICAgIGFwaSAvKiBzdXBwbGllZCBieSBzY3JpcHRNYW5hZ2VyICovLFxyXG4gICAgZW50cnlOb2RlS2V5LFxyXG4gICAgbWVtZ3JhcGgsXHJcbiAgfSxcclxuICAuLi5hcmdzXHJcbikge1xyXG4gIGF3YWl0IGNvbnRhaW5lci5tZW1ncmFwaC5jbGVhckdyYXBoRGF0YSh7IG1lbWdyYXBoIH0pIC8vIGNsZWFyIGRhdGFiYXNlIGFuZCBsb2FkIGdyYXBoIGRhdGE6XHJcblxyXG4gIGF3YWl0IGJ1aWxkKFxyXG4gICAge1xyXG4gICAgICBhcGksXHJcbiAgICAgIHRhcmdldFByb2plY3Q6IGFwaS5wcm9qZWN0LFxyXG4gICAgICBlbnRyeU5vZGVLZXk6IGVudHJ5Tm9kZUtleSB8fCAnMTcxZDE4ZjgtOWQyNS00NDgzLWFlYjktYTI5YzlmYmVkNmFjJyxcclxuICAgICAgdGFza0NvbnRleHROYW1lOiAnbW9kdWxlUHJvamVjdFRhc2snLCAvLyBncmFwaCB0YXNrcyB0cmF2ZXJzYWwgZW50cnlwb2ludFxyXG4gICAgICBtZW1ncmFwaCxcclxuICAgIH0sXHJcbiAgICAuLi5hcmdzLFxyXG4gICkuY2F0Y2goY29uc29sZS5lcnJvcilcclxufVxyXG4iXX0=
