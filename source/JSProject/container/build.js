@@ -6,6 +6,7 @@ import assert from 'assert'
 import { generate as generateDockerFile } from 'dockerfile-generator'
 import modifyJson from 'jsonfile'
 import { paramCase as convertToParamCase } from 'param-case'
+import { recursiveCreateDirectory } from '@dependency/handleFilesystemOperation'
 
 export async function dockerBuildImage({ api /* supplied by scriptManager */ } = {}) {
   const targetProjectConf = api.project.configuration.configuration,
@@ -13,6 +14,8 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
     targetPackagePath = path.join(targetProjectRoot, 'package.json'),
     targetTemporaryFolder = path.join(targetProjectRoot, 'temporary'),
     containerProjectPath = targetProjectRoot
+
+  await recursiveCreateDirectory({ directoryPath: targetTemporaryFolder })
 
   let packageConfig = modifyJson.readFileSync(targetPackagePath)
 

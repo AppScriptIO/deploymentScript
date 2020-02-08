@@ -6,6 +6,7 @@ import assert from 'assert'
 import resolve from 'resolve' // use 'resolve' module to allow passing 'preserve symlinks' option that is not supported by require.resolve module.
 import * as dockerode from 'dockerode'
 import * as jsYaml from 'js-yaml'
+import { recursiveCreateDirectory } from '@dependency/handleFilesystemOperation'
 // while developing, allow dependency symlinks to work in containers.
 const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code'),
   yarnLinkFolrder = path.join(operatingSystem.homedir(), '.config')
@@ -76,6 +77,9 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
     rootPath = api.project.configuration.rootPath,
     targetTemporaryFolder = path.join(rootPath, 'temporary'),
     containerProjectPath = rootPath
+
+  await recursiveCreateDirectory({ directoryPath: targetTemporaryFolder })
+
   let option = {
     cwd: rootPath,
     detached: false,
