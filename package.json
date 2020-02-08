@@ -43,6 +43,7 @@
 		"nested-object-assign": "*",
 		"node-fetch": "*",
 		"node-ssh": "*",
+		"param-case": "^3.0.3",
 		"parse-gitignore": "*",
 		"semver": "*",
 		"uuid": "^3.3.2",

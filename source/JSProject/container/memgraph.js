@@ -40,17 +40,22 @@ export function runDockerContainer({
 }
 
 export async function clearGraphData({ memgraph = {}, connectionDriver } = {}) {
+  console.log('• Cleared graph database.')
+  let shouldCloseDriver = !connectionDriver ? true : false
   const url = { protocol: 'bolt', hostname: memgraph.host || 'localhost', port: memgraph.port || 7687 }
   if (!(await isPortReachable(url.port, { host: url.hostname }))) {
     console.groupCollapsed('• Run prerequisite containers:')
     runDockerContainer()
     console.groupEnd()
   }
-  // Delete all nodes in the in-memory database
-  console.log('• Cleared graph database.')
+
   const authentication = { username: 'neo4j', password: 'test' }
   connectionDriver ||= boltProtocolDriver.driver(`${url.protocol}://${url.hostname}:${url.port}`, boltProtocolDriver.auth.basic(authentication.username, authentication.password))
+
   let session = await connectionDriver.session()
+  // Delete all nodes in the in-memory database
   let result = await session.run(`match (n) detach delete n`)
   session.close()
+  // close driver connection to allow nodejs process to exit correctly.
+  if (shouldCloseDriver) connectionDriver.close()
 }

@@ -1,6 +1,11 @@
-import filesystem from 'fs'
+import { execSync, spawn, spawnSync } from 'child_process'
+import operatingSystem from 'os'
 import path from 'path'
+import filesystem from 'fs'
+import assert from 'assert'
 import { generate as generateDockerFile } from 'dockerfile-generator'
+import modifyJson from 'jsonfile'
+import { paramCase as convertToParamCase } from 'param-case'
 
 // .yaml
 
@@ -18,7 +23,7 @@ import { generate as generateDockerFile } from 'dockerfile-generator'
 
 export async function dockerBuild({ api /* supplied by scriptManager */ } = {}) {
   const targetProjectConf = api.project.configuration.configuration,
-    targetProjectRoot = api.project.configuration.targetProjectRoot,
+    targetProjectRoot = api.project.configuration.rootPath,
     targetPackagePath = path.join(targetProjectRoot, 'package.json'),
     targetTemporaryFolder = path.join(targetProjectRoot, 'temporary'),
     containerProjectPath = targetProjectRoot
@@ -26,7 +31,7 @@ export async function dockerBuild({ api /* supplied by scriptManager */ } = {}) 
   let packageConfig = modifyJson.readFileSync(targetPackagePath)
 
   let dockerFileConfig = {
-    from: 'node:latest',
+    from: 'node:current',
     // run: ['apt-get update -y && apt-get upgrade -y'],
 
     // Environment Variables & Arguments
@@ -46,7 +51,9 @@ export async function dockerBuild({ api /* supplied by scriptManager */ } = {}) 
   filesystem.writeFileSync(dockerFile, await generateDockerFile(dockerFileConfig))
 
   // --output --label
-  let executableCommand = [['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag ${packageConfig.name}:${packageConfig.version}`].join(' ')]
+  let dockerBuildContext = targetProjectRoot
+  let imageName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) |> convertToParamCase // package name `@namespace/packageName` => `packageName` => docker image name param case `package-name`
+  let executableCommand = [['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag ${imageName}:${packageConfig.version} ${dockerBuildContext}`].join(' ')]
 
   let option = {
     cwd: targetProjectRoot,
