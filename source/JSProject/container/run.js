@@ -76,16 +76,16 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
     rootPath = api.project.configuration.rootPath,
     targetTemporaryFolder = path.join(rootPath, 'temporary'),
     containerProjectPath = rootPath
-    let option = {
-      cwd: rootPath,
-      detached: false,
-      shell: true,
-      stdio: [0, 1, 2],
-      // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
-      env: Object.assign({}, process.env, {
-        // DEPLOYMENT: 'development',
-      }),
-    }
+  let option = {
+    cwd: rootPath,
+    detached: false,
+    shell: true,
+    stdio: [0, 1, 2],
+    // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
+    env: Object.assign({}, process.env, {
+      // DEPLOYMENT: 'development',
+    }),
+  }
 
   let portList = [
     ...targetProjectConf.apiGateway.service.map(item => item.port).filter(item => item),
@@ -101,7 +101,7 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
   ]
   let serviceConfig = {
     version: '3.7',
-    
+
     networks: {
       internal: {
         driver: 'bridge', // network dirver:  bridge for the same host, while overlay is for swarm hosts.
@@ -134,7 +134,7 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
           internal: {
             aliases: ['application'],
           },
-        },   
+        },
 
         working_dir: rootPath,
         // IMPORTANT: if executed with command `/bin/sh -c ''`, as default docker does, the interrupt signals will not be passed to the running process and thus will not abort the containers. Therefore /bin/bash -c should be used, or ENTRYPOINT instead of COMMAND will use bash by default.
@@ -158,47 +158,50 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
           {
             target: 7687,
             // published: 7687,
-          }
+          },
         ],
 
         networks: {
           internal: {
             aliases: ['memgraph'],
           },
-        },   
-      }
+        },
+      },
     },
   }
 
   // convert service configuration into yaml file in temporary location, to be used later with docker-compose.
-  let yamlConfig = jsYaml.dump(serviceConfig, { lineWidth: Infinity, noCompatMode: true }),
-    yamlFile = path.join(targetTemporaryFolder, 'dockerCompose.yaml')
-  filesystem.writeFileSync(yamlFile, yamlConfig)
+  let yamlFile = path.join(targetTemporaryFolder, 'dockerCompose.yaml')
+  filesystem.writeFileSync(yamlFile, jsYaml.dump(serviceConfig, { lineWidth: Infinity, noCompatMode: true }))
 
   let dockerComposeCommand = `docker-compose --file ${yamlFile} --project-name webappProject --log-level INFO`
 
-  {    
+  {
     // Note: necessary step as recreating services will use previously created volumes (e.g. database anonymous volume)
     // stop and remove containers and volumes related to project name from previous running
-    let executableCommand = [[
-      dockerComposeCommand, 
-      'down --volumes' // remove volumes attached to containers.
-    ].join(' ')]
+    let executableCommand = [
+      [
+        dockerComposeCommand,
+        'down --volumes', // remove volumes attached to containers.
+      ].join(' '),
+    ]
     const [command, ...commandArgument] = executableCommand
     spawnSync(command, commandArgument, option)
   }
 
-  let executableCommand = [[
-    dockerComposeCommand,
+  let executableCommand = [
+    [
+      dockerComposeCommand,
 
-    // run: allows attaching to the container
-    // service-ports allows mapping of ports to host as set in yml file.
-    // `run --rm --service-ports --use-aliases application`, 
+      // run: allows attaching to the container
+      // service-ports allows mapping of ports to host as set in yml file.
+      // `run --rm --service-ports --use-aliases application`,
 
-    // up
-    // --detach
-    `up --no-build --force-recreate --abort-on-container-exit --always-recreate-deps`
-  ].join(' ')]
+      // up
+      // --detach
+      `up --no-build --force-recreate --abort-on-container-exit --always-recreate-deps`,
+    ].join(' '),
+  ]
 
   console.log('container command' + ': \n', scriptCommand)
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
@@ -210,13 +213,14 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
   process.on('SIGINT', (code, signal) => {
     console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
     // stop and remove containers related to project name.
-    let executableCommand = [[
-      dockerComposeCommand, 
-      'down' 
-      // --volumes //remove volumes attached to containers.
-    ].join(' ')]
+    let executableCommand = [
+      [
+        dockerComposeCommand,
+        'down',
+        // --volumes //remove volumes attached to containers.
+      ].join(' '),
+    ]
     const [command, ...commandArgument] = executableCommand
     spawnSync(command, commandArgument, option)
   })
-
 }

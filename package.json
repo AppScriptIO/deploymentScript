@@ -29,6 +29,7 @@
 		"apollo-link": "*",
 		"apollo-link-error": "*",
 		"apollo-link-http": "*",
+		"dockerfile-generator": "^3.3.0",
 		"dockerode": "^3.0.2",
 		"fs-extra": "*",
 		"git-url-parse": "^*",
