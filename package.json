@@ -39,6 +39,7 @@
 		"js-yaml": "^3.13.1",
 		"jsonfile": "*",
 		"lodash": "*",
+		"mkdirp": "^1.0.3",
 		"neo4j-driver": "^1.7.5",
 		"nested-object-assign": "*",
 		"node-fetch": "*",
