@@ -939,11 +939,11 @@
     to-fast-properties "^2.0.0"
 
 "@dependency/entity@https://github.com/AppScriptIO/entity#semver:^2.x.x":
-  version "2.0.3"
-  resolved "https://github.com/AppScriptIO/entity#9865009ef5e201223f8614a6918fba39d1eb223b"
+  version "2.0.4"
+  resolved "https://github.com/AppScriptIO/entity#f0836b2f05818a415288e4de68db50b183271c94"
   dependencies:
     "@dependency/handleJSNativeDataStructure" "https://github.com/AppScriptIO/handleJSNativeDataStructure#semver:^2.x.x"
-    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
+    "@dependency/handlePrototypeDelegation" "https://github.com/AppScriptIO/handlePrototypeDelegation#semver:^1.x.x"
     lodash "^4.17.11"
 
 "@dependency/fragmentIndentationObjectStream@https://github.com/AppScriptIO/fragmentIndentationObjectStream#semver:^1.x.x":
@@ -961,9 +961,9 @@
     uuid "*"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:4.x.x", "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^4.x.x":
-  version "4.2.5"
-  uid a8fd0293fd5b7886d2d656e227d43905056f1443
-  resolved "https://github.com/AppScriptIO/graphTraversal#a8fd0293fd5b7886d2d656e227d43905056f1443"
+  version "4.2.6"
+  uid fff0e50cd85c227fbbdb6d4cc78929b2f32f1b70
+  resolved "https://github.com/AppScriptIO/graphTraversal#fff0e50cd85c227fbbdb6d4cc78929b2f32f1b70"
   dependencies:
     "@dependency/entity" "https://github.com/AppScriptIO/entity#semver:^2.x.x"
     "@dependency/graphTraversal-implementation" "https://github.com/AppScriptIO/graphTraversal-implementation#semver:^4.x.x"
@@ -1040,10 +1040,6 @@
   version "1.1.3"
   resolved "https://github.com/AppScriptIO/handlePrototypeDelegation#badcb48ecf211684423c1c24ecdefa23c874a467"
 
-"@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
-  version "1.1.2"
-  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#1b539de65eb0b21326fa9bf09236c7dcd256eadb"
-
 "@dependency/parseKeyValuePairSeparatedBySymbol@https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#semver:^1.x.x":
   version "1.0.3"
   resolved "https://github.com/AppScriptIO/parseKeyValuePairSeparatedBySymbol#d5f718c96b2eddccc40de069c2ebfe6f6d766c73"
@@ -1100,8 +1096,8 @@
   resolved "https://github.com/AppScriptIO/configurationManagement#f325be4c7d3b09c0f0bfcb228e1358ff23d6cff2"
 
 "@deployment/deploymentProvisioning@https://github.com/AppScriptIO/deploymentProvisioning#semver:^2.x.x":
-  version "2.1.6"
-  resolved "https://github.com/AppScriptIO/deploymentProvisioning#c34b383bf87a27ee7533357948b6b99b9804fbe9"
+  version "2.1.8"
+  resolved "https://github.com/AppScriptIO/deploymentProvisioning#edd63d9e16f5770a708ccd1792840185ccec862b"
   dependencies:
     command-exists "*"
     is-wsl "*"
