@@ -7,6 +7,7 @@ import resolve from 'resolve' // use 'resolve' module to allow passing 'preserve
 import * as dockerode from 'dockerode'
 import * as jsYaml from 'js-yaml'
 import createDirectoryRecursive from 'mkdirp'
+import modifyJson from 'jsonfile'
 // while developing, allow dependency symlinks to work in containers.
 const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code'),
   yarnLinkFolrder = path.join(operatingSystem.homedir(), '.config')
@@ -241,5 +242,136 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
     ]
     const [command, ...commandArgument] = executableCommand
     spawnSync(command, commandArgument, option)
+  })
+}
+
+export async function dockerStackCli({ api /* supplied by scriptManager */ } = {}) {
+  const targetProjectConf = api.project.configuration.configuration,
+    rootPath = api.project.configuration.rootPath,
+    targetTemporaryFolder = path.join(rootPath, 'temporary'),
+    containerProjectPath = rootPath,
+    targetPackagePath = path.join(rootPath, 'package.json')
+  const packageConfig = modifyJson.readFileSync(targetPackagePath)
+  let projectName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) // package name `@namespace/packageName` => `packageName`
+
+  await createDirectoryRecursive(targetTemporaryFolder)
+
+  let option = {
+    cwd: rootPath,
+    detached: false,
+    shell: true,
+    stdio: [0, 1, 2],
+    // IMPORTANT: global environment should be passed to allow for docker commands to work inside nodejs process, as the WSL uses an environment variable to connect to the Windows Docker engine socket.
+    env: Object.assign({}, process.env, {
+      // DEPLOYMENT: 'development',
+    }),
+  }
+
+  let portList = [
+    ...targetProjectConf.apiGateway.service.map(item => item.port).filter(item => item),
+    // Additional development ports
+    ...[
+      // Nodejs's remote debugger
+      9229,
+      // Browsersync livereload
+      9090,
+      9901,
+      9902,
+    ],
+  ]
+  let serviceConfig = {
+    version: '3.7',
+
+    networks: {
+      internal: {
+        driver: 'bridge', // network dirver:  bridge for the same host, while overlay is for swarm hosts.
+      },
+    },
+
+    services: {
+      application: {
+        image: dockerDeploymentImage,
+
+        // export ports to host machine:
+        // to change port interface (ip) use "127.0.0.1:80:80"
+        ports: portList.map(port => {
+          return {
+            target: port,
+            published: port,
+            // mode: 'host',
+          }
+        }),
+
+        networks: {
+          internal: {
+            aliases: ['application'],
+          },
+        },
+
+        volumes: [
+          // production storage
+        ],
+
+        deploy: {
+          replicas: 1,
+          placement: {
+            constraints: ['node.role == service'], // containers are classified into 'service' or 'manager' - i.e. applicaiton related or tool related for management.
+          },
+          update_config: {
+            parallelism: 1,
+            delay: '10s',
+          },
+        },
+
+        // https://docs.docker.com/compose/compose-file/#domainname-hostname-ipc-mac_address-privileged-read_only-shm_size-stdin_open-tty-user-working_dir
+        // works only with docker-compose run but doesn't work for some reason with docker-compose up (stuck on 'attaching <serviceName>..')
+        tty: true,
+        stdin_open: true,
+      },
+
+      memgraph: {
+        image: 'memgraph:latest',
+
+        // export ports to host machine:
+        ports: [
+          {
+            target: 7687,
+            // published: 7687,
+          },
+        ],
+
+        networks: {
+          internal: {
+            aliases: ['memgraph'],
+          },
+        },
+      },
+    },
+  }
+
+  // convert service configuration into yaml file in temporary location, to be used later with docker-compose.
+  let yamlFile = path.join(targetTemporaryFolder, 'dockerStack.yaml')
+  filesystem.writeFileSync(yamlFile, jsYaml.dump(serviceConfig, { lineWidth: Infinity, noCompatMode: true }))
+
+  let dockerStackCommand = `docker --log-level INFO`
+
+  {
+    // Note: necessary step as recreating services will use previously created volumes (e.g. database anonymous volume)
+    // stop and remove containers and volumes related to project name from previous running
+    spawnSync(dockerStackCommand, [`stack --orchestrator swarm rm application`], option)
+  }
+
+  // --namespace is only for Kubernates
+  let executableCommand = [[dockerStackCommand, `stack --orchestrator swarm deploy --compose-file ${yamlFile} --prune application`].join(' ')]
+
+  console.log(`• docker command: "${executableCommand.join(' ')}"`)
+  const [command, ...commandArgument] = executableCommand
+  spawnSync(command, commandArgument, option)
+
+  // stop and remove containers related to project name.
+  // TODO: Doesn't work, seems related to the signal transmition to the process through container commands.
+  process.on('SIGINT', (code, signal) => {
+    console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
+    spawnSync(dockerStackCommand, [`stack --orchestrator swarm rm application`], option)
   })
 }
