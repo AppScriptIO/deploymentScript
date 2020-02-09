@@ -47,6 +47,7 @@
 		"param-case": "^3.0.3",
 		"parse-gitignore": "*",
 		"semver": "*",
+		"shelljs": "^0.8.3",
 		"uuid": "^3.3.2",
 		"write-json-file": "*"
 	},

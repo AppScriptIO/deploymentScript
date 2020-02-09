@@ -29,6 +29,15 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
       working_dir: '/project',
       // run: ['apt-get update -y && apt-get upgrade -y'],
       run: ['yarn', 'install', '--production'],
+      // Make files executable Apparently when copied from windows, execution permissions should be granted. for sehll scripts.
+      // run ['find', '/project', '-type f', '-iname "*.sh"', '-exec chmod +x {} \;']
+
+      // A previous way of registring a shell binary that will hold the js entrypoint script.
+      // # save runtime command in a executable file inside the container (which will be called on runtime)
+      // RUN printf '#!/bin/bash\nnode entryscript.js $*' > /usr/bin/containerCommand && chmod +x /usr/bin/containerCommand   
+      // # Executed only on runtime.
+      // CMD containerCommand 
+
     }),
     await generateDockerFile({
       from: 'node:current',
