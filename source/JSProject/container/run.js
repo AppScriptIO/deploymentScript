@@ -8,6 +8,7 @@ import * as dockerode from 'dockerode'
 import * as jsYaml from 'js-yaml'
 import createDirectoryRecursive from 'mkdirp'
 import modifyJson from 'jsonfile'
+import { paramCase as convertToParamCase } from 'param-case'
 // while developing, allow dependency symlinks to work in containers.
 const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code'),
   yarnLinkFolrder = path.join(operatingSystem.homedir(), '.config')
@@ -253,6 +254,7 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
     targetPackagePath = path.join(rootPath, 'package.json')
   const packageConfig = modifyJson.readFileSync(targetPackagePath)
   let projectName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) // package name `@namespace/packageName` => `packageName`
+  let imageName = projectName |> convertToParamCase // package name `@namespace/packageName` => `packageName` => docker image name param case `package-name`
 
   await createDirectoryRecursive(targetTemporaryFolder)
 
@@ -283,14 +285,14 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
     version: '3.7',
 
     networks: {
-      internal: {
-        driver: 'bridge', // network dirver:  bridge for the same host, while overlay is for swarm hosts.
+      overlay: {
+        driver: 'overlay', // network dirver:  bridge for the same host, while overlay is for swarm hosts.
       },
     },
 
     services: {
       application: {
-        image: dockerDeploymentImage,
+        image: `myuserindocker/${imageName}:latest`,
 
         // export ports to host machine:
         // to change port interface (ip) use "127.0.0.1:80:80"
@@ -303,7 +305,7 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
         }),
 
         networks: {
-          internal: {
+          overlay: {
             aliases: ['application'],
           },
         },
@@ -314,14 +316,24 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
 
         deploy: {
           replicas: 1,
-          placement: {
-            constraints: ['node.role == service'], // containers are classified into 'service' or 'manager' - i.e. applicaiton related or tool related for management.
-          },
+          // constraints - NOTE: will not run until constaints met.
+          // placement: {
+          //   constraints: ['node.role == service'], // containers are classified into 'service' or 'manager' - i.e. applicaiton related or tool related for management.
+          // },
           update_config: {
             parallelism: 1,
             delay: '10s',
           },
+          restart_policy: {
+            condition: 'on-failure' || 'any',
+            delay: '2s',
+            // max_attempts: 3,
+            // window: '120s',
+          },
         },
+
+        entrypoint: ['node'],
+        command: `--eval "require(process.cwd()).application({}, { memgraph: { host: 'memgraph' }})"`,
 
         // https://docs.docker.com/compose/compose-file/#domainname-hostname-ipc-mac_address-privileged-read_only-shm_size-stdin_open-tty-user-working_dir
         // works only with docker-compose run but doesn't work for some reason with docker-compose up (stuck on 'attaching <serviceName>..')
@@ -341,7 +353,7 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
         ],
 
         networks: {
-          internal: {
+          overlay: {
             aliases: ['memgraph'],
           },
         },
@@ -355,23 +367,23 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
 
   let dockerStackCommand = `docker --log-level INFO`
 
-  {
-    // Note: necessary step as recreating services will use previously created volumes (e.g. database anonymous volume)
-    // stop and remove containers and volumes related to project name from previous running
-    spawnSync(dockerStackCommand, [`stack --orchestrator swarm rm application`], option)
-  }
+  // {
+  //   // Note: necessary step as recreating services will use previously created volumes (e.g. database anonymous volume)
+  //   // stop and remove containers and volumes related to project name from previous running
+  //   spawnSync(dockerStackCommand, [`stack --orchestrator swarm rm application`], option)
+  // }
 
-  // --namespace is only for Kubernates
-  let executableCommand = [[dockerStackCommand, `stack --orchestrator swarm deploy --compose-file ${yamlFile} --prune application`].join(' ')]
+  // --namespace is only for Kubernates, --prune
+  let executableCommand = [[dockerStackCommand, `stack --orchestrator swarm deploy --compose-file ${yamlFile}  application`].join(' ')]
 
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   const [command, ...commandArgument] = executableCommand
   spawnSync(command, commandArgument, option)
 
-  // stop and remove containers related to project name.
-  // TODO: Doesn't work, seems related to the signal transmition to the process through container commands.
-  process.on('SIGINT', (code, signal) => {
-    console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
-    spawnSync(dockerStackCommand, [`stack --orchestrator swarm rm application`], option)
-  })
+  // // stop and remove containers related to project name.
+  // // TODO: Doesn't work, seems related to the signal transmition to the process through container commands.
+  // process.on('SIGINT', (code, signal) => {
+  //   console.log(`[Process ${process.pid}]: signal ${signal}, code ${code};`)
+  //   spawnSync(dockerStackCommand, [`stack --orchestrator swarm rm application`], option)
+  // })
 }

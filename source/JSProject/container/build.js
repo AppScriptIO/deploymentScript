@@ -34,10 +34,9 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
 
       // A previous way of registring a shell binary that will hold the js entrypoint script.
       // # save runtime command in a executable file inside the container (which will be called on runtime)
-      // RUN printf '#!/bin/bash\nnode entryscript.js $*' > /usr/bin/containerCommand && chmod +x /usr/bin/containerCommand   
+      // RUN printf '#!/bin/bash\nnode entryscript.js $*' > /usr/bin/containerCommand && chmod +x /usr/bin/containerCommand
       // # Executed only on runtime.
-      // CMD containerCommand 
-
+      // CMD containerCommand
     }),
     await generateDockerFile({
       from: 'node:current',
@@ -50,19 +49,24 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
       },
       working_dir: '/project',
       // entrypoint is for executable path only, and the arguments passed through command part. https://medium.com/@oprearocks/how-to-properly-override-the-entrypoint-using-docker-run-2e081e5feb9d
-      entrypoint: 'yarn',
-      cmd: ['run', 'run'],
+      entrypoint: 'node',
+      cmd: ['--eval', `"require(process.cwd()).application({}, { memgraph: { host: 'memgraph' }})"`],
     }),
   ].join('\n')
   // generate and write docker file from configs.
   let dockerFile = path.join(targetTemporaryFolder, 'build.dockerfile')
   filesystem.writeFileSync(dockerFile, dockerFileConfig)
 
-  // --output --label --no-cache
+  // --output --label
   let dockerBuildContext = targetProjectRoot
   // name of local image to be built
   let imageName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) |> convertToParamCase // package name `@namespace/packageName` => `packageName` => docker image name param case `package-name`
-  let executableCommand = [['docker', `build --file ${dockerFile} --rm --pull --tag myuserindocker/${imageName}:${packageConfig.version} ${targetProjectConf.directory.distribution}`].join(' ')]
+  let executableCommand = [
+    [
+      'docker',
+      `build --file ${dockerFile} --rm --no-cache --pull --tag myuserindocker/${imageName}:${packageConfig.version} --tag myuserindocker/${imageName}:latest ${targetProjectConf.directory.distribution}`,
+    ].join(' '),
+  ]
 
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   let option = {
