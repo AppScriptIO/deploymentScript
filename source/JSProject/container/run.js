@@ -374,7 +374,7 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
   // }
 
   // --namespace is only for Kubernates, --prune
-  let executableCommand = [[dockerStackCommand, `stack --orchestrator swarm deploy --compose-file ${yamlFile}  application`].join(' ')]
+  let executableCommand = [[dockerStackCommand, `stack --orchestrator swarm deploy --compose-file ${yamlFile} --resolve-image changed application`].join(' ')]
 
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   const [command, ...commandArgument] = executableCommand

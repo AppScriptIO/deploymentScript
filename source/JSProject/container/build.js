@@ -49,8 +49,8 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
       },
       working_dir: '/project',
       // entrypoint is for executable path only, and the arguments passed through command part. https://medium.com/@oprearocks/how-to-properly-override-the-entrypoint-using-docker-run-2e081e5feb9d
-      entrypoint: 'node',
-      cmd: ['--eval', `"require(process.cwd()).application({},{memgraph:{host:'memgraph'}})"`],
+      entrypoint: '/usr/local/bin/yarn',
+      cmd: ['run','run-configuredForContainer'],
     }),
   ].join('\n')
   // generate and write docker file from configs.
