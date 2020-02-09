@@ -49,13 +49,11 @@ export async function dockerBuildImage({ api /* supplied by scriptManager */ } =
   let dockerFile = path.join(targetTemporaryFolder, 'build.dockerfile')
   filesystem.writeFileSync(dockerFile, dockerFileConfig)
 
-  // --output --label
+  // --output --label --no-cache
   let dockerBuildContext = targetProjectRoot
   // name of local image to be built
   let imageName = packageConfig.name.substring(packageConfig.name.lastIndexOf('/') + 1) |> convertToParamCase // package name `@namespace/packageName` => `packageName` => docker image name param case `package-name`
-  let executableCommand = [
-    ['docker', `build --file ${dockerFile} --rm --no-cache --pull --tag myuserindocker/${imageName}:${packageConfig.version} ${targetProjectConf.directory.distribution}`].join(' '),
-  ]
+  let executableCommand = [['docker', `build --file ${dockerFile} --rm --pull --tag myuserindocker/${imageName}:${packageConfig.version} ${targetProjectConf.directory.distribution}`].join(' ')]
 
   console.log(`• docker command: "${executableCommand.join(' ')}"`)
   let option = {
