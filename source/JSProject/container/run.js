@@ -332,8 +332,8 @@ export async function dockerStackCli({ api /* supplied by scriptManager */ } = {
           },
         },
 
-        entrypoint: ['node'],
-        command: `--eval "require(process.cwd()).application({}, { memgraph: { host: 'memgraph' }})"`,
+        // entrypoint: ['node'],
+        // command: `--eval "require(process.cwd()).application({}, { memgraph: { host: 'memgraph' }})"`,
 
         // https://docs.docker.com/compose/compose-file/#domainname-hostname-ipc-mac_address-privileged-read_only-shm_size-stdin_open-tty-user-working_dir
         // works only with docker-compose run but doesn't work for some reason with docker-compose up (stuck on 'attaching <serviceName>..')
