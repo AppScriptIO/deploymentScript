@@ -1,30 +1,31 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-export function runDockerContainer() {
+function runDockerContainer() {
   try {
     let executableCommand = [
-      `docker volume create portainer_data`,
-      [
-        'docker',
-        'run',
-        '--name portainer',
-        // [ISSUE] Docker WSL2 engine failes to start and integrate with WSl2 when portainer container auto starts.
-        // '--restart always', // always restart even after docker restart
-        '-p 9000:9000',
-        //!IMPORTANT: [ISSUE] attaching socket seems to be unsupported in preview versions of WSl2, it works but seems to cause problems between docker integration with WSL2 on restart.
-        '--volume /var/run/docker.sock:/var/run/docker.sock',
-        '--volume portainer_data:/data', // named volume is created in the contaxt of Docker directory of the host filesystem
-        '-d portainer/portainer',
-        '-H unix:///var/run/docker.sock', // -H flag and the tcp:// protocol to connect to a remote Docker environment
-        '--no-auth', // disbale internal password mechanism that is used by portainer for extra security. i.e. no required password for logging into admin interface.
-      ].join(' '),
-    ]
+    `docker volume create portainer_data`,
+    [
+    'docker',
+    'run',
+    '--name portainer',
 
-    let command = executableCommand.join(' && \\\n')
-    console.log(`• Running container: portainer container on port 9000 - Command: \n"${command}"`)
-    childProcess.execSync(command, childProcessOption)
+
+    '-p 9000:9000',
+
+    '--volume /var/run/docker.sock:/var/run/docker.sock',
+    '--volume portainer_data:/data',
+    '-d portainer/portainer',
+    '-H unix:///var/run/docker.sock',
+    '--no-auth'].
+    join(' ')];
+
+
+    let command = executableCommand.join(' && \\\n');
+    console.log(`• Running container: portainer container on port 9000 - Command: \n"${command}"`);
+    childProcess.execSync(command, childProcessOption);
   } catch (error) {
-    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`);
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3BvcnRhaW5lci5qcyJdLCJuYW1lcyI6WyJjaGlsZFByb2Nlc3MiLCJyZXF1aXJlIiwiY2hpbGRQcm9jZXNzT3B0aW9uIiwiY3dkIiwiX19kaXJuYW1lIiwic2hlbGwiLCJzdGRpbyIsInJ1bkRvY2tlckNvbnRhaW5lciIsImV4ZWN1dGFibGVDb21tYW5kIiwiam9pbiIsImNvbW1hbmQiLCJjb25zb2xlIiwibG9nIiwiZXhlY1N5bmMiLCJlcnJvciJdLCJtYXBwaW5ncyI6IjJIQUFBLE1BQU1BLFlBQVksR0FBR0MsT0FBTyxDQUFDLGVBQUQsQ0FBNUI7QUFDQSxNQUFNQyxrQkFBa0IsR0FBRyxFQUFFQyxHQUFHLEVBQUVDLFNBQVAsRUFBa0JDLEtBQUssRUFBRSxJQUF6QixFQUErQkMsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFJLENBQUosRUFBTyxDQUFQLENBQXRDLEVBQTNCOztBQUVPLFNBQVNDLGtCQUFULEdBQThCO0FBQ25DLE1BQUk7QUFDRixRQUFJQyxpQkFBaUIsR0FBRztBQUNyQix5Q0FEcUI7QUFFdEI7QUFDRSxZQURGO0FBRUUsU0FGRjtBQUdFLHNCQUhGOzs7QUFNRSxrQkFORjs7QUFRRSx3REFSRjtBQVNFLG1DQVRGO0FBVUUsNEJBVkY7QUFXRSxvQ0FYRjtBQVlFLGVBWkY7QUFhRUMsSUFBQUEsSUFiRixDQWFPLEdBYlAsQ0FGc0IsQ0FBeEI7OztBQWtCQSxRQUFJQyxPQUFPLEdBQUdGLGlCQUFpQixDQUFDQyxJQUFsQixDQUF1QixVQUF2QixDQUFkO0FBQ0FFLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLHVFQUFzRUYsT0FBUSxHQUEzRjtBQUNBVixJQUFBQSxZQUFZLENBQUNhLFFBQWIsQ0FBc0JILE9BQXRCLEVBQStCUixrQkFBL0I7QUFDRCxHQXRCRCxDQXNCRSxPQUFPWSxLQUFQLEVBQWM7QUFDZEgsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsK0ZBQWI7QUFDRDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzID0gcmVxdWlyZSgnY2hpbGRfcHJvY2VzcycpXG5jb25zdCBjaGlsZFByb2Nlc3NPcHRpb24gPSB7IGN3ZDogX19kaXJuYW1lLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9XG5cbmV4cG9ydCBmdW5jdGlvbiBydW5Eb2NrZXJDb250YWluZXIoKSB7XG4gIHRyeSB7XG4gICAgbGV0IGV4ZWN1dGFibGVDb21tYW5kID0gW1xuICAgICAgYGRvY2tlciB2b2x1bWUgY3JlYXRlIHBvcnRhaW5lcl9kYXRhYCxcbiAgICAgIFtcbiAgICAgICAgJ2RvY2tlcicsXG4gICAgICAgICdydW4nLFxuICAgICAgICAnLS1uYW1lIHBvcnRhaW5lcicsXG4gICAgICAgIC8vIFtJU1NVRV0gRG9ja2VyIFdTTDIgZW5naW5lIGZhaWxlcyB0byBzdGFydCBhbmQgaW50ZWdyYXRlIHdpdGggV1NsMiB3aGVuIHBvcnRhaW5lciBjb250YWluZXIgYXV0byBzdGFydHMuXG4gICAgICAgIC8vICctLXJlc3RhcnQgYWx3YXlzJywgLy8gYWx3YXlzIHJlc3RhcnQgZXZlbiBhZnRlciBkb2NrZXIgcmVzdGFydFxuICAgICAgICAnLXAgOTAwMDo5MDAwJyxcbiAgICAgICAgLy8hSU1QT1JUQU5UOiBbSVNTVUVdIGF0dGFjaGluZyBzb2NrZXQgc2VlbXMgdG8gYmUgdW5zdXBwb3J0ZWQgaW4gcHJldmlldyB2ZXJzaW9ucyBvZiBXU2wyLCBpdCB3b3JrcyBidXQgc2VlbXMgdG8gY2F1c2UgcHJvYmxlbXMgYmV0d2VlbiBkb2NrZXIgaW50ZWdyYXRpb24gd2l0aCBXU0wyIG9uIHJlc3RhcnQuXG4gICAgICAgICctLXZvbHVtZSAvdmFyL3J1bi9kb2NrZXIuc29jazovdmFyL3J1bi9kb2NrZXIuc29jaycsXG4gICAgICAgICctLXZvbHVtZSBwb3J0YWluZXJfZGF0YTovZGF0YScsIC8vIG5hbWVkIHZvbHVtZSBpcyBjcmVhdGVkIGluIHRoZSBjb250YXh0IG9mIERvY2tlciBkaXJlY3Rvcnkgb2YgdGhlIGhvc3QgZmlsZXN5c3RlbVxuICAgICAgICAnLWQgcG9ydGFpbmVyL3BvcnRhaW5lcicsXG4gICAgICAgICctSCB1bml4Oi8vL3Zhci9ydW4vZG9ja2VyLnNvY2snLCAvLyAtSCBmbGFnIGFuZCB0aGUgdGNwOi8vIHByb3RvY29sIHRvIGNvbm5lY3QgdG8gYSByZW1vdGUgRG9ja2VyIGVudmlyb25tZW50XG4gICAgICAgICctLW5vLWF1dGgnLCAvLyBkaXNiYWxlIGludGVybmFsIHBhc3N3b3JkIG1lY2hhbmlzbSB0aGF0IGlzIHVzZWQgYnkgcG9ydGFpbmVyIGZvciBleHRyYSBzZWN1cml0eS4gaS5lLiBubyByZXF1aXJlZCBwYXNzd29yZCBmb3IgbG9nZ2luZyBpbnRvIGFkbWluIGludGVyZmFjZS5cbiAgICAgIF0uam9pbignICcpLFxuICAgIF1cblxuICAgIGxldCBjb21tYW5kID0gZXhlY3V0YWJsZUNvbW1hbmQuam9pbignICYmIFxcXFxcXG4nKVxuICAgIGNvbnNvbGUubG9nKGDigKIgUnVubmluZyBjb250YWluZXI6IHBvcnRhaW5lciBjb250YWluZXIgb24gcG9ydCA5MDAwIC0gQ29tbWFuZDogXFxuXCIke2NvbW1hbmR9XCJgKVxuICAgIGNoaWxkUHJvY2Vzcy5leGVjU3luYyhjb21tYW5kLCBjaGlsZFByb2Nlc3NPcHRpb24pXG4gIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgY29uc29sZS5sb2coYOKAoiBTZWVtcyBsaWtlIHRoZSBjb250YWluZXIgaXMgYWxyZWFkeSBydW5uaW5nIGZyb20gYSBwcmV2aW91cyBzZXNzaW9uLCBpZ25vcmUgcHJldmlvdXMgZXJyb3IuYClcbiAgfVxufVxuIl19
