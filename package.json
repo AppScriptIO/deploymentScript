@@ -9,7 +9,8 @@
 		"build": "yarn run scriptManager shouldCompileScript=true ./ \".buildSourceCode.moduleProject({}, {compile:[/**'./test'*/]})\"",
 		"runNeo4jContainer": "yarn run scriptManager shouldCompileScript=true ./ \".container.neo4j.runDockerContainer()\"",
 		"runMemgraphContainer": "yarn run scriptManager shouldCompileScript=true ./ \".container.memgraph.runDockerContainer()\"",
-		"runPortainerContainer": "yarn run scriptManager shouldCompileScript=true ./ \".container.portainer.runDockerContainer()\""
+		"runPortainerContainer": "yarn run scriptManager shouldCompileScript=true ./ \".container.portainer.runDockerContainer()\"",
+		"runSwarmpitContainer": "yarn run scriptManager shouldCompileScript=true ./ \".container.swarmpit.runDockerContainer()\""
 	},
 	"workspaces": [
 		"./packageManager/*"
