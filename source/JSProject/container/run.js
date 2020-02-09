@@ -11,6 +11,9 @@ import createDirectoryRecursive from 'mkdirp'
 const developmentCodeFolder = path.join(operatingSystem.homedir(), 'code'),
   yarnLinkFolrder = path.join(operatingSystem.homedir(), '.config')
 
+// the image used for development, building of projects, and production deployment, which contains essential tools and binaries (e.g. rsync)
+const dockerDeploymentImage = 'myuserindocker/deployment-environment:latest' || 'node:current' // nodejs 12 to support nodegit version that works with Debian 10
+
 export async function dockerCli({ api /* supplied by scriptManager */, scriptCommand = '/bin/bash' } = {}) {
   const applicationPath = path.join(api.project.configuration.rootPath, 'entrypoint/cli'),
     rootPath = api.project.configuration.rootPath,
@@ -36,6 +39,12 @@ export async function dockerCli({ api /* supplied by scriptManager */, scriptCom
     `--volume /var/run/docker.sock:/var/run/docker.sock`,
     // `--volume ${operatingSystem.homedir()}/.ssh:/project/.ssh`,
 
+    // allow for using local user name (of host machine) to write files and permissions through the docker container. https://medium.com/faun/set-current-host-user-for-docker-container-4e521cef9ffc
+    `--user ${operatingSystem.userInfo().uid}:${operatingSystem.userInfo().gid}`, // uid:gid
+    `--volume /etc/passwd:/etc/passwd:ro`,
+    `--volume /etc/group:/etc/group:ro`,
+    `--volume /etc/shadow:/etc/shadow:ro`,
+
     // container name is registered by Docker automatically for non default networks as hostnames in other containers (default bridge network will not use hostname DNS), allowing access to the memgraph container through it's name. (default network doesn't support aliases)
     `--network=${'external'}`,
     `--network-alias ${'application'}`, // make container discoverable by another hostname in addition to the container name for specific network.
@@ -49,7 +58,7 @@ export async function dockerCli({ api /* supplied by scriptManager */, scriptCom
     /*  'myuserindocker/deployment-environment:latest'
         'myuserindocker/deployment-environment:simple_NodeDockerCompose'
         this container should have docker client & docker-compose installed in.*/
-    `${'node:current'}`, // nodejs 12 to support nodegit
+    `${dockerDeploymentImage}`,
     scriptCommand,
   ]
 
@@ -114,7 +123,7 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
 
     services: {
       application: {
-        image: 'node:current',
+        image: dockerDeploymentImage,
 
         // export ports to host machine:
         // to change port interface (ip) use "127.0.0.1:80:80"
@@ -126,20 +135,26 @@ export async function dockerComposeCli({ api /* supplied by scriptManager */, sc
           }
         }),
 
-        volumes: [
-          `${rootPath}:${containerProjectPath}`,
-          // local development related paths
-          `${developmentCodeFolder}:${developmentCodeFolder}`,
-          `${yarnLinkFolrder}:${yarnLinkFolrder}`,
-          `/var/run/docker.sock:/var/run/docker.sock`,
-        ],
-
         networks: {
           internal: {
             aliases: ['application'],
           },
         },
 
+        volumes: [
+          `${rootPath}:${containerProjectPath}`,
+          // local development related paths
+          `${developmentCodeFolder}:${developmentCodeFolder}`,
+          `${yarnLinkFolrder}:${yarnLinkFolrder}`,
+          `/var/run/docker.sock:/var/run/docker.sock`,
+
+          // allow for using local user name (of host machine) to write files and permissions through the docker container. https://medium.com/faun/set-current-host-user-for-docker-container-4e521cef9ffc
+          `/etc/passwd:/etc/passwd:ro`,
+          `/etc/group:/etc/group:ro`,
+          `/etc/shadow:/etc/shadow:ro`,
+        ],
+
+        user: `${operatingSystem.userInfo().uid}:${operatingSystem.userInfo().gid}`, // uid:gid
         working_dir: rootPath,
         // IMPORTANT: if executed with command `/bin/sh -c ''`, as default docker does, the interrupt signals will not be passed to the running process and thus will not abort the containers. Therefore /bin/bash -c should be used, or ENTRYPOINT instead of COMMAND will use bash by default.
         // IMPORTANT: node --eval doesn't pass signals correctly in docker command, but wrapping it through npm scripts (yarn run <script name>) adds functionality.

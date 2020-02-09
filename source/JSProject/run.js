@@ -2,7 +2,7 @@ import path from 'path'
 import assert from 'assert'
 import filesystem from 'fs'
 import { watchFile, browserLivereload } from '@deployment/nodejsLiveReload'
-import { ManageSubprocess } from "@dependency/handleProcess";
+import { ManageSubprocess } from '@dependency/handleProcess'
 const { resolveAndLookupFile, findFileByGlobPattern } = require('@dependency/handleFilesystemOperation')
 import * as container from './container'
 
