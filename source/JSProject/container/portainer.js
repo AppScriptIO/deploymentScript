@@ -1,31 +1,32 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-// GUI for container management
-export function runDockerContainer() {
+
+function runDockerContainer() {
   try {
     let executableCommand = [
-      `docker volume create portainer_data`,
-      [
-        'docker',
-        'run',
-        '--name portainer',
-        // [ISSUE] Docker WSL2 engine failes to start and integrate with WSl2 when portainer container auto starts.
-        // '--restart always', // always restart even after docker restart
-        '-p 9000:9000',
-        //!IMPORTANT: [ISSUE] attaching socket seems to be unsupported in preview versions of WSl2, it works but seems to cause problems between docker integration with WSL2 on restart.
-        '--volume /var/run/docker.sock:/var/run/docker.sock',
-        '--volume portainer_data:/data', // named volume is created in the contaxt of Docker directory of the host filesystem
-        '-d portainer/portainer',
-        '-H unix:///var/run/docker.sock', // -H flag and the tcp:// protocol to connect to a remote Docker environment
-        '--no-auth', // disbale internal password mechanism that is used by portainer for extra security. i.e. no required password for logging into admin interface.
-      ].join(' '),
-    ]
+    `docker volume create portainer_data`,
+    [
+    'docker',
+    'run',
+    '--name portainer',
 
-    let command = executableCommand.join(' && \\\n')
-    console.log(`• Running container: portainer container on port 9000 - Command: \n"${command}"`)
-    childProcess.execSync(command, childProcessOption)
+
+    '-p 9000:9000',
+
+    '--volume /var/run/docker.sock:/var/run/docker.sock',
+    '--volume portainer_data:/data',
+    '-d portainer/portainer',
+    '-H unix:///var/run/docker.sock',
+    '--no-auth'].
+    join(' ')];
+
+
+    let command = executableCommand.join(' && \\\n');
+    console.log(`• Running container: portainer container on port 9000 - Command: \n"${command}"`);
+    childProcess.execSync(command, childProcessOption);
   } catch (error) {
-    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`);
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3BvcnRhaW5lci5qcyJdLCJuYW1lcyI6WyJjaGlsZFByb2Nlc3MiLCJyZXF1aXJlIiwiY2hpbGRQcm9jZXNzT3B0aW9uIiwiY3dkIiwiX19kaXJuYW1lIiwic2hlbGwiLCJzdGRpbyIsInJ1bkRvY2tlckNvbnRhaW5lciIsImV4ZWN1dGFibGVDb21tYW5kIiwiam9pbiIsImNvbW1hbmQiLCJjb25zb2xlIiwibG9nIiwiZXhlY1N5bmMiLCJlcnJvciJdLCJtYXBwaW5ncyI6IjJIQUFBLE1BQU1BLFlBQVksR0FBR0MsT0FBTyxDQUFDLGVBQUQsQ0FBNUI7QUFDQSxNQUFNQyxrQkFBa0IsR0FBRyxFQUFFQyxHQUFHLEVBQUVDLFNBQVAsRUFBa0JDLEtBQUssRUFBRSxJQUF6QixFQUErQkMsS0FBSyxFQUFFLENBQUMsQ0FBRCxFQUFJLENBQUosRUFBTyxDQUFQLENBQXRDLEVBQTNCOzs7QUFHTyxTQUFTQyxrQkFBVCxHQUE4QjtBQUNuQyxNQUFJO0FBQ0YsUUFBSUMsaUJBQWlCLEdBQUc7QUFDckIseUNBRHFCO0FBRXRCO0FBQ0UsWUFERjtBQUVFLFNBRkY7QUFHRSxzQkFIRjs7O0FBTUUsa0JBTkY7O0FBUUUsd0RBUkY7QUFTRSxtQ0FURjtBQVVFLDRCQVZGO0FBV0Usb0NBWEY7QUFZRSxlQVpGO0FBYUVDLElBQUFBLElBYkYsQ0FhTyxHQWJQLENBRnNCLENBQXhCOzs7QUFrQkEsUUFBSUMsT0FBTyxHQUFHRixpQkFBaUIsQ0FBQ0MsSUFBbEIsQ0FBdUIsVUFBdkIsQ0FBZDtBQUNBRSxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSx1RUFBc0VGLE9BQVEsR0FBM0Y7QUFDQVYsSUFBQUEsWUFBWSxDQUFDYSxRQUFiLENBQXNCSCxPQUF0QixFQUErQlIsa0JBQS9CO0FBQ0QsR0F0QkQsQ0FzQkUsT0FBT1ksS0FBUCxFQUFjO0FBQ2RILElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLCtGQUFiO0FBQ0Q7QUFDRiIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IGNoaWxkUHJvY2VzcyA9IHJlcXVpcmUoJ2NoaWxkX3Byb2Nlc3MnKVxuY29uc3QgY2hpbGRQcm9jZXNzT3B0aW9uID0geyBjd2Q6IF9fZGlybmFtZSwgc2hlbGw6IHRydWUsIHN0ZGlvOiBbMCwgMSwgMl0gfVxuXG4vLyBHVUkgZm9yIGNvbnRhaW5lciBtYW5hZ2VtZW50XG5leHBvcnQgZnVuY3Rpb24gcnVuRG9ja2VyQ29udGFpbmVyKCkge1xuICB0cnkge1xuICAgIGxldCBleGVjdXRhYmxlQ29tbWFuZCA9IFtcbiAgICAgIGBkb2NrZXIgdm9sdW1lIGNyZWF0ZSBwb3J0YWluZXJfZGF0YWAsXG4gICAgICBbXG4gICAgICAgICdkb2NrZXInLFxuICAgICAgICAncnVuJyxcbiAgICAgICAgJy0tbmFtZSBwb3J0YWluZXInLFxuICAgICAgICAvLyBbSVNTVUVdIERvY2tlciBXU0wyIGVuZ2luZSBmYWlsZXMgdG8gc3RhcnQgYW5kIGludGVncmF0ZSB3aXRoIFdTbDIgd2hlbiBwb3J0YWluZXIgY29udGFpbmVyIGF1dG8gc3RhcnRzLlxuICAgICAgICAvLyAnLS1yZXN0YXJ0IGFsd2F5cycsIC8vIGFsd2F5cyByZXN0YXJ0IGV2ZW4gYWZ0ZXIgZG9ja2VyIHJlc3RhcnRcbiAgICAgICAgJy1wIDkwMDA6OTAwMCcsXG4gICAgICAgIC8vIUlNUE9SVEFOVDogW0lTU1VFXSBhdHRhY2hpbmcgc29ja2V0IHNlZW1zIHRvIGJlIHVuc3VwcG9ydGVkIGluIHByZXZpZXcgdmVyc2lvbnMgb2YgV1NsMiwgaXQgd29ya3MgYnV0IHNlZW1zIHRvIGNhdXNlIHByb2JsZW1zIGJldHdlZW4gZG9ja2VyIGludGVncmF0aW9uIHdpdGggV1NMMiBvbiByZXN0YXJ0LlxuICAgICAgICAnLS12b2x1bWUgL3Zhci9ydW4vZG9ja2VyLnNvY2s6L3Zhci9ydW4vZG9ja2VyLnNvY2snLFxuICAgICAgICAnLS12b2x1bWUgcG9ydGFpbmVyX2RhdGE6L2RhdGEnLCAvLyBuYW1lZCB2b2x1bWUgaXMgY3JlYXRlZCBpbiB0aGUgY29udGF4dCBvZiBEb2NrZXIgZGlyZWN0b3J5IG9mIHRoZSBob3N0IGZpbGVzeXN0ZW1cbiAgICAgICAgJy1kIHBvcnRhaW5lci9wb3J0YWluZXInLFxuICAgICAgICAnLUggdW5peDovLy92YXIvcnVuL2RvY2tlci5zb2NrJywgLy8gLUggZmxhZyBhbmQgdGhlIHRjcDovLyBwcm90b2NvbCB0byBjb25uZWN0IHRvIGEgcmVtb3RlIERvY2tlciBlbnZpcm9ubWVudFxuICAgICAgICAnLS1uby1hdXRoJywgLy8gZGlzYmFsZSBpbnRlcm5hbCBwYXNzd29yZCBtZWNoYW5pc20gdGhhdCBpcyB1c2VkIGJ5IHBvcnRhaW5lciBmb3IgZXh0cmEgc2VjdXJpdHkuIGkuZS4gbm8gcmVxdWlyZWQgcGFzc3dvcmQgZm9yIGxvZ2dpbmcgaW50byBhZG1pbiBpbnRlcmZhY2UuXG4gICAgICBdLmpvaW4oJyAnKSxcbiAgICBdXG5cbiAgICBsZXQgY29tbWFuZCA9IGV4ZWN1dGFibGVDb21tYW5kLmpvaW4oJyAmJiBcXFxcXFxuJylcbiAgICBjb25zb2xlLmxvZyhg4oCiIFJ1bm5pbmcgY29udGFpbmVyOiBwb3J0YWluZXIgY29udGFpbmVyIG9uIHBvcnQgOTAwMCAtIENvbW1hbmQ6IFxcblwiJHtjb21tYW5kfVwiYClcbiAgICBjaGlsZFByb2Nlc3MuZXhlY1N5bmMoY29tbWFuZCwgY2hpbGRQcm9jZXNzT3B0aW9uKVxuICB9IGNhdGNoIChlcnJvcikge1xuICAgIGNvbnNvbGUubG9nKGDigKIgU2VlbXMgbGlrZSB0aGUgY29udGFpbmVyIGlzIGFscmVhZHkgcnVubmluZyBmcm9tIGEgcHJldmlvdXMgc2Vzc2lvbiwgaWdub3JlIHByZXZpb3VzIGVycm9yLmApXG4gIH1cbn1cbiJdfQ==

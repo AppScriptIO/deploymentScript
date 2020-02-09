@@ -1,39 +1,40 @@
-const { runTest } = require('@deployment/javascriptTestRunner')
-const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation')
-import { watchFile } from '@deployment/nodejsLiveReload'
+"use strict";
 
-module.exports = async function(
-  {
-    api /* supplied by scriptManager */,
-    testPath = [], // relative or absolute paths
-    jsPath = [],
-    shouldCompileTest,
-    shouldDebugger,
-  } = {},
-  // additional parameters passed to test file
-  additionalParameter,
-) {
-  let targetProjectRootPath = api.project.configuration.rootPath // from scriptManager api.
+var _nodejsLiveReload = require("@deployment/nodejsLiveReload");const { runTest } = require('@deployment/javascriptTestRunner');const { resolveAndLookupFile } = require('@dependency/handleFilesystemOperation');
 
-  let testFileArray = resolveAndLookupFile({ pathArray: [...testPath], basePath: targetProjectRootPath, fileExtension: ['.test.js'] })
-  let jsFileArray = resolveAndLookupFile({ pathArray: [...jsPath, ...testFileArray, targetProjectRootPath], basePath: targetProjectRootPath, fileExtension: ['.js', '.ts'] })
+module.exports = async function (
+{
+  api,
+  testPath = [],
+  jsPath = [],
+  shouldCompileTest,
+  shouldDebugger } =
+{},
+
+additionalParameter)
+{
+  let targetProjectRootPath = api.project.configuration.rootPath;
+
+  let testFileArray = resolveAndLookupFile({ pathArray: [...testPath], basePath: targetProjectRootPath, fileExtension: ['.test.js'] });
+  let jsFileArray = resolveAndLookupFile({ pathArray: [...jsPath, ...testFileArray, targetProjectRootPath], basePath: targetProjectRootPath, fileExtension: ['.js', '.ts'] });
 
   let { restart: restartTest } = await runTest(
-    {
-      targetProject: api.project /**adapter for working with target function interface*/,
-      shouldCompileTest,
-      shouldDebugger,
-      testFileArray,
-      jsFileArray,
-    },
-    additionalParameter,
-  )
+  {
+    targetProject: api.project,
+    shouldCompileTest,
+    shouldDebugger,
+    testFileArray,
+    jsFileArray },
 
-  await watchFile({
-    // to be run after file notification
+  additionalParameter);
+
+
+  await (0, _nodejsLiveReload.watchFile)({
+
     triggerCallback: () => restartTest(),
     fileArray: jsFileArray,
     ignoreNodeModules: true,
-    logMessage: true,
-  })
-}
+    logMessage: true });
+
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvdGVzdC5qcyJdLCJuYW1lcyI6WyJydW5UZXN0IiwicmVxdWlyZSIsInJlc29sdmVBbmRMb29rdXBGaWxlIiwibW9kdWxlIiwiZXhwb3J0cyIsImFwaSIsInRlc3RQYXRoIiwianNQYXRoIiwic2hvdWxkQ29tcGlsZVRlc3QiLCJzaG91bGREZWJ1Z2dlciIsImFkZGl0aW9uYWxQYXJhbWV0ZXIiLCJ0YXJnZXRQcm9qZWN0Um9vdFBhdGgiLCJwcm9qZWN0IiwiY29uZmlndXJhdGlvbiIsInJvb3RQYXRoIiwidGVzdEZpbGVBcnJheSIsInBhdGhBcnJheSIsImJhc2VQYXRoIiwiZmlsZUV4dGVuc2lvbiIsImpzRmlsZUFycmF5IiwicmVzdGFydCIsInJlc3RhcnRUZXN0IiwidGFyZ2V0UHJvamVjdCIsInRyaWdnZXJDYWxsYmFjayIsImZpbGVBcnJheSIsImlnbm9yZU5vZGVNb2R1bGVzIiwibG9nTWVzc2FnZSJdLCJtYXBwaW5ncyI6Ijs7QUFFQSxnRUFGQSxNQUFNLEVBQUVBLE9BQUYsS0FBY0MsT0FBTyxDQUFDLGtDQUFELENBQTNCLENBQ0EsTUFBTSxFQUFFQyxvQkFBRixLQUEyQkQsT0FBTyxDQUFDLHVDQUFELENBQXhDOztBQUdBRSxNQUFNLENBQUNDLE9BQVAsR0FBaUI7QUFDZjtBQUNFQyxFQUFBQSxHQURGO0FBRUVDLEVBQUFBLFFBQVEsR0FBRyxFQUZiO0FBR0VDLEVBQUFBLE1BQU0sR0FBRyxFQUhYO0FBSUVDLEVBQUFBLGlCQUpGO0FBS0VDLEVBQUFBLGNBTEY7QUFNSSxFQVBXOztBQVNmQyxtQkFUZTtBQVVmO0FBQ0EsTUFBSUMscUJBQXFCLEdBQUdOLEdBQUcsQ0FBQ08sT0FBSixDQUFZQyxhQUFaLENBQTBCQyxRQUF0RDs7QUFFQSxNQUFJQyxhQUFhLEdBQUdiLG9CQUFvQixDQUFDLEVBQUVjLFNBQVMsRUFBRSxDQUFDLEdBQUdWLFFBQUosQ0FBYixFQUE0QlcsUUFBUSxFQUFFTixxQkFBdEMsRUFBNkRPLGFBQWEsRUFBRSxDQUFDLFVBQUQsQ0FBNUUsRUFBRCxDQUF4QztBQUNBLE1BQUlDLFdBQVcsR0FBR2pCLG9CQUFvQixDQUFDLEVBQUVjLFNBQVMsRUFBRSxDQUFDLEdBQUdULE1BQUosRUFBWSxHQUFHUSxhQUFmLEVBQThCSixxQkFBOUIsQ0FBYixFQUFtRU0sUUFBUSxFQUFFTixxQkFBN0UsRUFBb0dPLGFBQWEsRUFBRSxDQUFDLEtBQUQsRUFBUSxLQUFSLENBQW5ILEVBQUQsQ0FBdEM7O0FBRUEsTUFBSSxFQUFFRSxPQUFPLEVBQUVDLFdBQVgsS0FBMkIsTUFBTXJCLE9BQU87QUFDMUM7QUFDRXNCLElBQUFBLGFBQWEsRUFBRWpCLEdBQUcsQ0FBQ08sT0FEckI7QUFFRUosSUFBQUEsaUJBRkY7QUFHRUMsSUFBQUEsY0FIRjtBQUlFTSxJQUFBQSxhQUpGO0FBS0VJLElBQUFBLFdBTEYsRUFEMEM7O0FBUTFDVCxFQUFBQSxtQkFSMEMsQ0FBNUM7OztBQVdBLFFBQU0saUNBQVU7O0FBRWRhLElBQUFBLGVBQWUsRUFBRSxNQUFNRixXQUFXLEVBRnBCO0FBR2RHLElBQUFBLFNBQVMsRUFBRUwsV0FIRztBQUlkTSxJQUFBQSxpQkFBaUIsRUFBRSxJQUpMO0FBS2RDLElBQUFBLFVBQVUsRUFBRSxJQUxFLEVBQVYsQ0FBTjs7QUFPRCxDQWxDRCIsInNvdXJjZXNDb250ZW50IjpbImNvbnN0IHsgcnVuVGVzdCB9ID0gcmVxdWlyZSgnQGRlcGxveW1lbnQvamF2YXNjcmlwdFRlc3RSdW5uZXInKVxyXG5jb25zdCB7IHJlc29sdmVBbmRMb29rdXBGaWxlIH0gPSByZXF1aXJlKCdAZGVwZW5kZW5jeS9oYW5kbGVGaWxlc3lzdGVtT3BlcmF0aW9uJylcclxuaW1wb3J0IHsgd2F0Y2hGaWxlIH0gZnJvbSAnQGRlcGxveW1lbnQvbm9kZWpzTGl2ZVJlbG9hZCdcclxuXHJcbm1vZHVsZS5leHBvcnRzID0gYXN5bmMgZnVuY3Rpb24oXHJcbiAge1xyXG4gICAgYXBpIC8qIHN1cHBsaWVkIGJ5IHNjcmlwdE1hbmFnZXIgKi8sXHJcbiAgICB0ZXN0UGF0aCA9IFtdLCAvLyByZWxhdGl2ZSBvciBhYnNvbHV0ZSBwYXRoc1xyXG4gICAganNQYXRoID0gW10sXHJcbiAgICBzaG91bGRDb21waWxlVGVzdCxcclxuICAgIHNob3VsZERlYnVnZ2VyLFxyXG4gIH0gPSB7fSxcclxuICAvLyBhZGRpdGlvbmFsIHBhcmFtZXRlcnMgcGFzc2VkIHRvIHRlc3QgZmlsZVxyXG4gIGFkZGl0aW9uYWxQYXJhbWV0ZXIsXHJcbikge1xyXG4gIGxldCB0YXJnZXRQcm9qZWN0Um9vdFBhdGggPSBhcGkucHJvamVjdC5jb25maWd1cmF0aW9uLnJvb3RQYXRoIC8vIGZyb20gc2NyaXB0TWFuYWdlciBhcGkuXHJcblxyXG4gIGxldCB0ZXN0RmlsZUFycmF5ID0gcmVzb2x2ZUFuZExvb2t1cEZpbGUoeyBwYXRoQXJyYXk6IFsuLi50ZXN0UGF0aF0sIGJhc2VQYXRoOiB0YXJnZXRQcm9qZWN0Um9vdFBhdGgsIGZpbGVFeHRlbnNpb246IFsnLnRlc3QuanMnXSB9KVxyXG4gIGxldCBqc0ZpbGVBcnJheSA9IHJlc29sdmVBbmRMb29rdXBGaWxlKHsgcGF0aEFycmF5OiBbLi4uanNQYXRoLCAuLi50ZXN0RmlsZUFycmF5LCB0YXJnZXRQcm9qZWN0Um9vdFBhdGhdLCBiYXNlUGF0aDogdGFyZ2V0UHJvamVjdFJvb3RQYXRoLCBmaWxlRXh0ZW5zaW9uOiBbJy5qcycsICcudHMnXSB9KVxyXG5cclxuICBsZXQgeyByZXN0YXJ0OiByZXN0YXJ0VGVzdCB9ID0gYXdhaXQgcnVuVGVzdChcclxuICAgIHtcclxuICAgICAgdGFyZ2V0UHJvamVjdDogYXBpLnByb2plY3QgLyoqYWRhcHRlciBmb3Igd29ya2luZyB3aXRoIHRhcmdldCBmdW5jdGlvbiBpbnRlcmZhY2UqLyxcclxuICAgICAgc2hvdWxkQ29tcGlsZVRlc3QsXHJcbiAgICAgIHNob3VsZERlYnVnZ2VyLFxyXG4gICAgICB0ZXN0RmlsZUFycmF5LFxyXG4gICAgICBqc0ZpbGVBcnJheSxcclxuICAgIH0sXHJcbiAgICBhZGRpdGlvbmFsUGFyYW1ldGVyLFxyXG4gIClcclxuXHJcbiAgYXdhaXQgd2F0Y2hGaWxlKHtcclxuICAgIC8vIHRvIGJlIHJ1biBhZnRlciBmaWxlIG5vdGlmaWNhdGlvblxyXG4gICAgdHJpZ2dlckNhbGxiYWNrOiAoKSA9PiByZXN0YXJ0VGVzdCgpLFxyXG4gICAgZmlsZUFycmF5OiBqc0ZpbGVBcnJheSxcclxuICAgIGlnbm9yZU5vZGVNb2R1bGVzOiB0cnVlLFxyXG4gICAgbG9nTWVzc2FnZTogdHJ1ZSxcclxuICB9KVxyXG59XHJcbiJdfQ==

@@ -1,18 +1,19 @@
-const childProcess = require('child_process')
-const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.runDockerContainer = runDockerContainer;const childProcess = require('child_process');
+const childProcessOption = { cwd: __dirname, shell: true, stdio: [0, 1, 2] };
 
-// Swarmpit - GUI for docker swarm management.
-export function runDockerContainer() {
+
+function runDockerContainer() {
   try {
     let executableCommand = [
-      // `docker volume create swarmpit-data`,
-      ['docker run -it --rm', `--name swarmpit-installer`, `--volume /var/run/docker.sock:/var/run/docker.sock`, 'swarmpit/install:1.8'].join(' '),
-    ]
 
-    let command = executableCommand.join(' && \\\n')
-    console.log(`• Running container: Swarmpit container on port 9000 - Command: \n"${command}"`)
-    childProcess.execSync(command, childProcessOption)
+    ['docker run -it --rm', `--name swarmpit-installer`, `--volume /var/run/docker.sock:/var/run/docker.sock`, 'swarmpit/install:1.8'].join(' ')];
+
+
+    let command = executableCommand.join(' && \\\n');
+    console.log(`• Running container: Swarmpit container on port 9000 - Command: \n"${command}"`);
+    childProcess.execSync(command, childProcessOption);
   } catch (error) {
-    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`)
+    console.log(`• Seems like the container is already running from a previous session, ignore previous error.`);
   }
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9KU1Byb2plY3QvY29udGFpbmVyL3N3YXJtcGl0LmpzIl0sIm5hbWVzIjpbImNoaWxkUHJvY2VzcyIsInJlcXVpcmUiLCJjaGlsZFByb2Nlc3NPcHRpb24iLCJjd2QiLCJfX2Rpcm5hbWUiLCJzaGVsbCIsInN0ZGlvIiwicnVuRG9ja2VyQ29udGFpbmVyIiwiZXhlY3V0YWJsZUNvbW1hbmQiLCJqb2luIiwiY29tbWFuZCIsImNvbnNvbGUiLCJsb2ciLCJleGVjU3luYyIsImVycm9yIl0sIm1hcHBpbmdzIjoiMkhBQUEsTUFBTUEsWUFBWSxHQUFHQyxPQUFPLENBQUMsZUFBRCxDQUE1QjtBQUNBLE1BQU1DLGtCQUFrQixHQUFHLEVBQUVDLEdBQUcsRUFBRUMsU0FBUCxFQUFrQkMsS0FBSyxFQUFFLElBQXpCLEVBQStCQyxLQUFLLEVBQUUsQ0FBQyxDQUFELEVBQUksQ0FBSixFQUFPLENBQVAsQ0FBdEMsRUFBM0I7OztBQUdPLFNBQVNDLGtCQUFULEdBQThCO0FBQ25DLE1BQUk7QUFDRixRQUFJQyxpQkFBaUIsR0FBRzs7QUFFdEIsS0FBQyxxQkFBRCxFQUF5QiwyQkFBekIsRUFBc0Qsb0RBQXRELEVBQTJHLHNCQUEzRyxFQUFtSUMsSUFBbkksQ0FBd0ksR0FBeEksQ0FGc0IsQ0FBeEI7OztBQUtBLFFBQUlDLE9BQU8sR0FBR0YsaUJBQWlCLENBQUNDLElBQWxCLENBQXVCLFVBQXZCLENBQWQ7QUFDQUUsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsc0VBQXFFRixPQUFRLEdBQTFGO0FBQ0FWLElBQUFBLFlBQVksQ0FBQ2EsUUFBYixDQUFzQkgsT0FBdEIsRUFBK0JSLGtCQUEvQjtBQUNELEdBVEQsQ0FTRSxPQUFPWSxLQUFQLEVBQWM7QUFDZEgsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsK0ZBQWI7QUFDRDtBQUNGIiwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgY2hpbGRQcm9jZXNzID0gcmVxdWlyZSgnY2hpbGRfcHJvY2VzcycpXG5jb25zdCBjaGlsZFByb2Nlc3NPcHRpb24gPSB7IGN3ZDogX19kaXJuYW1lLCBzaGVsbDogdHJ1ZSwgc3RkaW86IFswLCAxLCAyXSB9XG5cbi8vIFN3YXJtcGl0IC0gR1VJIGZvciBkb2NrZXIgc3dhcm0gbWFuYWdlbWVudC5cbmV4cG9ydCBmdW5jdGlvbiBydW5Eb2NrZXJDb250YWluZXIoKSB7XG4gIHRyeSB7XG4gICAgbGV0IGV4ZWN1dGFibGVDb21tYW5kID0gW1xuICAgICAgLy8gYGRvY2tlciB2b2x1bWUgY3JlYXRlIHN3YXJtcGl0LWRhdGFgLFxuICAgICAgWydkb2NrZXIgcnVuIC1pdCAtLXJtJywgYC0tbmFtZSBzd2FybXBpdC1pbnN0YWxsZXJgLCBgLS12b2x1bWUgL3Zhci9ydW4vZG9ja2VyLnNvY2s6L3Zhci9ydW4vZG9ja2VyLnNvY2tgLCAnc3dhcm1waXQvaW5zdGFsbDoxLjgnXS5qb2luKCcgJyksXG4gICAgXVxuXG4gICAgbGV0IGNvbW1hbmQgPSBleGVjdXRhYmxlQ29tbWFuZC5qb2luKCcgJiYgXFxcXFxcbicpXG4gICAgY29uc29sZS5sb2coYOKAoiBSdW5uaW5nIGNvbnRhaW5lcjogU3dhcm1waXQgY29udGFpbmVyIG9uIHBvcnQgOTAwMCAtIENvbW1hbmQ6IFxcblwiJHtjb21tYW5kfVwiYClcbiAgICBjaGlsZFByb2Nlc3MuZXhlY1N5bmMoY29tbWFuZCwgY2hpbGRQcm9jZXNzT3B0aW9uKVxuICB9IGNhdGNoIChlcnJvcikge1xuICAgIGNvbnNvbGUubG9nKGDigKIgU2VlbXMgbGlrZSB0aGUgY29udGFpbmVyIGlzIGFscmVhZHkgcnVubmluZyBmcm9tIGEgcHJldmlvdXMgc2Vzc2lvbiwgaWdub3JlIHByZXZpb3VzIGVycm9yLmApXG4gIH1cbn1cbiJdfQ==
